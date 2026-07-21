@@ -1,0 +1,145 @@
+/* ============================================================
+   Unit page — 7 competence cards on tinted deep water.
+
+   The unit's hue is set once on the view (--glass-tint / --tint-text)
+   and inherited by every card, the header and the back tab, so a unit
+   reads as one colour world.
+   ============================================================ */
+
+.unit-view {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(1rem, 3vh, 2.25rem);
+  padding: clamp(1.5rem, 5vh, 3rem) clamp(1.5rem, 5vw, 4rem) clamp(2rem, 6vh, 3.5rem);
+  overflow-y: auto;
+  background:
+    radial-gradient(120% 90% at 50% 0%,
+      rgba(var(--glass-tint), 0.14) 0%, transparent 60%),
+    radial-gradient(100% 80% at 50% 100%, var(--navy-base) 0%, var(--navy-deepest) 100%);
+  -webkit-overflow-scrolling: touch;
+}
+
+.unit-view--u1 { --glass-tint: var(--unit1-rgb); --tint-text: var(--unit1-text); --tint: var(--unit1); }
+.unit-view--u2 { --glass-tint: var(--unit2-rgb); --tint-text: var(--unit2-text); --tint: var(--unit2); }
+.unit-view--u3 { --glass-tint: var(--unit3-rgb); --tint-text: var(--unit3-text); --tint: var(--unit3); }
+.unit-view--u4 { --glass-tint: var(--unit4-rgb); --tint-text: var(--unit4-text); --tint: var(--unit4); }
+
+/* --- Header ---------------------------------------------------- */
+
+.unit-view__header {
+  text-align: center;
+  max-width: 46rem;
+}
+
+.unit-view__badge {
+  display: inline-block;
+  padding: 0.3rem 0.9rem;
+  border-radius: 999px;
+  font: 500 0.78rem/1 var(--font-ui);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--tint-text);
+  background: rgba(var(--glass-tint), 0.12);
+  box-shadow: inset 0 0 0 1px rgba(var(--glass-tint), 0.35);
+}
+
+/* Lit in the unit's own hue — the map hero keeps the brand gradient,
+   a unit page belongs to its colour world (DS §13). */
+.unit-view__title {
+  margin: 0.8rem 0 0;
+  font: 600 clamp(1.9rem, 4.4vw, 3.1rem)/1.1 var(--font-display);
+  background: linear-gradient(115deg,
+    var(--tint-text) 0%, var(--text-bright) 65%, var(--tint-text) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.unit-view__tagline {
+  margin-top: 0.5rem;
+  font: 500 clamp(1.05rem, 2vw, 1.4rem)/1.35 var(--font-script);
+  color: var(--tint-text);
+  opacity: 0.85;
+}
+
+/* --- Competence grid ------------------------------------------- */
+
+/* 7 cards: the max-width is tuned so a wide screen breaks 4 + 3 and the
+   short last row centres itself under the first */
+.unit-view__grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: clamp(0.75rem, 1.6vw, 1.25rem);
+  width: 100%;
+  max-width: 52rem;
+}
+
+.comp-card {
+  flex: 0 1 clamp(8.5rem, 15vw, 11.5rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+  padding: clamp(1rem, 2.4vh, 1.6rem) 0.75rem;
+  border-radius: 18px;
+  color: var(--tint-text);
+  background: var(--glass-fill);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow:
+    var(--glass-edge),
+    0 0 0 1px rgba(var(--glass-tint), 0.28),
+    var(--shadow-lift-2);
+  transition: transform var(--motion-micro), box-shadow var(--motion-micro);
+}
+
+@supports not (backdrop-filter: blur(1px)) {
+  .comp-card { background: rgba(13, 21, 38, 0.88); }
+}
+
+.comp-card:hover,
+.comp-card:focus-visible {
+  outline: none;
+  transform: translateY(-3px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    0 0 0 2px rgba(var(--glass-tint), 0.7),
+    var(--glow-strong),
+    var(--shadow-lift-3);
+}
+
+.comp-card:active {
+  transform: translateY(-1px) scale(0.985);
+}
+
+.comp-card__icon {
+  width: clamp(2rem, 3.4vw, 2.75rem);
+  height: clamp(2rem, 3.4vw, 2.75rem);
+  opacity: 0.85;
+}
+
+.comp-card__label {
+  font: 500 clamp(0.9rem, 1.35vw, 1.05rem)/1.2 var(--font-ui);
+  color: var(--text-bright);
+  text-align: center;
+}
+
+/* --- Portrait --------------------------------------------------- */
+
+@media (orientation: portrait) {
+  .unit-view {
+    justify-content: flex-start;
+  }
+
+  .unit-view__grid {
+    max-width: 34rem;
+  }
+
+  .comp-card {
+    flex: 1 1 8rem;
+  }
+}

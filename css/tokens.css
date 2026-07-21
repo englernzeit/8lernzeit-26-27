@@ -1,0 +1,135 @@
+/* ============================================================
+   Design tokens — single source of truth for the night-map look.
+   Values are defined by DESIGN-SYSTEM.md (§2, §3, §9, §11, §13);
+   change tokens here, never hardcode values in components.
+
+   Two groups:
+   1. NATIVE tokens — the night/ocean design language.
+   2. BRIDGE tokens — the names the inherited component CSS still
+      uses (--paper, --ink, --shadow-lift-*, …), re-pointed at
+      night-palette values so every component reads as one theme.
+      New CSS should use the native names.
+   ============================================================ */
+
+:root {
+  /* ---------- 1. NATIVE ---------- */
+
+  /* --- Ocean / night ground (DS §2) --- */
+  --navy-deepest: #070e1a;
+  --navy-deep: #0b1526;
+  --navy-base: #0d1b2e;
+  --indigo: #14243c;
+  --slate: #1c3050;
+  --steel: #27405e;
+
+  /* --- Water luminance hierarchy (DS §2) --- */
+  --foam-core: #e8eef4;
+  --foam-mid: #b9c9da;
+  --foam-thread: #7e96b0;
+  --ripple: #6e86a0;
+  --grid-line: #3a5578;
+
+  /* --- Unit hues, locked per unit (DS §2) --- */
+  --unit1: #a46cf5; --unit1-deep: #7b3fe4; --unit1-text: #c9a8ff; /* New York City */
+  --unit2: #f5b94a; --unit2-deep: #d98e1f; --unit2-text: #f5cf8a; /* Best days of your life */
+  --unit3: #5fb4f5; --unit3-deep: #2e86d9; --unit3-text: #9ccdf7; /* On the road to California */
+  --unit4: #5ad98f; --unit4-deep: #2bb367; --unit4-text: #96e8b8; /* Stories from the Deep South */
+
+  /* Same hues as raw RGB triples, for rgba()/color-mix in components */
+  --unit1-rgb: 164, 108, 245;
+  --unit2-rgb: 245, 185, 74;
+  --unit3-rgb: 95, 180, 245;
+  --unit4-rgb: 90, 217, 143;
+
+  /* --- Text (DS §13) --- */
+  --text-bright: #f4f1fa;
+  --text-body: #e7ecf4;
+  --text-dim: rgba(231, 236, 244, 0.55);
+
+  /* --- Headline gradient (DS §13) --- */
+  --headline-from: #b9a3e8;
+  --headline-mid: #c8a8e0;
+  --headline-to: #e8a8c8;
+
+  /* --- Glass surfaces (DS §5) --- */
+  --glass-blur: blur(14px) saturate(1.2);
+  --glass-tint: 164, 108, 245; /* overridden per unit */
+  /* Scrim is deliberately heavier than a pure glass tint: cards must stay
+     readable over the brightest lit parts of the map plate. */
+  --glass-fill: linear-gradient(
+    135deg,
+    rgba(var(--glass-tint), 0.1) 0%,
+    rgba(13, 21, 38, 0.66) 40%,
+    rgba(13, 21, 38, 0.76) 100%
+  );
+  --glass-edge: inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    inset 1px 0 0 rgba(255, 255, 255, 0.06);
+
+  /* --- Step (differentiation) colours — same on every unit.
+         Light → dark mirrors Step 1 → Step 4 difficulty, mapped
+         onto the unit hue wheel so steps never clash with a unit. --- */
+  --step-1: #5fb4f5; /* LE      — open water blue */
+  --step-2: #5ad98f; /* G-Kurs  — shore green */
+  --step-3: #f5b94a; /* E-Kurs  — lantern amber */
+  --step-4: #a46cf5; /* Challenge ★ — deep violet */
+
+  /* ---------- 2. BRIDGE (legacy names, night values) ---------- */
+
+  /* Surfaces: "paper" is now glass over deep water */
+  --paper: var(--navy-deep);
+  --paper-card: var(--indigo);
+  --paper-shadowed: var(--navy-deepest);
+
+  /* Ink: on a dark ground the "drawing colour" is light */
+  --ink: var(--text-body);
+  --ink-blue: var(--unit1-text);
+
+  /* Unit accents under their old names */
+  --unit-1: var(--unit1);
+  --unit-2: var(--unit2);
+  --unit-3: var(--unit3);
+  --unit-4: var(--unit4);
+
+  /* Washes → water/light equivalents */
+  --wash-sky: var(--unit3);
+  --wash-teal: var(--unit3-deep);
+  --wash-sage: var(--unit4);
+  --wash-sand: var(--unit2);
+  --wash-blush: var(--headline-to);
+  --accent-coral: var(--unit1);
+  --tape: rgba(28, 48, 80, 0.75);
+
+  --color-paper: var(--paper);
+  --color-ink: var(--ink);
+  --color-accent: var(--unit1);
+  --color-tape: var(--tape);
+
+  /* --- Shadows: cast down into deep water, never warm (DS §9) --- */
+  --shadow-lift-1: 0 2px 6px rgba(7, 14, 26, 0.45);
+  --shadow-lift-2: 0 8px 24px rgba(7, 14, 26, 0.5);
+  --shadow-lift-3: 0 16px 48px rgba(7, 14, 26, 0.55);
+
+  /* --- Glows: the night theme's version of "lift" (DS §9) --- */
+  --glow-soft: 0 0 24px rgba(var(--glass-tint), 0.18);
+  --glow-strong: 0 0 32px rgba(var(--glass-tint), 0.3);
+
+  /* --- Typography (DS §13) --- */
+  --font-display: "Playfair Display", Georgia, "Times New Roman", serif;
+  --font-ui: "Inter", -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-script: "Caveat", "Segoe Script", cursive;
+
+  /* Legacy names used by inherited components */
+  --font-body: var(--font-ui);
+  --font-hand: var(--font-script);
+
+  /* --- Spacing scale --- */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 2rem;
+
+  /* --- Motion: transforms/opacity only, ease-out (DS §11) --- */
+  --motion-micro: 0.2s ease-out;   /* lift / press / tick */
+  --motion-panel: 0.35s ease;      /* view + carousel transitions */
+  --transition-panel: transform var(--motion-panel), opacity var(--motion-panel);
+}

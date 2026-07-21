@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 156" width="120" height="156">
+  <defs>
+    <radialGradient id="face4" cx="50%" cy="38%" r="70%">
+      <stop offset="0%" stop-color="#14301F"></stop><stop offset="100%" stop-color="#0A1F12"></stop>
+    </radialGradient>
+    <linearGradient id="rim4" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#5AD98F"></stop><stop offset="100%" stop-color="#2BB367"></stop>
+    </linearGradient>
+    <filter id="glow4" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="6" result="b"></feGaussianBlur>
+      <feMerge><feMergeNode in="b"></feMergeNode><feMergeNode in="SourceGraphic"></feMergeNode></feMerge>
+    </filter>
+  </defs>
+  <ellipse cx="60" cy="146" rx="34" ry="9" fill="#5AD98F" opacity="0.45" filter="url(#glow4)"></ellipse>
+  <ellipse cx="60" cy="146" rx="16" ry="4.5" fill="#FFFFFF" opacity="0.35"></ellipse>
+  <g filter="url(#glow4)">
+    <path d="M60 8 C 86 8 104 27 104 52 C 104 76 84 92 66 118 C 63 122.5 60 128 60 134 C 60 128 57 122.5 54 118 C 36 92 16 76 16 52 C 16 27 34 8 60 8 Z" fill="url(#rim4)"></path>
+    <path d="M60 15 C 82 15 97 31 97 52 C 97 72 79 87 63 111 C 61.5 113.3 60 116 60 118 C 60 116 58.5 113.3 57 111 C 41 87 23 72 23 52 C 23 31 38 15 60 15 Z" fill="url(#face4)"></path>
+    <path d="M38 24 C 44 18 54 15 60 15 C 48 17 40 22 35 30 Z" fill="#FFFFFF" opacity="0.18"></path>
+  </g>
+  <text x="60" y="63" text-anchor="middle" font-family="Georgia, &#39;Times New Roman&#39;, serif" font-size="34" font-weight="600" fill="#E6FFF0" letter-spacing="1">04</text>
+</svg>

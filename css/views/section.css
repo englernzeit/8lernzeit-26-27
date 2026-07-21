@@ -1,0 +1,761 @@
+/* ============================================================
+   Competence page — the night logbook.
+
+   Same layout system as the map and unit pages: glass surfaces on
+   deep water, one unit hue per screen. Tokens local to this page
+   live on .journal (prefix --j-); card/carousel chrome is in
+   components/journal-carousel.css.
+   ============================================================ */
+
+.journal {
+  /* Page palette — derived from the night tokens (DESIGN-SYSTEM.md §2) */
+  --j-ink: #e7ecf4;
+  --j-secondary: #b9c9da;
+  --j-khaki: #8fa3bc;
+  --j-line: #7e96b0;
+  --j-paper-1: #14243c;
+  --j-paper-2: #16273f;
+  --j-paper-3: #12203a;
+  --j-sticky: #1c3050;
+  --j-coral: #a46cf5;
+  --j-coral-deep: #7b3fe4;
+  --j-teal: #5fb4f5;
+  --j-teal-deep: #2e86d9;
+  --j-olive: #5ad98f;
+  --j-olive-bg: rgba(90, 217, 143, 0.22);
+  --j-slate: #9ccdf7;
+  --j-slate-bg: rgba(95, 180, 245, 0.22);
+  --j-ochre: #f5b94a;
+  --j-ochre-bg: rgba(245, 185, 74, 0.22);
+  /* Glass tint for shared components (back tab, checklist) on this page */
+  --glass-tint: var(--unit1-rgb);
+  --tint-text: var(--unit1-text);
+
+  --j-font-display: var(--font-script);
+  --j-font-body: var(--font-ui);
+  --j-shadow-card: 0 16px 34px rgba(7, 14, 26, 0.5);
+  --j-motion: 1400ms cubic-bezier(0.22, 0.85, 0.25, 1);
+
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-bottom: 4rem;
+  background:
+    radial-gradient(120% 80% at 50% 0%, rgba(164, 108, 245, 0.1) 0%, transparent 55%),
+    linear-gradient(180deg, var(--navy-base) 0%, var(--navy-deepest) 100%);
+  background-attachment: fixed;
+  font-family: var(--j-font-body);
+  color: var(--j-ink);
+  -webkit-overflow-scrolling: touch;
+}
+
+/* --- Header ---------------------------------------------------- */
+
+.journal__header {
+  position: relative;
+  min-height: 9.25rem; /* 148px */
+}
+
+/* The shared back tab, tuned to the journal palette */
+.journal .back-tab {
+  top: 1.6rem;
+  left: 1.6rem;
+  background: var(--j-sticky);
+  box-shadow: 0 6px 14px rgba(7, 14, 26, 0.15);
+  transform: rotate(-1.5deg);
+  font-size: 1.25rem;
+  color: var(--j-ink);
+}
+
+.journal__plaque {
+  position: absolute;
+  left: 50%;
+  top: 1rem;
+  transform: translateX(-50%) rotate(-0.8deg);
+  background: var(--j-paper-2);
+  padding: 0.75rem 2.9rem 0.5rem;
+  border-radius: 14px 26px 16px 28px / 26px 14px 30px 16px;
+  box-shadow: 0 10px 24px rgba(7, 14, 26, 0.16);
+  text-align: center;
+  z-index: 2;
+}
+
+.journal__title {
+  font-family: var(--j-font-display);
+  font-weight: 700;
+  font-size: clamp(2.1rem, 3.9vw, 2.9rem);
+  letter-spacing: 2px;
+  line-height: 1;
+}
+
+.journal__subtitle {
+  font-family: var(--j-font-display);
+  font-size: clamp(1.05rem, 1.8vw, 1.4rem);
+  color: var(--j-khaki);
+}
+
+/* Name tag + round PDF badge, top right */
+.journal__id-cluster {
+  position: absolute;
+  right: 1.6rem;
+  top: 1.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  z-index: 3;
+}
+
+/* A lit chip, not a yellow sticky note: on deep water the label has to
+   sit *in* the glass, or it shouts louder than the page title. */
+.journal__nametag {
+  display: flex;
+  gap: 0.5rem;
+  align-items: baseline;
+  padding: 0.5rem 0.9rem;
+  border-radius: 10px;
+  background: rgba(20, 36, 60, 0.7);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 0 0 1px rgba(245, 185, 74, 0.35),
+    0 4px 10px rgba(7, 14, 26, 0.4);
+}
+
+.journal__nametag-caption {
+  font-size: 1.2rem;
+  color: var(--j-ochre);
+}
+
+.journal__nametag-input {
+  width: 7.5rem;
+  border: none;
+  border-bottom: 2px dotted var(--j-line);
+  background: transparent;
+  font-family: var(--j-font-display);
+  font-size: 1.25rem;
+  color: var(--j-ink);
+  padding: 0 2px 1px;
+}
+
+.journal__nametag-input:focus-visible {
+  outline: none;
+  border-bottom-color: var(--j-coral);
+}
+
+.journal__nametag-input--missing {
+  border-bottom-color: var(--j-coral-deep);
+  background: rgba(164, 108, 245, 0.12);
+}
+
+.journal__pdf-badge {
+  width: 3.6rem;
+  height: 3.6rem;
+  border-radius: 50%;
+  border: 2px solid var(--j-coral);
+  color: var(--j-coral);
+  font-family: var(--j-font-display);
+  font-weight: 700;
+  font-size: 1.35rem;
+  transform: rotate(7deg);
+  background: rgba(20, 36, 60, 0.7);
+  transition: transform var(--motion-micro);
+}
+
+.journal__pdf-badge:hover,
+.journal__pdf-badge:focus-visible {
+  transform: rotate(7deg) scale(1.1);
+}
+
+.journal__pdf-badge:active {
+  transform: rotate(7deg) scale(0.94);
+}
+
+.journal__pdf-hint {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 100%;
+  margin-top: 0.4rem;
+  font-family: var(--j-font-display);
+  font-size: 1.1rem;
+  color: var(--j-coral-deep);
+  white-space: nowrap;
+}
+
+.journal__pdf-hint--show {
+  display: block;
+}
+
+/* --- Section shells -------------------------------------------- */
+
+.journal__section {
+  position: relative;
+  margin-top: 2.75rem;
+}
+
+.journal__section:first-of-type {
+  margin-top: 0.5rem;
+}
+
+.journal__section-head {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0 2.9rem;
+}
+
+.journal__swatch {
+  padding: 0.3rem 1.25rem 0.25rem;
+  transform: rotate(-1.2deg) skewX(-4deg);
+  font-family: var(--j-font-display);
+  font-weight: 700;
+  font-size: 1.7rem;
+  box-shadow: 0 3px 8px rgba(7, 14, 26, 0.1);
+}
+
+.journal__swatch--teal { background: rgba(95, 180, 245, 0.2); color: var(--j-teal-deep); }
+.journal__swatch--coral { background: rgba(164, 108, 245, 0.22); color: var(--j-coral-deep); }
+.journal__swatch--olive { background: var(--j-olive-bg); color: var(--j-olive); }
+.journal__swatch--slate { background: var(--j-slate-bg); color: var(--j-slate); }
+.journal__swatch--ochre { background: var(--j-ochre-bg); color: var(--j-ochre); }
+
+.journal__section-sub {
+  font-size: 1.2rem;
+  color: var(--j-khaki);
+}
+
+/* --- Reading passage ------------------------------------------- */
+
+.journal-passage {
+  max-width: 56rem;
+  margin: 0 auto;
+  padding: 2rem 2.4rem 1.75rem;
+  background: var(--j-paper-2);
+  border: 1px solid rgba(126, 150, 176, 0.2);
+  border-radius: 18px 30px 20px 28px / 28px 18px 30px 20px;
+  box-shadow: var(--j-shadow-card);
+  transform: rotate(-0.3deg);
+}
+
+.journal-passage__title {
+  font-family: var(--j-font-display);
+  font-weight: 700;
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  color: var(--j-teal-deep);
+  margin-bottom: 0.6rem;
+}
+
+.journal-passage__para {
+  font-size: 1.15rem;
+  line-height: 1.6;
+  color: var(--j-ink);
+  margin-top: 0.7rem;
+}
+
+/* Illuminated drop cap on the opening paragraph */
+.journal-passage__para--lead::first-letter {
+  font-family: var(--j-font-display);
+  font-weight: 700;
+  font-size: 3.6rem;
+  line-height: 0.8;
+  float: left;
+  margin: 0.1rem 0.5rem 0 0;
+  color: var(--j-coral);
+}
+
+.journal-passage__subhead {
+  font-family: var(--j-font-display);
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: var(--j-olive);
+  margin-top: 1.4rem;
+}
+
+.journal-passage__tips {
+  list-style: none;
+  margin-top: 0.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  counter-reset: tip;
+}
+
+.journal-passage__tip {
+  display: flex;
+  gap: 0.85rem;
+  align-items: baseline;
+  font-size: 1.1rem;
+  line-height: 1.45;
+  color: var(--j-ink);
+}
+
+.journal-passage__tip-num {
+  counter-increment: tip;
+  flex: 0 0 auto;
+  width: 1.7rem;
+  height: 1.7rem;
+  border-radius: 50%;
+  background: rgba(164, 108, 245, 0.15);
+  color: var(--j-coral);
+  font-family: var(--j-font-display);
+  font-weight: 700;
+  font-size: 1.05rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: translateY(0.25rem);
+}
+
+.journal-passage__tip-num::before {
+  content: counter(tip);
+}
+
+/* --- Grammar guide (3 types + infographic) --------------------- */
+
+.grammar-guide {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 0 2.9rem;
+}
+
+.grammar-guide__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.grammar-guide__video {
+  margin: 0 auto;
+  width: 100%;
+  max-width: 56rem; /* ≈ native 854px — avoids upscaling blur and side bars */
+  background: var(--j-paper-2);
+  border: 1px solid rgba(126, 150, 176, 0.22);
+  border-radius: 16px;
+  padding: 0.5rem;
+  box-shadow: var(--j-shadow-card);
+}
+
+.grammar-guide__video video {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  border-radius: 12px;
+  display: block;
+  background: #000;
+}
+
+.grammar-guide__types {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+/* Full-width guide (no infographic): tile the reference cards in a grid */
+.grammar-guide__grid--full { grid-template-columns: 1fr; }
+.grammar-guide__grid--full .grammar-guide__types {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15.5rem, 1fr));
+  align-content: start;
+}
+
+.grammar-guide__type {
+  background: var(--j-paper-2);
+  border: 1px solid rgba(126, 150, 176, 0.22);
+  border-left-width: 6px;
+  border-radius: 12px 16px 12px 16px / 16px 12px 16px 12px;
+  padding: 0.85rem 1.1rem 0.95rem;
+  box-shadow: 0 8px 20px -14px rgba(7, 14, 26, 0.5);
+}
+
+.grammar-guide__type--olive { border-left-color: var(--j-olive); }
+.grammar-guide__type--ochre { border-left-color: var(--j-ochre); }
+.grammar-guide__type--coral { border-left-color: var(--j-coral); }
+.grammar-guide__type--teal { border-left-color: var(--j-teal); }
+.grammar-guide__type--slate { border-left-color: var(--j-slate); }
+.grammar-guide__type--violet { border-left-color: #a46cf5; }
+
+.grammar-guide__type-head {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  flex-wrap: wrap;
+}
+
+.grammar-guide__dot {
+  width: 0.8rem;
+  height: 0.8rem;
+  border-radius: 50%;
+  flex: 0 0 auto;
+}
+
+.grammar-guide__type--olive .grammar-guide__dot { background: var(--j-olive); }
+.grammar-guide__type--ochre .grammar-guide__dot { background: var(--j-ochre); }
+.grammar-guide__type--coral .grammar-guide__dot { background: var(--j-coral); }
+.grammar-guide__type--teal .grammar-guide__dot { background: var(--j-teal); }
+.grammar-guide__type--slate .grammar-guide__dot { background: var(--j-slate); }
+.grammar-guide__type--violet .grammar-guide__dot { background: #a46cf5; }
+
+.grammar-guide__type-name {
+  font-family: var(--j-font-display);
+  font-weight: 700;
+  font-size: 1.35rem;
+  color: var(--j-ink);
+}
+
+.grammar-guide__tag {
+  margin-left: auto;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 0.18rem 0.55rem;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.grammar-guide__type--olive .grammar-guide__tag { background: var(--j-olive-bg); color: var(--j-olive); }
+.grammar-guide__type--ochre .grammar-guide__tag { background: var(--j-ochre-bg); color: var(--j-ochre); }
+.grammar-guide__type--coral .grammar-guide__tag { background: rgba(164, 108, 245, 0.2); color: var(--j-coral-deep); }
+.grammar-guide__type--teal .grammar-guide__tag { background: rgba(95, 180, 245, 0.16); color: var(--j-teal); }
+.grammar-guide__type--slate .grammar-guide__tag { background: rgba(126, 150, 176, 0.16); color: var(--j-slate); }
+.grammar-guide__type--violet .grammar-guide__tag { background: rgba(164, 108, 245, 0.18); color: #c9a8ff; }
+
+.grammar-guide__formula {
+  font-family: var(--j-font-body);
+  font-size: 0.98rem;
+  color: var(--j-khaki);
+  margin-top: 0.4rem;
+}
+
+/* German meaning line with a small DE badge */
+.grammar-guide__de {
+  font-family: var(--j-font-body);
+  font-size: 0.98rem;
+  color: var(--j-khaki);
+  margin-top: 0.3rem;
+}
+.grammar-guide__de-badge {
+  display: inline-block;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  color: var(--j-slate);
+  background: rgba(126, 150, 176, 0.16);
+  border-radius: 5px;
+  padding: 0.05rem 0.35rem;
+  margin-right: 0.45rem;
+  vertical-align: 0.08em;
+}
+
+.grammar-guide__example {
+  font-family: var(--j-font-display);
+  font-size: 1.25rem;
+  color: var(--j-ink);
+  margin-top: 0.35rem;
+}
+
+.grammar-guide__figure {
+  margin: 0;
+  background: var(--j-paper-2);
+  border: 1px solid rgba(126, 150, 176, 0.22);
+  border-radius: 14px;
+  padding: 0.5rem;
+  box-shadow: var(--j-shadow-card);
+  transform: rotate(-0.4deg);
+}
+
+.grammar-guide__img {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  display: block;
+}
+
+.grammar-guide__caption {
+  font-family: var(--j-font-display);
+  font-size: 1.1rem;
+  color: var(--j-khaki);
+  text-align: center;
+  padding: 0.4rem 0.2rem 0.2rem;
+}
+
+/* --- 4-tenses revision table (optional guide block) ------------ */
+.grammar-guide__tenses {
+  margin-top: 1.1rem;
+  border: 1px solid rgba(126, 150, 176, 0.22);
+  border-radius: 14px;
+  background: var(--j-paper-2);
+  overflow: hidden;
+}
+.grammar-guide__tenses-cap {
+  font-family: var(--j-font-display);
+  font-size: 1.25rem;
+  color: var(--j-ink);
+  background: rgba(90, 217, 143, 0.14);
+  padding: 0.5rem 0.9rem;
+}
+.grammar-guide__tense {
+  display: grid;
+  grid-template-columns: 10rem 1fr 1fr;
+  gap: 0.5rem 1rem;
+  padding: 0.55rem 0.9rem;
+  border-top: 1px solid rgba(126, 150, 176, 0.18);
+  align-items: baseline;
+}
+.grammar-guide__tense-name {
+  font-weight: 700;
+  color: var(--j-slate);
+}
+.grammar-guide__tense-use {
+  color: var(--j-ink);
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+.grammar-guide__tense-ex {
+  font-family: var(--j-font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+.grammar-guide__tense-ex--olive { color: var(--j-olive); }
+.grammar-guide__tense-ex--ochre { color: #f5b94a; }
+.grammar-guide__tense-ex--coral { color: var(--j-coral-deep); }
+.grammar-guide__tense-ex--slate,
+.grammar-guide__tense-ex--progressive { color: #5fb4f5; }
+.grammar-guide__tense-sig {
+  font-style: italic;
+  color: var(--j-khaki);
+}
+@media (orientation: portrait) {
+  .grammar-guide__tense {
+    grid-template-columns: 1fr;
+    gap: 0.15rem;
+  }
+}
+
+/* --- Answer field on task cards -------------------------------- */
+
+.taskcard__answer {
+  margin-top: 0.9rem;
+  width: 100%;
+  resize: vertical;
+  background: rgba(255, 255, 255, 0.6);
+  border: none;
+  border-radius: 10px;
+  /* Ruled-notebook lines to invite writing */
+  background-image: repeating-linear-gradient(
+    transparent,
+    transparent 1.7rem,
+    rgba(126, 150, 176, 0.28) 1.7rem,
+    rgba(126, 150, 176, 0.28) calc(1.7rem + 1px)
+  );
+  padding: 0.4rem 0.8rem;
+  font-family: var(--j-font-display);
+  font-size: 1.3rem;
+  line-height: 1.75rem;
+  color: var(--j-ink);
+}
+
+.taskcard__answer::placeholder {
+  color: rgba(126, 150, 176, 0.45);
+}
+
+.taskcard__answer:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(164, 108, 245, 0.4);
+}
+
+/* Teaching video inside a task card (Writing "Email Survival Guide") */
+.taskcard__video {
+  margin: 0.3rem 0 0.4rem;
+}
+.taskcard__video video {
+  display: block;
+  width: 100%;
+  max-width: 46rem;
+  margin: 0 auto;
+  aspect-ratio: 16 / 9;
+  border-radius: 12px;
+  background: #000;
+  box-shadow: 0 10px 26px -16px rgba(7, 14, 26, 0.55);
+}
+.taskcard__video-cap {
+  margin-top: 0.5rem;
+  text-align: center;
+  font-family: var(--j-font-display);
+  font-size: 1.15rem;
+  color: var(--j-khaki);
+}
+
+/* Picture-description figure (Speaking) — a taped photo above the task */
+.taskcard__figure {
+  margin: 0.2rem 0 1rem;
+}
+.taskcard__figure-frame {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.55);
+  border: 6px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 8px 20px rgba(7, 14, 26, 0.16);
+  transform: rotate(-0.5deg);
+}
+.taskcard__figure-img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.taskcard__figure-frame--pending {
+  aspect-ratio: 16 / 10;
+  border-style: dashed;
+  border-color: rgba(126, 150, 176, 0.5);
+  background: repeating-linear-gradient(
+    45deg,
+    rgba(126, 150, 176, 0.18),
+    rgba(126, 150, 176, 0.18) 12px,
+    rgba(126, 150, 176, 0.32) 12px,
+    rgba(126, 150, 176, 0.32) 24px
+  );
+}
+.taskcard__figure-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  font-family: var(--j-font-display);
+  font-size: 1.35rem;
+  color: var(--j-khaki);
+}
+.taskcard__figure-placeholder span:first-child {
+  font-size: 2.4rem;
+}
+.taskcard__figure-cap {
+  margin-top: 0.5rem;
+  font-family: var(--j-font-display);
+  font-size: 1.15rem;
+  color: var(--j-khaki);
+  text-align: center;
+}
+
+/* Real vocabulary photo in the postcard stamp */
+.wordcard__stamp-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* LE reading text (Step 1, coral): larger A1 sentences, roomy line
+   spacing so the ten short sentences fill the whole card. */
+.taskcard--coral .exo-glossary {
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+/* Flowing A1 reading text — reads as a paragraph, not a list */
+.taskcard--coral .exo-glossary__para {
+  font-size: 1.35rem;
+  line-height: 1.85;
+  text-align: justify;
+}
+
+/* Highlighter text (grammar) stays compact even on a coral Step-1 card —
+   the big justified LE-reading style would stretch it out. */
+.taskcard--coral .exo-glossary--hl { gap: 0.5rem; margin-top: 0.7rem; }
+.taskcard--coral .exo-glossary--hl .exo-glossary__para {
+  font-size: 1.05rem;
+  line-height: 1.5;
+  text-align: left;
+}
+
+/* Sentence starters (five-sentence writing task) */
+.taskcard__starters {
+  margin-top: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.taskcard__starter {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.taskcard__starter-label {
+  font-family: var(--j-font-display);
+  font-size: 1.35rem;
+  color: var(--j-ink);
+  white-space: nowrap;
+}
+
+.taskcard__starter-input {
+  flex: 1;
+  min-width: 9rem;
+  font-family: var(--j-font-display);
+  font-size: 1.3rem;
+  color: var(--j-ink);
+  background: transparent;
+  border: none;
+  border-bottom: 2px dotted rgba(126, 150, 176, 0.5);
+  padding: 0 0.3rem 0.2rem;
+}
+
+.taskcard__starter-input:focus-visible {
+  outline: none;
+  border-bottom-color: var(--j-coral);
+}
+
+/* --- Portrait / narrow ------------------------------------------ */
+
+@media (orientation: portrait) {
+  .journal {
+    overflow-y: visible; /* the page itself scrolls in portrait */
+  }
+
+  .journal-passage {
+    margin: 0 1rem;
+    padding: 1.5rem 1.4rem;
+  }
+
+  .journal__header {
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.9rem;
+    padding-top: 4.6rem; /* room for the absolute back tab */
+  }
+
+  .journal__plaque {
+    position: static;
+    transform: rotate(-0.8deg);
+  }
+
+  .journal__id-cluster {
+    position: static;
+    justify-content: center;
+  }
+
+  .journal__pdf-hint {
+    top: auto;
+    right: auto;
+  }
+
+  .journal__section-head {
+    padding: 0 1.2rem;
+  }
+
+  .grammar-guide {
+    padding: 0 1.2rem;
+    gap: 1.1rem;
+  }
+
+  .grammar-guide__grid {
+    grid-template-columns: 1fr;
+    gap: 1.1rem;
+  }
+}

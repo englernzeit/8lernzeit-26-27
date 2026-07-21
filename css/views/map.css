@@ -1,0 +1,387 @@
+/* ============================================================
+   Homepage — the night island map.
+
+   The stage is the largest 3:2 box that fits the viewport, centred
+   on deep water. Everything inside is sized in `cqw` (container
+   query units), so the whole composition scales as one picture and
+   pins stay glued to their region of the plate at every size.
+   ============================================================ */
+
+.map-view {
+  display: grid;
+  place-items: center;
+  background: var(--navy-deepest);
+  overflow: hidden;
+}
+
+.map-stage {
+  container-type: inline-size;
+  position: relative;
+  /* Largest 3:2 box inside the viewport */
+  width: min(100vw, 150vh);
+  height: min(66.667vw, 100vh);
+  overflow: hidden;
+  background: var(--navy-deep);
+  font-family: var(--font-ui);
+  color: var(--text-body);
+}
+
+.map-stage__plate {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* Sinks the plate edges into the deep so the stage has no hard border */
+.map-stage__vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  background:
+    radial-gradient(115% 95% at 47% 44%, transparent 60%, rgba(7, 14, 26, 0.1) 100%),
+    radial-gradient(120% 100% at 50% 47%, transparent 55%,
+      rgba(7, 14, 26, 0.18) 78%, rgba(7, 14, 26, 0.32) 92%, rgba(7, 14, 26, 0.4) 100%);
+}
+
+/* Layer order over the plate */
+.map-pin { z-index: 4; }
+.unit-card { z-index: 5; }
+.map-hero,
+.map-plan,
+.map-quote,
+.map-compass { z-index: 6; }
+
+/* --- Hero lettering ------------------------------------------- */
+
+.map-hero {
+  position: absolute;
+  left: 3.2cqw;
+  top: 8cqw;
+  max-width: 26.4cqw;
+}
+
+.map-hero__kicker {
+  font: 400 2.4cqw/1.15 var(--font-display);
+  color: #d9d2ec;
+}
+
+.map-hero__title {
+  font: 600 4.6cqw/1.05 var(--font-display);
+  margin: 0.2cqw 0 1cqw;
+  background: linear-gradient(115deg,
+    var(--headline-from) 0%, var(--headline-mid) 45%, var(--headline-to) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.map-hero__grade {
+  font: 500 1.05cqw/1.4 var(--font-ui);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+/* --- Map pins -------------------------------------------------- */
+
+.map-pin {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  /* Anchor point is the stem tip */
+  transform: translate(-50%, -100%);
+  cursor: pointer;
+}
+
+.map-pin--u1 { --pin-color: var(--unit1); }
+.map-pin--u2 { --pin-color: var(--unit2); }
+.map-pin--u3 { --pin-color: var(--unit3); }
+.map-pin--u4 { --pin-color: var(--unit4); }
+
+.map-pin__body {
+  position: relative;
+  display: block;
+  width: 4.9cqw;
+  height: auto;
+  animation: pin-breath 3.2s ease-in-out infinite;
+  transition: transform var(--motion-micro);
+}
+
+/* Desync sibling pulses so the map feels alive, not mechanical */
+.map-pin--u2 .map-pin__body { animation-delay: 0.8s; }
+.map-pin--u3 .map-pin__body { animation-delay: 1.6s; }
+.map-pin--u4 .map-pin__body { animation-delay: 2.4s; }
+
+@keyframes pin-breath {
+  0%, 100% { filter: drop-shadow(0 0 8px color-mix(in srgb, var(--pin-color) 45%, transparent)); }
+  50%      { filter: drop-shadow(0 0 16px color-mix(in srgb, var(--pin-color) 70%, transparent)); }
+}
+
+/* Pool of light the pin casts on the ground */
+.map-pin__glow {
+  position: absolute;
+  left: 50%;
+  bottom: -0.7cqw;
+  width: 7cqw;
+  height: 2cqw;
+  transform: translateX(-50%);
+  pointer-events: none;
+  mix-blend-mode: screen;
+  animation: pool-breath 4.8s ease-in-out infinite;
+  background:
+    radial-gradient(ellipse 22% 30% at 50% 50%, rgba(255, 255, 255, 0.4) 0%, transparent 100%),
+    radial-gradient(ellipse 50% 55% at 50% 50%,
+      color-mix(in srgb, var(--pin-color) 55%, transparent) 0%,
+      color-mix(in srgb, var(--pin-color) 25%, transparent) 45%, transparent 72%),
+    radial-gradient(ellipse 100% 100% at 50% 50%,
+      color-mix(in srgb, var(--pin-color) 14%, transparent) 0%, transparent 70%);
+}
+
+@keyframes pool-breath {
+  0%, 100% { opacity: 0.85; transform: translateX(-50%) scale(1); }
+  50%      { opacity: 1;    transform: translateX(-50%) scale(1.06); }
+}
+
+/* Paired highlight: set by mapView when either half is hovered/focused */
+.map-pin.is-active .map-pin__body {
+  animation: none;
+  transform: translateY(-0.4cqw);
+  filter: drop-shadow(0 0 20px color-mix(in srgb, var(--pin-color) 85%, transparent));
+}
+
+.map-pin:focus-visible { outline: none; }
+.map-pin:focus-visible .map-pin__body {
+  outline: 2px solid var(--pin-color);
+  outline-offset: 4px;
+  border-radius: 50%;
+}
+
+/* --- Glass unit cards ------------------------------------------ */
+
+.unit-card {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  /* 232px on the 1440px reference stage — wider than this and a card
+     starts covering its own pin */
+  width: 16.1cqw;
+  padding: 1.5cqw 1.8cqw;
+  border-radius: 1.25cqw;
+  cursor: pointer;
+  color: var(--text-body);
+  background: var(--glass-fill);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow:
+    var(--glass-edge),
+    0 0 0 1px rgba(var(--glass-tint), 0.28),
+    var(--shadow-lift-2);
+  transition: transform var(--motion-micro), box-shadow var(--motion-micro);
+}
+
+@supports not (backdrop-filter: blur(1px)) {
+  .unit-card { background: rgba(13, 21, 38, 0.88); }
+}
+
+.unit-card--u1 { --glass-tint: var(--unit1-rgb); --tint-text: var(--unit1-text); }
+.unit-card--u2 { --glass-tint: var(--unit2-rgb); --tint-text: var(--unit2-text); }
+.unit-card--u3 { --glass-tint: var(--unit3-rgb); --tint-text: var(--unit3-text); }
+.unit-card--u4 { --glass-tint: var(--unit4-rgb); --tint-text: var(--unit4-text); }
+
+.unit-card.is-active,
+.unit-card:focus-visible {
+  outline: none;
+  transform: translateY(-3px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    0 0 0 2px rgba(var(--glass-tint), 0.75),
+    var(--glow-strong),
+    var(--shadow-lift-3);
+}
+
+.unit-card__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.unit-card__label {
+  font: 500 0.9cqw/1 var(--font-ui);
+  letter-spacing: 0.04em;
+  color: var(--tint-text);
+}
+
+/* Masked so the line art picks up the unit tint */
+.unit-card__icon {
+  width: 2.9cqw;
+  height: 2.9cqw;
+  opacity: 0.8;
+  background: var(--tint-text);
+  -webkit-mask: var(--icon) no-repeat center / contain;
+  mask: var(--icon) no-repeat center / contain;
+}
+
+.unit-card__title {
+  font: 600 1.67cqw/1.2 var(--font-display);
+  margin: 0.7cqw 0 1cqw;
+  color: var(--text-bright);
+}
+
+.unit-card__rule {
+  border: 0;
+  height: 1px;
+  width: 56%;
+  margin: 0 0 1cqw;
+  background: linear-gradient(90deg,
+    rgba(var(--glass-tint), 0.55), rgba(var(--glass-tint), 0.08) 70%, transparent);
+}
+
+.unit-card__desc {
+  font: 400 1cqw/1.55 var(--font-ui);
+  color: rgba(231, 236, 244, 0.82);
+}
+
+/* --- Handwritten quote ----------------------------------------- */
+
+.map-quote {
+  position: absolute;
+  left: 33%;
+  bottom: 4.5cqw;
+  text-align: center;
+  font: 500 1.8cqw/1.35 var(--font-script);
+  color: var(--headline-from);
+  text-shadow: 0 2px 12px rgba(7, 14, 26, 0.6);
+  pointer-events: none;
+}
+
+.map-quote img {
+  display: block;
+  margin: 0.3cqw auto 0;
+  width: 12.5cqw;
+  opacity: 0.85;
+}
+
+/* --- Today's Plan glass panel ---------------------------------- */
+
+.map-plan {
+  position: absolute;
+  left: 3.2cqw;
+  bottom: 4cqw;
+  width: 20cqw;
+  padding: 1.4cqw 1.6cqw;
+  border-radius: 1.25cqw;
+  --glass-tint: var(--unit1-rgb);
+  background: var(--glass-fill);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow:
+    var(--glass-edge),
+    0 0 0 1px rgba(var(--glass-tint), 0.22),
+    var(--shadow-lift-2);
+}
+
+@supports not (backdrop-filter: blur(1px)) {
+  .map-plan { background: rgba(13, 21, 38, 0.9); }
+}
+
+.map-plan__title {
+  font: 600 1.25cqw/1.25 var(--font-display);
+  color: var(--text-bright);
+  margin-bottom: 0.8cqw;
+}
+
+.map-plan .checklist {
+  gap: 0.55cqw;
+  justify-content: flex-start;
+}
+
+.map-plan .checklist__label {
+  font: 400 0.95cqw/1.3 var(--font-ui);
+}
+
+/* --- Compass rose ---------------------------------------------- */
+
+.map-compass {
+  position: absolute;
+  right: 2.5cqw;
+  bottom: 3cqw;
+  width: 6.7cqw;
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+/* ============================================================
+   Portrait (phone, vertical iPad): the composition can't hold, so
+   the plate becomes a banner and the units stack as a list.
+   ============================================================ */
+
+@media (orientation: portrait) {
+  .map-view {
+    display: block;
+    overflow: visible;
+  }
+
+  .map-stage {
+    width: 100%;
+    height: auto;
+    padding-bottom: 2rem;
+  }
+
+  .map-stage__plate {
+    position: relative;
+    height: auto;
+    aspect-ratio: 3 / 2;
+  }
+
+  .map-stage__vignette { display: none; }
+
+  /* Pins have no plate to stand on once the layout reflows */
+  .map-pin { display: none; }
+
+  .map-hero {
+    position: static;
+    max-width: none;
+    padding: 1.5rem 1.25rem 0;
+  }
+  .map-hero__kicker { font-size: 1.35rem; }
+  .map-hero__title { font-size: 2.5rem; }
+  .map-hero__grade { font-size: 0.75rem; }
+
+  .unit-card {
+    position: static;
+    width: auto;
+    margin: 1rem 1.25rem 0;
+    padding: 1.1rem 1.25rem;
+    border-radius: 16px;
+  }
+  .unit-card__label { font-size: 0.8rem; }
+  .unit-card__icon { width: 2rem; height: 2rem; }
+  .unit-card__title { font-size: 1.3rem; margin: 0.5rem 0 0.7rem; }
+  .unit-card__rule { margin-bottom: 0.7rem; }
+  .unit-card__desc { font-size: 0.9rem; }
+
+  .map-plan {
+    position: static;
+    width: auto;
+    margin: 1.5rem 1.25rem 0;
+    padding: 1.1rem 1.25rem;
+    border-radius: 16px;
+  }
+  .map-plan__title { font-size: 1.1rem; margin-bottom: 0.6rem; }
+  .map-plan .checklist { gap: 0.5rem; }
+  .map-plan .checklist__label { font-size: 0.95rem; }
+
+  .map-quote {
+    position: static;
+    margin-top: 1.5rem;
+    font-size: 1.25rem;
+  }
+  .map-quote img { width: 9rem; }
+
+  .map-compass { display: none; }
+}

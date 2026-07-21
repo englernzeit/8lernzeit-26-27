@@ -1,0 +1,17 @@
+/* ============================================================
+   Webfonts (DS §13).
+
+   Playfair Display (display) and Inter (UI) are requested in
+   index.html. Caveat — the handwritten voice — is bundled locally
+   so the map quote and unit taglines render in the right hand even
+   before the CDN answers.
+   ============================================================ */
+
+/* Caveat (variable, latin subset) — one file covers 400–700 */
+@font-face {
+  font-family: "Caveat";
+  src: url("../assets/fonts/caveat.woff2") format("woff2");
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}

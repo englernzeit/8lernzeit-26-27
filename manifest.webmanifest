@@ -1,0 +1,22 @@
+{
+  "name": "English Adventure",
+  "short_name": "Adventure",
+  "description": "English learning night map — Lernzeit 26/27, Klasse 8",
+  "start_url": ".",
+  "display": "fullscreen",
+  "orientation": "any",
+  "background_color": "#070e1a",
+  "theme_color": "#070e1a",
+  "icons": [
+    {
+      "src": "assets/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
