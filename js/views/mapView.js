@@ -9,11 +9,12 @@
  * Landscape keeps the authored 3:2 composition (positions come from
  * `pinPos` / `cardPos` in js/data/units.js). Portrait drops the
  * absolute layout: the plate becomes a banner and the cards stack.
+ *
+ * The map deliberately carries no panel furniture beyond the hero and
+ * the quote — the island itself has to stay readable.
  */
 
 import { UNITS } from "../data/units.js";
-import { TODAYS_PLAN } from "../data/todaysPlan.js";
-import { createChecklist } from "../components/checklist.js";
 
 /** @param {HTMLElement} root */
 export function renderMapView(root) {
@@ -44,7 +45,6 @@ export function renderMapView(root) {
     `<section class="map-hero">
        <p class="map-hero__kicker">Choose your</p>
        <h1 class="map-hero__title">English<br>Adventure</h1>
-       <p class="map-hero__grade">Lernzeit 26/27 · Klasse 8</p>
      </section>`
   );
 
@@ -56,7 +56,7 @@ export function renderMapView(root) {
     stage.append(pin, card);
   }
 
-  // --- Handwritten map quote ---
+  // --- Handwritten map quote (bottom-left, under the hero) ---
   stage.insertAdjacentHTML(
     "beforeend",
     `<p class="map-quote">
@@ -64,9 +64,6 @@ export function renderMapView(root) {
        <img src="assets/svg/typ-005-squiggle.svg" alt="" draggable="false">
      </p>`
   );
-
-  // --- Today's Plan (glass panel, bottom-left) ---
-  stage.appendChild(buildPlanPanel());
 
   // --- Compass rose ---
   const compass = document.createElement("img");
@@ -173,17 +170,4 @@ function linkPair(unit, pin, card) {
     el.addEventListener("focus", () => setActive(true));
     el.addEventListener("blur", () => setActive(false));
   }
-}
-
-/** Today's Plan — the one thing that persists (spec). */
-function buildPlanPanel() {
-  const panel = document.createElement("aside");
-  panel.className = "map-plan";
-
-  const title = document.createElement("h2");
-  title.className = "map-plan__title";
-  title.textContent = "Today's Plan";
-
-  panel.append(title, createChecklist(TODAYS_PLAN));
-  return panel;
 }

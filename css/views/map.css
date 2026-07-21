@@ -52,7 +52,6 @@
 .map-pin { z-index: 4; }
 .unit-card { z-index: 5; }
 .map-hero,
-.map-plan,
 .map-quote,
 .map-compass { z-index: 6; }
 
@@ -72,19 +71,12 @@
 
 .map-hero__title {
   font: 600 4.6cqw/1.05 var(--font-display);
-  margin: 0.2cqw 0 1cqw;
+  margin: 0.2cqw 0 0;
   background: linear-gradient(115deg,
     var(--headline-from) 0%, var(--headline-mid) 45%, var(--headline-to) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-}
-
-.map-hero__grade {
-  font: 500 1.05cqw/1.4 var(--font-ui);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--text-dim);
 }
 
 /* --- Map pins -------------------------------------------------- */
@@ -167,11 +159,11 @@
   position: absolute;
   left: var(--x);
   top: var(--y);
-  /* 232px on the 1440px reference stage — wider than this and a card
-     starts covering its own pin */
-  width: 16.1cqw;
-  padding: 1.5cqw 1.8cqw;
-  border-radius: 1.25cqw;
+  /* Kept deliberately small: the island is the subject, the cards are
+     labels on it. Every inner size below is tuned to this width. */
+  width: 13.2cqw;
+  padding: 1.15cqw 1.35cqw;
+  border-radius: 1.1cqw;
   cursor: pointer;
   color: var(--text-body);
   background: var(--glass-fill);
@@ -211,15 +203,16 @@
 }
 
 .unit-card__label {
-  font: 500 0.9cqw/1 var(--font-ui);
+  font: 500 0.78cqw/1 var(--font-ui);
   letter-spacing: 0.04em;
   color: var(--tint-text);
 }
 
 /* Masked so the line art picks up the unit tint */
 .unit-card__icon {
-  width: 2.9cqw;
-  height: 2.9cqw;
+  width: 2.3cqw;
+  height: 2.3cqw;
+  flex: none;
   opacity: 0.8;
   background: var(--tint-text);
   -webkit-mask: var(--icon) no-repeat center / contain;
@@ -227,8 +220,8 @@
 }
 
 .unit-card__title {
-  font: 600 1.67cqw/1.2 var(--font-display);
-  margin: 0.7cqw 0 1cqw;
+  font: 600 1.4cqw/1.2 var(--font-display);
+  margin: 0.55cqw 0 0.75cqw;
   color: var(--text-bright);
 }
 
@@ -236,23 +229,25 @@
   border: 0;
   height: 1px;
   width: 56%;
-  margin: 0 0 1cqw;
+  margin: 0 0 0.75cqw;
   background: linear-gradient(90deg,
     rgba(var(--glass-tint), 0.55), rgba(var(--glass-tint), 0.08) 70%, transparent);
 }
 
 .unit-card__desc {
-  font: 400 1cqw/1.55 var(--font-ui);
+  font: 400 0.85cqw/1.5 var(--font-ui);
   color: rgba(231, 236, 244, 0.82);
 }
 
-/* --- Handwritten quote ----------------------------------------- */
+/* --- Handwritten quote ------------------------------------------
+   Bottom-left, under the hero: the two pieces of lettering stack in
+   the same column of open water, leaving the island uncovered. */
 
 .map-quote {
   position: absolute;
-  left: 33%;
+  left: 3.2cqw;
   bottom: 4.5cqw;
-  text-align: center;
+  max-width: 26cqw;
   font: 500 1.8cqw/1.35 var(--font-script);
   color: var(--headline-from);
   text-shadow: 0 2px 12px rgba(7, 14, 26, 0.6);
@@ -261,47 +256,9 @@
 
 .map-quote img {
   display: block;
-  margin: 0.3cqw auto 0;
+  margin: 0.3cqw 0 0;
   width: 12.5cqw;
   opacity: 0.85;
-}
-
-/* --- Today's Plan glass panel ---------------------------------- */
-
-.map-plan {
-  position: absolute;
-  left: 3.2cqw;
-  bottom: 4cqw;
-  width: 20cqw;
-  padding: 1.4cqw 1.6cqw;
-  border-radius: 1.25cqw;
-  --glass-tint: var(--unit1-rgb);
-  background: var(--glass-fill);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  box-shadow:
-    var(--glass-edge),
-    0 0 0 1px rgba(var(--glass-tint), 0.22),
-    var(--shadow-lift-2);
-}
-
-@supports not (backdrop-filter: blur(1px)) {
-  .map-plan { background: rgba(13, 21, 38, 0.9); }
-}
-
-.map-plan__title {
-  font: 600 1.25cqw/1.25 var(--font-display);
-  color: var(--text-bright);
-  margin-bottom: 0.8cqw;
-}
-
-.map-plan .checklist {
-  gap: 0.55cqw;
-  justify-content: flex-start;
-}
-
-.map-plan .checklist__label {
-  font: 400 0.95cqw/1.3 var(--font-ui);
 }
 
 /* --- Compass rose ---------------------------------------------- */
@@ -350,7 +307,6 @@
   }
   .map-hero__kicker { font-size: 1.35rem; }
   .map-hero__title { font-size: 2.5rem; }
-  .map-hero__grade { font-size: 0.75rem; }
 
   .unit-card {
     position: static;
@@ -365,20 +321,11 @@
   .unit-card__rule { margin-bottom: 0.7rem; }
   .unit-card__desc { font-size: 0.9rem; }
 
-  .map-plan {
-    position: static;
-    width: auto;
-    margin: 1.5rem 1.25rem 0;
-    padding: 1.1rem 1.25rem;
-    border-radius: 16px;
-  }
-  .map-plan__title { font-size: 1.1rem; margin-bottom: 0.6rem; }
-  .map-plan .checklist { gap: 0.5rem; }
-  .map-plan .checklist__label { font-size: 0.95rem; }
-
   .map-quote {
     position: static;
-    margin-top: 1.5rem;
+    max-width: none;
+    margin-top: 1.75rem;
+    padding: 0 1.25rem;
     font-size: 1.25rem;
   }
   .map-quote img { width: 9rem; }

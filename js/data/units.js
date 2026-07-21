@@ -9,10 +9,12 @@
  *   3  On the road to California   — coastal highway, west shore
  *   4  Stories from the Deep South — bayou, south-east swamp
  *
- * `pin` is where the glowing map pin's stem tip sits (% of the stage);
- * `card` is the top-left of its glass info card. Both are authored
- * against the plate art — move them together or the pin/card pair
- * drifts off its region.
+ * `pinPos` is where the glowing map pin's stem tip sits (% of the stage);
+ * `cardPos` is the top-left of its glass info card. Both are authored
+ * against the plate art — move them together or the pin/card pair drifts
+ * off its region. Two standing rules when re-positioning: a card must
+ * never cover its own pin, and unit 2's card sits to the *right* of
+ * pin 2. Re-check any change at 1440×960.
  *
  * All four units are working shells (spec: build-in-stages rule).
  * `sections` are the 7 competence pages of a unit; they render the
@@ -40,7 +42,7 @@ export const UNITS = [
     icon: "assets/svg/ico-002-skyline.svg",
     pin: "assets/svg/pin-01.svg",
     pinPos: { x: 29.5, y: 33 },
-    cardPos: { x: 31.7, y: 11.7 },
+    cardPos: { x: 37.0, y: 8.0 },
     sections: competenceSections(),
   },
   {
@@ -52,7 +54,7 @@ export const UNITS = [
     icon: "assets/svg/ico-003-school.svg",
     pin: "assets/svg/pin-02.svg",
     pinPos: { x: 70, y: 23 },
-    cardPos: { x: 61.9, y: 24.9 },
+    cardPos: { x: 73.5, y: 19.0 },
     sections: competenceSections(),
   },
   {
