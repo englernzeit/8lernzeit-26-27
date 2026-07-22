@@ -469,27 +469,41 @@ export default {
       ],
     },
 
-    /* ================= STEP 4 — Check-out ================= */
+    /* ================= STEP 4 — ★ Challenge mini-project ================= */
     {
       step: 4,
-      subtitle: "Check-out · Selbstcheck",
+      subtitle: "Mini-project · about 10 minutes",
       accent: "ochre",
+      challenge: true,
       layout: "single",
       cards: [
         {
-          type: "written",
-          kind: "Selbstcheck",
-          title: "Can I do it?",
-          intro: "Tick each box you can honestly check. Anything unticked is your revision list.",
-          checklist: true,
-          lines: [
-            "I can name the three tenses and one signal word for each.",
-            "I know the form of each tense (verb+-s · am/is/are+-ing · verb+-ed / 2nd form).",
-            "I can choose the right tense from the signal word in a sentence.",
-            "I can spot and fix a verb that is in the wrong tense.",
-            "I can write about myself using all three tenses correctly.",
+          type: "comic-strip",
+          kind: "Kreativ-Projekt",
+          title: "My New York Minute — a 3-frame story",
+          intro:
+            "Make a tiny photo-story about your day in New York. Each frame is locked to one tense: picture the scene, write a speech bubble and a caption. Your bubbles appear inside the frames as you type — then hit the PDF button to take your comic home.",
+          panels: [
+            {
+              n: 1,
+              prompt: "① Yesterday — Simple Past. Something happened.",
+              bubblePlaceholder: "💬 “I saw …!”",
+              capPlaceholder: "Yesterday I … (verb + -ed, or 2nd form: see → saw)",
+            },
+            {
+              n: 2,
+              prompt: "② Right now — Present Progressive. The live moment.",
+              bubblePlaceholder: "💬 “Look — I am …!”",
+              capPlaceholder: "Right now I am … (am / is / are + verb + -ing)",
+            },
+            {
+              n: 3,
+              prompt: "③ Every day — Simple Present. Your New York routine.",
+              bubblePlaceholder: "💬 “I always …”",
+              capPlaceholder: "Every day I … (verb, + -s for he / she / it)",
+            },
           ],
-          help: "Green pen = Simple Present · Blue pen = Present Progressive · Amber pen = Simple Past.",
+          help: "★ Bonus: make the three frames tell ONE connected story — a mini New York adventure from yesterday, to right now, to every day.",
         },
       ],
     },

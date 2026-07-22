@@ -364,7 +364,7 @@
   align-content: flex-start;
   gap: 0.5rem;
   padding: 0.6rem;
-  background: rgba(255, 255, 255, 0.4);
+  background: var(--j-field);
   border: 2px solid rgba(126, 150, 176, 0.3);
   border-radius: 12px;
 }
@@ -447,7 +447,7 @@
 }
 
 .exo-gap__item {
-  background: rgba(255, 255, 255, 0.45);
+  background: var(--j-panel);
   border: 1.5px solid rgba(126, 150, 176, 0.22);
   border-radius: 12px;
   padding: 0.7rem 0.9rem;
@@ -499,7 +499,7 @@
   margin-top: 0.4rem;
   font-family: var(--j-font-display);
   font-size: 1.05rem;
-  color: var(--j-khaki);
+  color: var(--j-secondary);
 }
 
 /* --- Audio player ----------------------------------------------- */
@@ -649,7 +649,7 @@
   display: flex;
   align-items: center;
   gap: 0.8rem;
-  background: rgba(255, 255, 255, 0.45);
+  background: var(--j-panel);
   border: 1.5px solid rgba(126, 150, 176, 0.22);
   border-radius: 12px;
   padding: 0.5rem 0.7rem;
@@ -822,7 +822,7 @@
   font-family: var(--j-font-body);
   font-size: 1.05rem;
   color: var(--j-ink);
-  background: rgba(255, 255, 255, 0.6);
+  background: var(--j-field);
   border: 1.5px solid rgba(126, 150, 176, 0.3);
   border-radius: 10px;
   padding: 0.55rem 0.8rem;
@@ -919,7 +919,7 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
 
 .exo-phrases__sec {
   border-left: 5px solid var(--j-khaki);
-  background: rgba(255, 255, 255, 0.4);
+  background: var(--j-panel);
   border-radius: 0 12px 12px 0;
   padding: 0.6rem 0.9rem;
 }
@@ -954,7 +954,7 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
   display: flex;
   align-items: center;
   gap: 0.9rem;
-  background: rgba(255, 255, 255, 0.45);
+  background: var(--j-panel);
   border: 1.5px solid rgba(126, 150, 176, 0.22);
   border-radius: 12px;
   padding: 0.5rem 0.8rem;
@@ -1077,7 +1077,7 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
   display: flex;
   align-items: flex-start;
   gap: 0.7rem;
-  background: rgba(255, 255, 255, 0.45);
+  background: var(--j-panel);
   border: 1.5px solid rgba(126, 150, 176, 0.2);
   border-radius: 12px;
   padding: 0.6rem 0.8rem;
@@ -1121,7 +1121,7 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
 }
 
 .exo-para__row {
-  background: rgba(255, 255, 255, 0.5);
+  background: var(--j-panel);
   border: 1.5px solid rgba(126, 150, 176, 0.2);
   border-radius: 12px;
   padding: 0.7rem 0.9rem;
@@ -1210,7 +1210,7 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
   font-size: 1.3rem;
   line-height: 1.7;
   color: var(--j-ink);
-  background: rgba(255, 255, 255, 0.6);
+  background: var(--j-field);
   border: 1.5px solid rgba(126, 150, 176, 0.3);
   border-radius: 12px;
   padding: 0.7rem 0.9rem;
@@ -1281,7 +1281,7 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
   font-size: 0.85rem;
   font-weight: 500;
   color: var(--j-slate);
-  background: rgba(255, 255, 255, 0.62);
+  background: var(--j-panel);
   border: 1px solid rgba(126, 150, 176, 0.28);
   border-radius: 9px;
   padding: 0.35rem 0.7rem;
@@ -1552,7 +1552,7 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
   font-family: var(--j-font-body);
   font-size: 1.05rem;
   color: var(--j-ink);
-  background: rgba(255, 255, 255, 0.6);
+  background: var(--j-field);
   border: 1.5px solid rgba(126, 150, 176, 0.3);
   border-radius: 9px;
   padding: 0.4rem 0.7rem;
@@ -1794,7 +1794,7 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
 .exo-email__label { display: block; margin-bottom: 0.3rem; }
 .exo-email__input {
   width: 100%;
-  background: rgba(255, 255, 255, 0.72);
+  background: var(--j-field);
   border: 1.5px solid rgba(126, 150, 176, 0.3);
   border-radius: 10px;
   padding: 0.55rem 0.7rem;
@@ -2156,7 +2156,7 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
 .exo-spot__input {
   font-family: var(--j-font-body);
   font-size: 1.15rem;
-  color: var(--j-coral-deep);
+  color: var(--j-ink);
   background: #14243c;
   border: none;
   border-bottom: 2px solid var(--j-coral);

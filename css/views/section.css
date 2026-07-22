@@ -17,6 +17,12 @@
   --j-paper-2: #16273f;
   --j-paper-3: #12203a;
   --j-sticky: #1c3050;
+  /* Inner surfaces on a dark card (DESIGN-SYSTEM.md §5). Both keep light
+     text high-contrast — never re-introduce a light (white-alpha) fill:
+     --j-panel  raised grouping rows (gap items, sort bins, match rows …)
+     --j-field  recessed text-input wells (answer, essay, email …) */
+  --j-panel: rgba(255, 255, 255, 0.055);
+  --j-field: rgba(7, 14, 26, 0.4);
   --j-coral: #a46cf5;
   --j-coral-deep: #7b3fe4;
   --j-teal: #5fb4f5;
@@ -220,6 +226,48 @@
 .journal__section-sub {
   font-size: 1.2rem;
   color: var(--j-khaki);
+}
+
+/* --- Step 4: the starred challenge (bonus 10-min mini-project) --- */
+.journal__swatch-star {
+  margin-right: 0.45rem;
+  color: var(--j-ochre);
+  text-shadow: 0 0 12px rgba(245, 185, 74, 0.6);
+}
+
+.journal__section--challenge .journal__swatch--ochre {
+  background: rgba(245, 185, 74, 0.28);
+  box-shadow: 0 3px 8px rgba(7, 14, 26, 0.1), 0 0 22px rgba(245, 185, 74, 0.25);
+}
+
+.journal__section--challenge .journal__section-sub {
+  color: var(--j-ochre);
+}
+
+/* The challenge card wears a warm gold rim + glow so it reads as a bonus. */
+.journal__section--challenge .taskcard--sheet {
+  border-color: rgba(245, 185, 74, 0.55);
+  background:
+    radial-gradient(130% 100% at 100% 0%, rgba(245, 185, 74, 0.1), transparent 55%),
+    var(--j-paper-1);
+  box-shadow:
+    0 0 0 1px rgba(245, 185, 74, 0.35),
+    0 16px 40px rgba(7, 14, 26, 0.5),
+    0 0 44px rgba(245, 185, 74, 0.12);
+}
+
+/* A 3-frame comic reads across on the wide single challenge card. */
+.journal__section--challenge .exo-comic__grid {
+  grid-template-columns: repeat(3, 1fr);
+}
+.journal__section--challenge .exo-comic__prompt {
+  color: var(--j-ochre);
+}
+
+@media (orientation: portrait) {
+  .journal__section--challenge .exo-comic__grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* --- Reading passage ------------------------------------------- */
@@ -539,7 +587,7 @@
   margin-top: 0.9rem;
   width: 100%;
   resize: vertical;
-  background: rgba(255, 255, 255, 0.6);
+  background: var(--j-field);
   border: none;
   border-radius: 10px;
   /* Ruled-notebook lines to invite writing */
@@ -595,7 +643,7 @@
   position: relative;
   border-radius: 12px;
   overflow: hidden;
-  background: rgba(255, 255, 255, 0.55);
+  background: var(--j-field);
   border: 6px solid rgba(255, 255, 255, 0.14);
   box-shadow: 0 8px 20px rgba(7, 14, 26, 0.16);
   transform: rotate(-0.5deg);

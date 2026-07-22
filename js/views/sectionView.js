@@ -687,7 +687,11 @@ function wordMasterCourses(content) {
  * @param {{unitId: string, sectionId: string}} ctx
  */
 function buildStepSection(step, ctx) {
-  const section = sectionShell(step.accent, `Step ${step.step}`, step.subtitle);
+  // Step 4 is, by convention, the starred "challenge" — an extra creative
+  // mini-project. `challenge: true` gives it the gold star treatment.
+  const section = sectionShell(step.accent, `Step ${step.step}`, step.subtitle, {
+    challenge: step.challenge,
+  });
 
   // Task numbering skips text/game cards so writing tasks read 1, 2, 3…
   let taskNo = 0;
@@ -1216,21 +1220,31 @@ function normalizeParagraphs(paragraphs) {
 /* ================= shared chrome ================================ */
 
 /**
- * Section shell: skewed label swatch + khaki subtitle.
+ * Section shell: skewed label swatch + subtitle. When `challenge` is set
+ * the section gets the gold star treatment (Step 4 bonus mini-project).
  * @param {string} accent
  * @param {string} label
  * @param {string} subtitle
+ * @param {{ challenge?: boolean }} [opts]
  */
-function sectionShell(accent, label, subtitle) {
+function sectionShell(accent, label, subtitle, { challenge = false } = {}) {
   const section = document.createElement("section");
-  section.className = "journal__section";
+  section.className = "journal__section" + (challenge ? " journal__section--challenge" : "");
 
   const head = document.createElement("div");
   head.className = "journal__section-head";
 
   const swatch = document.createElement("span");
   swatch.className = `journal__swatch journal__swatch--${accent}`;
-  swatch.textContent = label;
+  if (challenge) {
+    const star = document.createElement("span");
+    star.className = "journal__swatch-star";
+    star.textContent = "★";
+    star.setAttribute("aria-hidden", "true");
+    swatch.append(star, document.createTextNode(label));
+  } else {
+    swatch.textContent = label;
+  }
 
   const sub = document.createElement("span");
   sub.className = "journal__section-sub";
