@@ -2948,3 +2948,100 @@ export function createComicSpeech({ panels, base, values, keyFor, onChange }) {
 
   return wrap;
 }
+
+/* ================= Story Machine (Mad-Libs) =====================
+ * A play toy, not a writing task: the learner fills a handful of
+ * single-word blanks (each one cueing a word type or tense) and a
+ * silly story writes itself live above the inputs, with their words
+ * dropped in and highlighted. No right/wrong — it just has to be fun.
+ * Every blank is saved and goes to the PDF. Used for a Step-4 star.
+ * ============================================================ */
+
+/**
+ * @param {{
+ *   template: Array<string | { blank: string }>,
+ *   blanks: Array<{ key: string, label: string, placeholder?: string, ing?: boolean }>,
+ *   values: Record<string,string>,
+ *   keyFor: (key: string) => string,
+ *   onChange: (key: string, value: string) => void,
+ * }} opts
+ */
+export function createStoryMaker({ template, blanks, values, keyFor, onChange }) {
+  const wrap = document.createElement("div");
+  wrap.className = "exo exo-story";
+
+  const state = {};
+  blanks.forEach((b) => (state[b.key] = values?.[b.key] ?? ""));
+
+  // --- Live story card: re-rendered on every keystroke ---
+  const story = document.createElement("p");
+  story.className = "exo-story__out";
+  const label = Object.fromEntries(blanks.map((b) => [b.key, b.label]));
+
+  const paintStory = () => {
+    story.textContent = "";
+    for (const seg of template) {
+      if (typeof seg === "string") {
+        story.appendChild(document.createTextNode(seg));
+      } else {
+        const v = state[seg.blank]?.trim();
+        const slot = document.createElement("span");
+        slot.className = v ? "exo-story__word" : "exo-story__gap";
+        slot.textContent = v || label[seg.blank] || "…";
+        story.appendChild(slot);
+      }
+    }
+  };
+
+  // --- Input grid ---
+  const grid = document.createElement("div");
+  grid.className = "exo-story__grid";
+
+  blanks.forEach((b, i) => {
+    const field = document.createElement("label");
+    field.className = "exo-story__field";
+
+    const cap = document.createElement("span");
+    cap.className = "exo-story__cap";
+    cap.innerHTML = `<span class="exo-story__n">${i + 1}</span>${b.label}`;
+
+    const input = document.createElement("input");
+    input.type = "text";
+    input.className = "exo-story__input";
+    input.placeholder = b.placeholder ?? "";
+    input.autocomplete = "off";
+    input.value = state[b.key];
+    input.dataset.answerKey = keyFor(b.key);
+
+    // Gentle live nudge for the "+ -ing" blank — never blocks, just hints.
+    const nudge = document.createElement("span");
+    nudge.className = "exo-story__nudge";
+    const paintNudge = () => {
+      if (!b.ing) return;
+      const v = input.value.trim();
+      const ok = /ing$/i.test(v);
+      nudge.textContent = !v ? "" : ok ? "✓" : "+ -ing!";
+      nudge.dataset.ok = String(ok);
+    };
+
+    input.addEventListener("input", () => {
+      state[b.key] = input.value;
+      onChange(b.key, input.value);
+      paintStory();
+      paintNudge();
+    });
+
+    field.append(cap, input, nudge);
+    grid.appendChild(field);
+    paintNudge();
+  });
+
+  const head = document.createElement("div");
+  head.className = "exo-story__head";
+  head.innerHTML =
+    '<span class="exo-story__badge">📮 Breaking news from New York</span>';
+
+  wrap.append(head, story, grid);
+  paintStory();
+  return wrap;
+}

@@ -2894,3 +2894,119 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
     grid-template-columns: 1fr;
   }
 }
+
+/* ================= Story Machine (Mad-Libs, Step-4 star) ========= */
+
+.exo-story {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.exo-story__badge {
+  display: inline-block;
+  font-family: var(--j-font-body);
+  font-weight: 600;
+  font-size: 0.82rem;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--j-ochre);
+  background: rgba(245, 185, 74, 0.14);
+  border: 1px solid rgba(245, 185, 74, 0.35);
+  border-radius: 999px;
+  padding: 0.25rem 0.85rem;
+}
+
+/* The live story — the toy's payoff, so it is big and inviting. */
+.exo-story__out {
+  font-family: var(--j-font-display);
+  font-size: 1.55rem;
+  line-height: 1.75;
+  color: var(--j-secondary);
+  background: var(--j-panel);
+  border: 1px dashed rgba(245, 185, 74, 0.45);
+  border-radius: 14px;
+  padding: 1.2rem 1.5rem;
+}
+
+.exo-story__word {
+  color: var(--j-ochre);
+  font-weight: 700;
+}
+
+.exo-story__gap {
+  color: var(--j-khaki);
+  opacity: 0.75;
+  font-style: italic;
+  border-bottom: 2px dotted rgba(126, 150, 176, 0.5);
+  padding: 0 0.15rem;
+}
+
+.exo-story__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: 0.7rem 1.2rem;
+}
+
+.exo-story__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.exo-story__cap {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-family: var(--j-font-body);
+  font-size: 0.95rem;
+  color: var(--j-secondary);
+}
+
+.exo-story__n {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 1.45rem;
+  height: 1.45rem;
+  border-radius: 50%;
+  background: rgba(245, 185, 74, 0.2);
+  color: var(--j-ochre);
+  font-family: var(--j-font-display);
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.exo-story__input {
+  font-family: var(--j-font-body);
+  font-size: 1.05rem;
+  color: var(--j-ink);
+  background: var(--j-field);
+  border: 1.5px solid rgba(126, 150, 176, 0.4);
+  border-radius: 8px;
+  padding: 0.4rem 0.7rem;
+}
+
+.exo-story__input:focus-visible {
+  outline: none;
+  border-color: var(--j-ochre);
+}
+
+/* Gentle live nudge for the "+ -ing" blank — a hint, never a block. */
+.exo-story__nudge {
+  min-height: 0.9rem;
+  text-align: right;
+  font-family: var(--j-font-body);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--j-ochre);
+}
+.exo-story__nudge[data-ok="true"] {
+  color: var(--j-olive);
+}
+
+@media (orientation: portrait) {
+  .exo-story__out { font-size: 1.3rem; line-height: 1.65; }
+  .exo-story__grid { grid-template-columns: 1fr; }
+}
