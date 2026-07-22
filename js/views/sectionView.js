@@ -155,7 +155,7 @@ export function renderSectionView(root, unitId, sectionId) {
   const header = document.createElement("header");
   header.className = "journal__header";
 
-  header.appendChild(createBackTab(`Back to ${unit.label}`, `/unit/${unit.id}`));
+  header.appendChild(createBackTab("Back", `/unit/${unit.id}`));
 
   const plaque = document.createElement("div");
   plaque.className = "journal__plaque";

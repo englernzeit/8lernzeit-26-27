@@ -34,7 +34,6 @@ export default {
   /* ============ Shared reference card ============ */
   guide: {
     label: "The 3 Tenses",
-    subtitle: "Your reference card — keep it open while you work",
     numbered: false,
     types: [
       {
@@ -469,41 +468,40 @@ export default {
       ],
     },
 
-    /* ================= STEP 4 — ★ Challenge mini-project ================= */
+    /* ================= STEP 4 — ★ Creative challenge ================= */
     {
       step: 4,
-      subtitle: "Mini-project · about 10 minutes",
+      subtitle: "",
       accent: "ochre",
       challenge: true,
       layout: "single",
       cards: [
         {
           type: "comic-strip",
-          kind: "Kreativ-Projekt",
-          title: "My New York Minute — a 3-frame story",
+          title: "The Time-Travel MetroCard",
           intro:
-            "Make a tiny photo-story about your day in New York. Each frame is locked to one tense: picture the scene, write a speech bubble and a caption. Your bubbles appear inside the frames as you type — then hit the PDF button to take your comic home.",
+            "You swipe an old MetroCard in a New York subway station… and it bends time. Draw your adventure as a 3-frame comic. Each frame is locked to one tense — write a caption and a speech bubble, and watch your words pop into the frames as you type. Proud of it? Send it home with the PDF button.",
           panels: [
             {
               n: 1,
-              prompt: "① Yesterday — Simple Past. Something happened.",
-              bubblePlaceholder: "💬 “I saw …!”",
-              capPlaceholder: "Yesterday I … (verb + -ed, or 2nd form: see → saw)",
+              prompt: "① The jump — Simple Past. Where, or WHEN, did the card send you?",
+              bubblePlaceholder: "💬 “Whoa — I landed in …!”",
+              capPlaceholder: "Suddenly the card took me to … (verb + -ed, or 2nd form: go → went)",
             },
             {
               n: 2,
-              prompt: "② Right now — Present Progressive. The live moment.",
-              bubblePlaceholder: "💬 “Look — I am …!”",
-              capPlaceholder: "Right now I am … (am / is / are + verb + -ing)",
+              prompt: "② Freeze-frame — Present Progressive. What is happening all around you?",
+              bubblePlaceholder: "💬 “Look — everyone is …!”",
+              capPlaceholder: "Right now I am … and the people around me are … (am / is / are + -ing)",
             },
             {
               n: 3,
-              prompt: "③ Every day — Simple Present. Your New York routine.",
-              bubblePlaceholder: "💬 “I always …”",
+              prompt: "③ The new normal — Simple Present. Now you own the card, what do you do every day?",
+              bubblePlaceholder: "💬 “Now I always …”",
               capPlaceholder: "Every day I … (verb, + -s for he / she / it)",
             },
           ],
-          help: "★ Bonus: make the three frames tell ONE connected story — a mini New York adventure from yesterday, to right now, to every day.",
+          help: "★ Bonus: give your comic a title and make the three frames tell ONE wild story — from the jump, to the scene, to your new time-traveller routine.",
         },
       ],
     },

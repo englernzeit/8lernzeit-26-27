@@ -49,7 +49,7 @@ export function renderUnitView(root, unitId) {
   const view = document.createElement("div");
   view.className = `view unit-view unit-view--u${unit.number}`;
 
-  view.appendChild(createBackTab("Back to Map", "/"));
+  view.appendChild(createBackTab("Back", "/"));
 
   // --- Header ---------------------------------------------------
   const header = document.createElement("header");
