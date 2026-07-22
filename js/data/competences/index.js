@@ -13,7 +13,11 @@
  *   const CONTENT = { "new-york-city/reading": nycReading };
  */
 
-const CONTENT = {};
+import nycGrammar from "./new-york-city-grammar.js";
+
+const CONTENT = {
+  "new-york-city/grammar": nycGrammar,
+};
 
 /**
  * @param {string} unitId

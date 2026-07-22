@@ -21,8 +21,12 @@
  * shared "coming soon" template until content is supplied.
  */
 
-/** The 7 competence pages every unit gets. */
-const competenceSections = () => [
+/**
+ * The 7 competence pages a unit gets. Pass ids in `first` to pull those
+ * competences to the front (e.g. the one that has content ready); the
+ * rest keep their default order.
+ */
+const COMPETENCES = [
   { id: "reading", label: "Reading" },
   { id: "listening", label: "Listening" },
   { id: "grammar", label: "Grammar" },
@@ -30,6 +34,11 @@ const competenceSections = () => [
   { id: "vocabulary", label: "Vocabulary" },
   { id: "speaking", label: "Speaking" },
   { id: "revision", label: "Revision" },
+];
+
+const competenceSections = (...first) => [
+  ...first.map((id) => COMPETENCES.find((c) => c.id === id)),
+  ...COMPETENCES.filter((c) => !first.includes(c.id)),
 ];
 
 export const UNITS = [
@@ -43,7 +52,8 @@ export const UNITS = [
     pin: "assets/svg/pin-01.svg",
     pinPos: { x: 29.5, y: 33 },
     cardPos: { x: 37.0, y: 8.0 },
-    sections: competenceSections(),
+    // Grammar (tense revision) has content ready, so it leads.
+    sections: competenceSections("grammar"),
   },
   {
     id: "best-days",
