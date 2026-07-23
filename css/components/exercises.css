@@ -3599,6 +3599,16 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
   background-position: center;
 }
 
+/* A gentle tone scrim so pins, rider and toasts stay readable over the
+   busy glowing artwork (same trick as the Story Machine scenes). */
+.exo-dg__board::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(7, 14, 26, 0.16) 0%, rgba(7, 14, 26, 0.3) 100%);
+  z-index: 1;
+}
+
 .exo-dg__pin {
   position: absolute;
   transform: translate(-50%, -50%);
@@ -3608,9 +3618,10 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
   width: 1.9rem;
   height: 1.9rem;
   border-radius: 50%;
-  background: rgba(13, 21, 38, 0.85);
-  border: 2px solid rgba(126, 150, 176, 0.6);
-  color: var(--j-secondary);
+  background: rgba(13, 21, 38, 0.92);
+  border: 2px solid rgba(230, 240, 255, 0.7);
+  color: #e8f0fb;
+  box-shadow: 0 3px 10px rgba(7, 14, 26, 0.7);
   font-family: var(--j-font-display);
   font-weight: 800;
   font-size: 0.95rem;
