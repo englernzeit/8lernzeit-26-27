@@ -994,6 +994,7 @@ function buildCard(step, data, index, taskNo, ctx) {
       body.appendChild(
         createStoryMaker({
           template: data.template,
+          scenes: data.scenes,
           blanks: data.blanks,
           values: prefix(saved, base),
           keyFor: (f) => `${base}-${f}`,

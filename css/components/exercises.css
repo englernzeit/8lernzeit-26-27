@@ -2942,6 +2942,58 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
   padding: 0 0.15rem;
 }
 
+/* --- Illustrated scene strip: one painted background per tense ---
+   The art is a background layer, so a missing file degrades to the dark
+   panel + hatch rather than breaking the card. */
+.exo-story__scenes {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.9rem;
+}
+
+.exo-story__scene {
+  --img: none;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  min-height: 16rem;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid rgba(245, 185, 74, 0.35);
+  background-color: var(--j-paper-1);
+  background-image: var(--img),
+    repeating-linear-gradient(45deg, rgba(126, 150, 176, 0.07) 0 10px, transparent 10px 20px);
+  background-size: cover, auto;
+  background-position: center, center;
+}
+
+/* Scrim: keeps the story readable over any artwork. */
+.exo-story__scene::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(7, 14, 26, 0.2) 0%,
+    rgba(7, 14, 26, 0.72) 52%,
+    rgba(7, 14, 26, 0.93) 100%
+  );
+}
+
+.exo-story__out--scene {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  background: none;
+  border: none;
+  border-radius: 0;
+  padding: 0.9rem 1.05rem 1rem;
+  font-size: 1.28rem;
+  line-height: 1.55;
+  color: var(--foam-core);
+  text-shadow: 0 2px 10px rgba(7, 14, 26, 0.8);
+}
+
 .exo-story__grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
@@ -3009,4 +3061,6 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
 @media (orientation: portrait) {
   .exo-story__out { font-size: 1.3rem; line-height: 1.65; }
   .exo-story__grid { grid-template-columns: 1fr; }
+  .exo-story__scenes { grid-template-columns: 1fr; }
+  .exo-story__scene { min-height: 13rem; }
 }

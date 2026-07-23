@@ -2958,37 +2958,67 @@ export function createComicSpeech({ panels, base, values, keyFor, onChange }) {
  * ============================================================ */
 
 /**
+ * Supply EITHER `template` (one plain story panel) or `scenes` (an
+ * illustrated strip — each scene is one painted background with its
+ * slice of the story laid over it). A scene whose art is missing still
+ * renders: the artwork is a background layer, so it just stays dark.
+ *
  * @param {{
- *   template: Array<string | { blank: string }>,
+ *   template?: Array<string | { blank: string }>,
+ *   scenes?: Array<{ img?: string, alt?: string, template: Array<string | { blank: string }> }>,
  *   blanks: Array<{ key: string, label: string, placeholder?: string, ing?: boolean }>,
  *   values: Record<string,string>,
  *   keyFor: (key: string) => string,
  *   onChange: (key: string, value: string) => void,
  * }} opts
  */
-export function createStoryMaker({ template, blanks, values, keyFor, onChange }) {
+export function createStoryMaker({ template, scenes, blanks, values, keyFor, onChange }) {
   const wrap = document.createElement("div");
   wrap.className = "exo exo-story";
 
   const state = {};
   blanks.forEach((b) => (state[b.key] = values?.[b.key] ?? ""));
-
-  // --- Live story card: re-rendered on every keystroke ---
-  const story = document.createElement("p");
-  story.className = "exo-story__out";
   const label = Object.fromEntries(blanks.map((b) => [b.key, b.label]));
 
+  // Each entry is a paragraph plus the slice of story it renders.
+  const parts = [];
+
+  if (scenes?.length) {
+    const strip = document.createElement("div");
+    strip.className = "exo-story__scenes";
+    scenes.forEach((scene) => {
+      const fig = document.createElement("figure");
+      fig.className = "exo-story__scene";
+      if (scene.img) fig.style.setProperty("--img", `url("${scene.img}")`);
+      if (scene.alt) fig.setAttribute("aria-label", scene.alt);
+      const p = document.createElement("p");
+      p.className = "exo-story__out exo-story__out--scene";
+      fig.appendChild(p);
+      strip.appendChild(fig);
+      parts.push({ el: p, template: scene.template });
+    });
+    wrap.appendChild(strip);
+  } else {
+    const p = document.createElement("p");
+    p.className = "exo-story__out";
+    wrap.appendChild(p);
+    parts.push({ el: p, template: template ?? [] });
+  }
+
+  // --- Live story: re-rendered on every keystroke ---
   const paintStory = () => {
-    story.textContent = "";
-    for (const seg of template) {
-      if (typeof seg === "string") {
-        story.appendChild(document.createTextNode(seg));
-      } else {
-        const v = state[seg.blank]?.trim();
-        const slot = document.createElement("span");
-        slot.className = v ? "exo-story__word" : "exo-story__gap";
-        slot.textContent = v || label[seg.blank] || "…";
-        story.appendChild(slot);
+    for (const part of parts) {
+      part.el.textContent = "";
+      for (const seg of part.template) {
+        if (typeof seg === "string") {
+          part.el.appendChild(document.createTextNode(seg));
+        } else {
+          const v = state[seg.blank]?.trim();
+          const slot = document.createElement("span");
+          slot.className = v ? "exo-story__word" : "exo-story__gap";
+          slot.textContent = v || label[seg.blank] || "…";
+          part.el.appendChild(slot);
+        }
       }
     }
   };
@@ -3041,7 +3071,10 @@ export function createStoryMaker({ template, blanks, values, keyFor, onChange })
   head.innerHTML =
     '<span class="exo-story__badge">📮 Breaking news from New York</span>';
 
-  wrap.append(head, story, grid);
+  // The story panel(s) were appended while building; the badge leads and
+  // the input grid closes the card.
+  wrap.prepend(head);
+  wrap.appendChild(grid);
   paintStory();
   return wrap;
 }

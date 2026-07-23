@@ -19,6 +19,9 @@
  * everywhere so the tense–colour link is learned by repetition.
  */
 
+/** Painted night scenes for the Step-4 Story Machine (one per tense). */
+const STORY_ART = "assets/images/unit1/story";
+
 /** The tense-colour pens, shared by every reading task on the page. */
 const TENSE_PENS = [
   { key: "present", label: "Simple Present" },
@@ -481,28 +484,49 @@ export default {
           title: "The Silly New York Story Machine",
           intro:
             "Just fill in the blanks with your own words — the sillier, the better! Your one-of-a-kind New York story writes itself above as you type. Then send it home with the PDF button.",
-          template: [
-            "Last weekend, ",
-            { blank: "name" },
-            " was exploring ",
-            { blank: "place" },
-            ". Suddenly, they ",
-            { blank: "past" },
-            " a giant talking ",
-            { blank: "creature" },
-            "! Right now — yes, RIGHT NOW — that ",
-            { blank: "creature" },
-            " is ",
-            { blank: "ing" },
-            " on top of a yellow taxi, and everyone is filming it. Since then, everything is different: every day ",
-            { blank: "name" },
-            " and the ",
-            { blank: "creature" },
-            " ",
-            { blank: "present" },
-            " together and share ",
-            { blank: "food" },
-            " for breakfast. In New York, anything can happen!",
+          // Three painted scenes, one per tense — the story lies over the art.
+          scenes: [
+            {
+              img: `${STORY_ART}/subway.jpg`,
+              alt: "A New York subway platform at night",
+              template: [
+                "Last weekend, ",
+                { blank: "name" },
+                " was riding the subway under ",
+                { blank: "place" },
+                ". Suddenly, they ",
+                { blank: "past" },
+                " a giant talking ",
+                { blank: "creature" },
+                "!",
+              ],
+            },
+            {
+              img: `${STORY_ART}/rooftop.jpg`,
+              alt: "A rooftop above a night street with a yellow taxi below",
+              template: [
+                "Right now — yes, RIGHT NOW — that ",
+                { blank: "creature" },
+                " is ",
+                { blank: "ing" },
+                " on top of a yellow taxi, and everyone is filming it.",
+              ],
+            },
+            {
+              img: `${STORY_ART}/times-square.jpg`,
+              alt: "Times Square glowing at night",
+              template: [
+                "Since then, everything is different: every day ",
+                { blank: "name" },
+                " and the ",
+                { blank: "creature" },
+                " ",
+                { blank: "present" },
+                " together in Times Square and share ",
+                { blank: "food" },
+                " for breakfast. In New York, anything can happen!",
+              ],
+            },
           ],
           blanks: [
             { key: "name", label: "A name" },
