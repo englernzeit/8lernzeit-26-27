@@ -15,3 +15,10 @@ node_modules/
 *.log
 *.tmp
 assets/_original/
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
+.env*
+!.env.example
