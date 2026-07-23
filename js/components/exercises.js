@@ -2989,7 +2989,13 @@ export function createStoryMaker({ template, scenes, blanks, values, keyFor, onC
     scenes.forEach((scene) => {
       const fig = document.createElement("figure");
       fig.className = "exo-story__scene";
-      if (scene.img) fig.style.setProperty("--img", `url("${scene.img}")`);
+      // Absolute URL on purpose: a relative url() inside a custom property
+      // resolves against the stylesheet that reads it (css/components/), not
+      // the document — which would 404. document.baseURI keeps this right
+      // when the site is hosted under a subpath (e.g. GitHub Pages).
+      if (scene.img) {
+        fig.style.setProperty("--img", `url("${new URL(scene.img, document.baseURI).href}")`);
+      }
       if (scene.alt) fig.setAttribute("aria-label", scene.alt);
       const p = document.createElement("p");
       p.className = "exo-story__out exo-story__out--scene";

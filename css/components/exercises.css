@@ -2956,7 +2956,7 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
   position: relative;
   display: flex;
   align-items: flex-end;
-  min-height: 16rem;
+  min-height: 19rem;
   border-radius: 14px;
   overflow: hidden;
   border: 1px solid rgba(245, 185, 74, 0.35);
@@ -2967,31 +2967,41 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
   background-position: center, center;
 }
 
-/* Scrim: keeps the story readable over any artwork. */
+/* Light tone-scrim only: pulls the art into our night palette without
+   hiding it. Readability is handled by the text's own backing below, so
+   this can stay soft however bright the artwork is. */
 .exo-story__scene::before {
   content: "";
   position: absolute;
   inset: 0;
   background: linear-gradient(
     180deg,
-    rgba(7, 14, 26, 0.2) 0%,
-    rgba(7, 14, 26, 0.72) 52%,
-    rgba(7, 14, 26, 0.93) 100%
+    rgba(7, 14, 26, 0.1) 0%,
+    rgba(7, 14, 26, 0.18) 45%,
+    rgba(7, 14, 26, 0.4) 100%
   );
 }
 
+/* The story carries its own gradient backing, so it stays readable no
+   matter how long the text is or how bright the scene behind it. */
 .exo-story__out--scene {
   position: relative;
   z-index: 1;
   margin: 0;
-  background: none;
+  width: 100%;
   border: none;
   border-radius: 0;
-  padding: 0.9rem 1.05rem 1rem;
+  padding: 2.2rem 1.05rem 1rem;
+  background: linear-gradient(
+    180deg,
+    rgba(7, 14, 26, 0) 0%,
+    rgba(7, 14, 26, 0.72) 30%,
+    rgba(7, 14, 26, 0.9) 100%
+  );
   font-size: 1.28rem;
   line-height: 1.55;
   color: var(--foam-core);
-  text-shadow: 0 2px 10px rgba(7, 14, 26, 0.8);
+  text-shadow: 0 2px 10px rgba(7, 14, 26, 0.9);
 }
 
 .exo-story__grid {
