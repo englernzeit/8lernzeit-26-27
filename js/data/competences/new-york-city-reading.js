@@ -250,45 +250,45 @@ export default {
           title: "A Day with Maya — Bike Messenger in Manhattan",
           intro: "Read about Maya's working day. The small numbers on the left are line numbers — you will need them to prove your answers. Tap the underlined words for German help.",
           lineNumbers: true,
-          // One number per SENTENCE: the text has to stay readable as
-          // text, so nothing is ever broken mid-sentence. Long sentences
-          // simply wrap under their own number.
-          paraStarts: [1, 3, 7, 11],
+          // Running prose with a number on every visual line (the school
+          // textbook look). Each entry is one full-width line that breaks
+          // at the container edge — mid-sentence is fine, that is just how
+          // text wraps; paraStarts marks the real paragraph breaks. The
+          // line splits are author-fixed so a "Zeile 7" reference is
+          // stable on every screen.
+          paraStarts: [1, 4, 10],
           paragraphs: [
-            ["Maya is 22 years old and she works as a bike messenger in Manhattan, the busiest part of New York City."],
+            ["Maya is 22 years old and she works as a bike messenger in Manhattan, the busiest part of New York"],
+            ["City. Companies pay her to deliver letters, documents and small packages quickly — much quicker than"],
             [
-              "Companies pay her to deliver letters, documents and small packages quickly — much quicker than a car, because cars often stand in ",
+              "a car, because cars often stand in ",
               { w: "traffic jams", de: "der Stau (Pl.: Staus)" },
               ".",
             ],
-            ["Her day starts at 8 a.m."],
-            ["She checks her bike, puts on her helmet and turns on her radio."],
+            ["Her day starts at 8 a.m. She checks her bike, puts on her helmet and turns on her radio. Then the first"],
             [
-              "Then the first job comes in: “Pick up a package on 42nd Street and take it to a ",
+              "job comes in: “Pick up a package on 42nd Street and take it to a ",
               { w: "customer", de: "der Kunde / die Kundin" },
               " on Wall Street!”",
             ],
             [
               "Maya knows every ",
               { w: "shortcut", de: "die Abkürzung" },
-              " in the city, so she arrives in only 15 minutes.",
+              " in the city, so she arrives in only 15 minutes. The job is not easy. The streets",
             ],
-            ["The job is not easy."],
-            ["The streets are full of yellow taxis, buses and people."],
+            ["are full of yellow taxis, buses and people. Sometimes car drivers do not see cyclists, so Maya must"],
             [
-              "Sometimes car drivers do not see cyclists, so Maya must be ",
+              "be ",
               { w: "careful", de: "vorsichtig" },
-              " all the time.",
+              " all the time. In summer it is hot, in winter it is icy — but the packages must",
             ],
             [
-              "In summer it is hot, in winter it is icy — but the packages must arrive ",
+              "arrive ",
               { w: "on time", de: "pünktlich" },
               ".",
             ],
-            ["At about 6 p.m. Maya finishes work."],
-            ["She has ridden more than 70 kilometres and delivered around 25 packages."],
-            ["She is tired, but happy."],
-            ["“My office is the street,” she says, “and I love it.”"],
+            ["At about 6 p.m. Maya finishes work. She has ridden more than 70 kilometres and delivered around 25"],
+            ["packages. She is tired, but happy. “My office is the street,” she says, “and I love it.”"],
           ],
         },
         {
@@ -410,53 +410,56 @@ export default {
           title: "Faster than Traffic — New York's Bike Messengers",
           intro: "A longer read. The small numbers on the left are line numbers — use them to prove your answers. Tap the underlined words for help in simple English.",
           lineNumbers: true,
-          // One number per SENTENCE — see the Step-2 text above.
-          paraStarts: [1, 4, 10, 14],
+          // Running prose with a number on every visual line — see the
+          // Step-2 text above. Full-width, author-fixed line breaks.
+          paraStarts: [1, 5, 10, 14],
           paragraphs: [
-            ["When people think of New York City, they imagine skyscrapers, yellow taxis and crowded sidewalks."],
-            ["But between the cars and buses, there is another group that keeps the city moving: bike messengers."],
+            ["When people think of New York City, they imagine skyscrapers, yellow taxis and crowded sidewalks. But"],
+            ["between the cars and buses, there is another group that keeps the city moving: bike messengers. For"],
             [
-              "For more than a hundred years, these cyclists have carried letters, ",
+              "more than a hundred years, these cyclists have carried letters, ",
               { w: "contracts", de: "contract = a legal document" },
-              ", film reels and packages across Manhattan — often faster than any car could.",
+              ", film reels and packages",
             ],
-            ["The golden age of the bike messenger was the 1980s and 1990s."],
-            ["Before e-mail existed, banks and law firms needed original documents delivered within the hour, and thousands of messengers raced through the streets every day."],
+            ["across Manhattan — often faster than any car could."],
+            ["The golden age of the bike messenger was the 1980s and 1990s. Before e-mail existed, banks and law"],
+            ["firms needed original documents delivered within the hour, and thousands of messengers raced through"],
             [
-              "Then the internet arrived, and many people ",
+              "the streets every day. Then the internet arrived, and many people ",
               { w: "predicted", de: "to predict = to say what will happen in the future" },
-              " that the job would ",
-              { w: "disappear", de: "to disappear = to go away completely" },
-              " completely.",
+              " that the job would",
             ],
-            ["They were wrong."],
-            ["Digital files replaced paper, but online shopping and food delivery apps created new work."],
-            ["Today's messengers deliver everything from sushi to laptop computers."],
+            [
+              { w: "disappear", de: "to disappear = to go away completely" },
+              " completely. They were wrong. Digital files replaced paper, but online shopping and food",
+            ],
+            ["delivery apps created new work. Today's messengers deliver everything from sushi to laptop computers."],
             [
               "It remains one of the ",
               { w: "toughest", de: "tough = very hard and difficult" },
-              " jobs in the city.",
+              " jobs in the city. Messengers ride up to 80 kilometres a day, in",
             ],
-            ["Messengers ride up to 80 kilometres a day, in burning summer heat and icy winter winds."],
-            ["Car doors open suddenly, taxis change lanes without warning, and accidents are common."],
+            ["burning summer heat and icy winter winds. Car doors open suddenly, taxis change lanes without warning,"],
             [
-              "Most messengers are paid ",
+              "and accidents are common. Most messengers are paid ",
               { w: "per delivery", de: "for each package they bring" },
-              ", not per hour — so speed means money, and waiting at a red light can feel like losing a dollar.",
+              ", not per hour — so speed means money,",
             ],
-            ["Yet many messengers would never change their job."],
+            ["and waiting at a red light can feel like losing a dollar."],
+            ["Yet many messengers would never change their job. They describe a feeling of freedom that no office"],
             [
-              "They describe a feeling of freedom that no office can offer, and they belong to a proud ",
+              "can offer, and they belong to a proud ",
               { w: "subculture", de: "a small group with its own style and rules" },
-              " with its own style, slang and even illegal street races called “",
-              { w: "alleycats", de: "an illegal street race for messengers" },
-              "”.",
+              " with its own style, slang and even illegal street",
             ],
             [
-              "As one ",
+              "races called “",
+              { w: "alleycats", de: "an illegal street race for messengers" },
+              "”. As one ",
               { w: "veteran", de: "a person with many years of experience" },
-              " messenger put it: “In an office you watch the city through a window. On my bike, I am part of it.”",
+              " messenger put it: “In an office you watch the city through",
             ],
+            ["a window. On my bike, I am part of it.”"],
           ],
         },
         {
@@ -510,9 +513,9 @@ export default {
           kind: "Beweise",
           title: "Find the evidence — which line?",
           intro: "The text proves each statement. Which line is the proof? Use the line numbers.",
-          options: ["Zeile 3", "Zeile 7", "Zeile 12", "Zeile 15"],
+          options: ["Zeile 3", "Zeile 7", "Zeile 11", "Zeile 15"],
           items: [
-            { left: "The job is physically dangerous.", answer: "Zeile 12" },
+            { left: "The job is physically dangerous.", answer: "Zeile 11" },
             { left: "Bike messengers have their own identity and traditions.", answer: "Zeile 15" },
             { left: "The profession is older than most people think.", answer: "Zeile 3" },
           ],
@@ -548,8 +551,8 @@ export default {
           intro: "Explain what these expressions mean in this text. Your own English words — no dictionary definitions.",
           starters: [
             "“keeps the city moving” (line 2) means …",
-            "“the golden age” (line 4) means …",
-            "“On my bike, I am part of it.” (line 16) means …",
+            "“the golden age” (line 5) means …",
+            "“On my bike, I am part of it.” (line 17) means …",
           ],
         },
         {
