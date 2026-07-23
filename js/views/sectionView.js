@@ -48,6 +48,8 @@ import {
   createComicSpeech,
   createStoryMaker,
   createCommentLab,
+  createCommentThread,
+  createCommentFill,
 } from "../components/exercises.js";
 import {
   getName,
@@ -379,6 +381,14 @@ function downloadAnswerSheet(view, unit, section, content, name) {
               answer: answers[`${base}-comicx-p${k}-b${j}`] ?? "",
             })),
           );
+        }
+        if (card.type === "comment-fill") {
+          // Sam's completed comment prints as one whole text (like the
+          // Step-4 rule) — unfilled gaps become write-in blanks.
+          const t = (card.segments ?? [])
+            .map((s) => (typeof s === "string" ? s : answers[`${base}-cfill-${s.key}`] || "____"))
+            .join("");
+          return [{ label: card.title, answer: t.trim() }];
         }
         if (card.type === "comment-lab") {
           // Step-4 house rule: the sheet shows the whole written comment.
@@ -725,7 +735,8 @@ function buildStepSection(step, ctx) {
       data.type !== "game" &&
       data.type !== "phrase-reference" &&
       data.type !== "video" &&
-      data.type !== "image"
+      data.type !== "image" &&
+      data.type !== "comment-view"
     )
       taskNo += 1;
     return buildCard(step, data, i, taskNo, ctx);
@@ -783,7 +794,7 @@ function buildCard(step, data, index, taskNo, ctx) {
         ? "Text"
         : data.type === "video"
           ? "Video"
-          : data.type === "image"
+          : data.type === "image" || data.type === "comment-view"
             ? "Model"
             : data.type === "phrase-reference"
               ? "Words"
@@ -895,6 +906,7 @@ function buildCard(step, data, index, taskNo, ctx) {
           checklist: data.checklist,
           chips: data.chips,
           subject: data.subject,
+          comment: data.comment,
           value: saved[key] ?? "",
           answerKey: key,
           onChange: (v) => ctx && setAnswer(ctx.unitId, ctx.sectionId, key, v),
@@ -998,6 +1010,24 @@ function buildCard(step, data, index, taskNo, ctx) {
         createComicStrip({
           panels: data.panels,
           base: data.base,
+          values: prefix(saved, base),
+          keyFor: (f) => `${base}-${f}`,
+          onChange: (f, v) => ctx && setAnswer(ctx.unitId, ctx.sectionId, `${base}-${f}`, v),
+        }),
+      );
+      break;
+    }
+    case "comment-view":
+      body.appendChild(createCommentThread({ comments: data.comments }));
+      break;
+    case "comment-fill": {
+      const base = `step${step.step}-task${index + 1}-cfill`;
+      const saved = ctx ? getAnswers(ctx.unitId, ctx.sectionId) : {};
+      body.appendChild(
+        createCommentFill({
+          user: data.user,
+          when: data.when,
+          segments: data.segments,
           values: prefix(saved, base),
           keyFor: (f) => `${base}-${f}`,
           onChange: (f, v) => ctx && setAnswer(ctx.unitId, ctx.sectionId, `${base}-${f}`, v),

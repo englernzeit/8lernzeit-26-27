@@ -3492,3 +3492,82 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
   .exo-clab__userinput { max-width: 55%; }
   .exo-clab__actions { flex-direction: column; align-items: stretch; text-align: center; }
 }
+
+/* --- read-only model threads + Sam's fill-in comment ------------- */
+
+.exo-clab__cbadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.3rem;
+  height: 1.3rem;
+  padding: 0 0.3rem;
+  border-radius: 6px;
+  background: rgba(126, 150, 176, 0.25);
+  color: var(--j-ink);
+  font-family: var(--j-font-display);
+  font-weight: 800;
+  font-size: 0.8rem;
+}
+
+.exo-clab__ctext--fill {
+  line-height: 2.1;
+}
+
+.exo-cfill__input {
+  display: inline-block;
+  vertical-align: baseline;
+  margin: 0 0.15rem;
+  font-family: var(--j-font-body);
+  font-size: 1rem;
+  color: var(--j-ink);
+  background: var(--j-field);
+  border: none;
+  border-bottom: 2px dashed rgba(245, 185, 74, 0.55);
+  border-radius: 6px 6px 0 0;
+  padding: 0.1rem 0.45rem;
+}
+
+.exo-cfill__input:focus-visible {
+  outline: none;
+  border-bottom-style: solid;
+  border-bottom-color: var(--j-ochre);
+}
+
+/* --- essay editor as a real "add a comment" form ----------------- */
+
+.exo-essay__cwin {
+  border: 1.5px solid rgba(95, 180, 245, 0.35);
+  border-radius: 12px;
+  background: var(--j-field);
+  overflow: hidden;
+}
+
+.exo-essay__cbar {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0.55rem 0.9rem;
+  border-bottom: 1px solid rgba(126, 150, 176, 0.25);
+  font-family: var(--j-font-body);
+  font-size: 0.95rem;
+  color: var(--j-ink);
+}
+
+.exo-essay__creply {
+  font-size: 0.85rem;
+  color: var(--j-secondary);
+}
+
+.exo-essay__cline {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  padding: 0.8rem 0.9rem 0.9rem;
+}
+
+.exo-essay__area--comment {
+  flex: 1;
+  min-width: 0;
+}

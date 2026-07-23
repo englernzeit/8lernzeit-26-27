@@ -1394,7 +1394,7 @@ export function createParagraphBuilder({ paragraph, values, keyFor, onChange }) 
  *   value: string, answerKey: string, onChange: (v:string)=>void,
  * }} opts
  */
-export function createEssayEditor({ min = 120, max = 150, placeholder, checklist, chips, subject, value, answerKey, onChange }) {
+export function createEssayEditor({ min = 120, max = 150, placeholder, checklist, chips, subject, comment, value, answerKey, onChange }) {
   const wrap = document.createElement("div");
   wrap.className = "exo exo-essay";
 
@@ -1419,6 +1419,31 @@ export function createEssayEditor({ min = 120, max = 150, placeholder, checklist
   area.placeholder = placeholder ?? `Write your written discussion here (${min}–${max} words)…`;
   area.dataset.answerKey = answerKey;
   area.value = value ?? "";
+
+  // Optional comment-box chrome: the essay becomes a real "add a public
+  // comment" form under the blog post (avatar + comment field).
+  if (comment) {
+    const win = document.createElement("div");
+    win.className = "exo-essay__cwin";
+    const bar = document.createElement("div");
+    bar.className = "exo-essay__cbar";
+    bar.innerHTML = "💬 <b>Add a public comment</b>";
+    if (comment.replyTo) {
+      const re = document.createElement("span");
+      re.className = "exo-essay__creply";
+      re.textContent = `on: “${comment.replyTo}”`;
+      bar.appendChild(re);
+    }
+    const line = document.createElement("div");
+    line.className = "exo-essay__cline";
+    const av = document.createElement("span");
+    av.className = "exo-clab__avatar";
+    av.textContent = "@";
+    area.classList.add("exo-essay__area--comment");
+    line.append(av, area);
+    win.append(bar, line);
+    wrap.appendChild(win);
+  }
 
   // Optional mail-window chrome: traffic lights + a fixed subject line
   // above the textarea (turns the essay box into a compose window).
@@ -1479,7 +1504,7 @@ export function createEssayEditor({ min = 120, max = 150, placeholder, checklist
     paint();
   });
 
-  if (!subject) wrap.appendChild(area);
+  if (!subject && !comment) wrap.appendChild(area);
   wrap.appendChild(meter);
 
   if (checklist?.length) {
@@ -3166,7 +3191,7 @@ function clabGuard(text) {
 }
 
 /** One rendered comment row (avatar initial, meta, text, likes chip). */
-function clabComment({ user, when, likes, text, author }) {
+function clabComment({ user, when, likes, text, author, badge }) {
   const row = document.createElement("article");
   row.className = "exo-clab__comment";
   const av = document.createElement("span");
@@ -3177,6 +3202,12 @@ function clabComment({ user, when, likes, text, author }) {
   bodyEl.className = "exo-clab__cbody";
   const meta = document.createElement("div");
   meta.className = "exo-clab__meta";
+  if (badge) {
+    const b = document.createElement("span");
+    b.className = "exo-clab__cbadge";
+    b.textContent = badge;
+    meta.appendChild(b);
+  }
   const name = document.createElement("span");
   name.className = "exo-clab__user";
   name.textContent = user;
@@ -3425,5 +3456,72 @@ export function createCommentLab({ post, comments, values, keyFor, onChange }) {
   wrap.appendChild(editBar);
 
   paint();
+  return wrap;
+}
+
+/**
+ * Read-only thread of model comments, rendered exactly like the Comment
+ * Lab thread — so the models look like the real thing the learner will
+ * write in Step 4. `badge` puts a small "A"/"B" chip before the name;
+ * `reply` shows Alex's indented author answer.
+ *
+ * @param {{ comments: Array<{ user: string, when: string, likes: number, text: string, badge?: string, reply?: string }> }} data
+ */
+export function createCommentThread({ comments }) {
+  const wrap = document.createElement("div");
+  wrap.className = "exo exo-clab exo-clab--view";
+  const thread = document.createElement("div");
+  thread.className = "exo-clab__thread";
+  for (const c of comments) {
+    const { row, bodyEl } = clabComment(c);
+    if (c.reply) bodyEl.appendChild(clabReply(c.reply));
+    thread.appendChild(row);
+  }
+  wrap.appendChild(thread);
+  return wrap;
+}
+
+/**
+ * A half-finished comment shown as a REAL comment row whose text has
+ * free write-in gaps (no right/wrong — creative completion). Every gap
+ * persists and the finished comment goes to the PDF as one whole text.
+ *
+ * @param {{
+ *   user: string, when: string,
+ *   segments: Array<string | { key: string, size?: number }>,
+ *   values: Record<string,string>,
+ *   keyFor: (key: string) => string,
+ *   onChange: (key: string, value: string) => void,
+ * }} opts
+ */
+export function createCommentFill({ user, when, segments, values, keyFor, onChange }) {
+  const wrap = document.createElement("div");
+  wrap.className = "exo exo-clab exo-clab--view";
+
+  const { row } = clabComment({ user, when, likes: 0, text: "" });
+  row.querySelector(".exo-clab__likes").remove();
+  const p = row.querySelector(".exo-clab__ctext");
+  p.classList.add("exo-clab__ctext--fill");
+
+  for (const seg of segments) {
+    if (typeof seg === "string") {
+      p.appendChild(document.createTextNode(seg));
+    } else {
+      const input = document.createElement("input");
+      input.type = "text";
+      input.className = "exo-cfill__input";
+      input.size = seg.size ?? 16;
+      input.autocomplete = "off";
+      input.dataset.answerKey = keyFor(seg.key);
+      input.value = values?.[seg.key] ?? "";
+      input.addEventListener("input", () => onChange(seg.key, input.value));
+      p.appendChild(input);
+    }
+  }
+
+  const thread = document.createElement("div");
+  thread.className = "exo-clab__thread";
+  thread.appendChild(row);
+  wrap.appendChild(thread);
   return wrap;
 }

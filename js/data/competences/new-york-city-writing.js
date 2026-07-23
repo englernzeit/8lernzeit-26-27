@@ -306,15 +306,18 @@ export default {
           ],
         },
         {
-          type: "text",
+          type: "comment-view",
           kind: "Modell",
           title: "Lisa's comment — all 5 blocks",
           intro: "Lisa's comment is a perfect example: all five blocks, in order. Read it — then find the blocks in Task 1.",
-          paragraphs: [
-            ["Lisa_2011 · 2 hours ago · ♥ 12"],
-            [
-              "Hi Alex! Thanks for your interesting post! I liked the part about the cheesecake — now I'm hungry! In my opinion, New York is perfect for a holiday because there is always something to do. But I could never live there because I need quiet places and nature around me. Maybe a small town near the sea is more my style. Keep writing — I can't wait for your next post! Greetings from Frankfurt!",
-            ],
+          comments: [
+            {
+              user: "Lisa_2011",
+              when: "2 hours ago",
+              likes: 12,
+              text: "Hi Alex! Thanks for your interesting post! I liked the part about the cheesecake — now I'm hungry! In my opinion, New York is perfect for a holiday because there is always something to do. But I could never live there because I need quiet places and nature around me. Maybe a small town near the sea is more my style. Keep writing — I can't wait for your next post! Greetings from Frankfurt!",
+              reply: "This is exactly the kind of comment I love, Lisa — thanks! A small town near the sea sounds nice too. 😄",
+            },
           ],
         },
         {
@@ -368,41 +371,27 @@ export default {
           ],
         },
         {
-          type: "paragraph-builder",
+          type: "comment-fill",
           kind: "Halbfertig",
           title: "Finish Sam's comment",
-          intro: "Complete Sam's comment with your own ideas — full sentences!",
-          paragraph: {
-            title: "Sam_NYC_Fan · just now",
-            goal: "Fill every gap. Bonus: Sam forgot block 4 — can you sneak in an answer to Alex's question?",
-            sentences: [
-              {
-                label: B1,
-                starter: "Hi Alex! Thanks for",
-                example: "Hi Alex! Thanks for your honest post about New York!",
-              },
-              {
-                label: B2,
-                starter: "I liked the part about",
-                example: "I liked the part about the cheesecake",
-              },
-              {
-                label: "2 · … why?",
-                starter: "because",
-                example: "because I love sweet food.",
-              },
-              {
-                label: B3,
-                starter: "In my opinion, New York",
-                example: "In my opinion, New York is perfect for a holiday because there is always something to do.",
-              },
-              {
-                label: B5,
-                starter: "Greetings from",
-                example: "Greetings from Hamburg!",
-              },
-            ],
-          },
+          intro:
+            "Sam pressed Post too early — half the comment is missing! Write into the gaps so it becomes a complete 5-block comment. Full sentences, your own ideas.",
+          user: "Sam_NYC_Fan",
+          when: "just now",
+          segments: [
+            "Hi Alex! Thanks for ",
+            { key: "react", size: 24 },
+            "! I liked the part about ",
+            { key: "refer", size: 22 },
+            " because ",
+            { key: "reason", size: 26 },
+            ". In my opinion, New York ",
+            { key: "opinion", size: 34 },
+            ". Greetings from ",
+            { key: "close", size: 14 },
+            "!",
+          ],
+          help: "Bonus: Sam forgot block 4 — can you sneak an answer to Alex's question (could Sam live there?) into one of the gaps?",
         },
         {
           type: "essay-editor",
@@ -412,6 +401,7 @@ export default {
           min: 60,
           max: 80,
           placeholder: "Your comment…",
+          comment: { replyTo: "One week in New York — my honest opinion" },
           chips: ["React", "Refer", "Opinion + because", "Answer", "Close"],
           checklist: [
             "All 5 blocks in the right order?",
@@ -470,17 +460,26 @@ export default {
           ],
         },
         {
-          type: "text",
+          type: "comment-view",
           kind: "Modell",
           title: "Two comments — one strong, one weak",
-          intro: "Comment A got 31 likes and a reply from Alex. Comment B got zero. Read both — the difference is the whole lesson.",
-          paragraphs: [
-            ["Comment A — Lisa_2011 · 2 hours ago · ♥ 31"],
-            [
-              "Thanks for this honest post, Alex! You wrote that nobody in New York really has time for you — that part surprised me, because in films the city always looks so friendly. I see your point about the noise, but I'm not sure the city is overrated: maybe it depends on what you need. I love busy places, so I could imagine living there for a few years — but probably not forever. Have you thought about visiting a smaller American city next time, like Boston? Anyway, great post — looking forward to your reply!",
-            ],
-            ["Comment B — xX_Niko_Xx · 1 hour ago · ♥ 0"],
-            ["bro ur so wrong, NY is the best city EVER!!! everyone knows that. this post is pointless lol"],
+          intro: "Comment A got 31 likes and a reply from Alex. Comment B got zero — and no reply. Read both — the difference is the whole lesson.",
+          comments: [
+            {
+              badge: "A",
+              user: "Lisa_2011",
+              when: "2 hours ago",
+              likes: 31,
+              text: "Thanks for this honest post, Alex! You wrote that nobody in New York really has time for you — that part surprised me, because in films the city always looks so friendly. I see your point about the noise, but I'm not sure the city is overrated: maybe it depends on what you need. I love busy places, so I could imagine living there for a few years — but probably not forever. Have you thought about visiting a smaller American city next time, like Boston? Anyway, great post — looking forward to your reply!",
+              reply: "Boston is a great idea, Lisa — maybe next summer! And you're right: it probably depends on what you need.",
+            },
+            {
+              badge: "B",
+              user: "xX_Niko_Xx",
+              when: "1 hour ago",
+              likes: 0,
+              text: "bro ur so wrong, NY is the best city EVER!!! everyone knows that. this post is pointless lol",
+            },
           ],
         },
         {
@@ -574,6 +573,7 @@ export default {
           min: 100,
           max: 120,
           placeholder: "Your comment…",
+          comment: { replyTo: "New York — overrated or the greatest city on earth?" },
           chips: [
             "React to the post",
             "Refer: “You wrote that …”",
