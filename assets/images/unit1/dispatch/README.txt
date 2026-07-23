@@ -38,3 +38,39 @@ atmospheric haze, muted low-contrast palette so UI markers stay
 readable on top, no photorealism, no 3D render, no harsh neon, no
 pure black, no text, no lettering, no signage, no labels. Widescreen
 16:9 composition.
+
+
+-------------------------------------------------------------------
+ВТОРОЙ ФАЙЛ — rider.png (фишка курьера на карте)
+-------------------------------------------------------------------
+
+СТАТУС: ждём. Пока файла нет, по карте ездит эмодзи 🚴 — работает,
+но выглядит как заглушка.
+
+  rider.png — курьер на велосипеде, вид СВЕРХУ (карта же сверху)
+
+Требования
+----------
+* Формат PNG, ОБЯЗАТЕЛЬНО с прозрачным фоном (никакого квадрата!).
+* Квадрат ~512x512, сам курьер занимает почти весь кадр.
+* Вид строго сверху (bird's-eye), как игровая фишка на доске:
+  видно шлем, плечи, руль, переднее и заднее колесо, сумку-курьерку
+  на спине. Курьер смотрит ВПРАВО (вправо = вперёд по карте).
+* На экране это ~50 px, поэтому нужен ЧИТАЕМЫЙ СИЛУЭТ: крупные
+  формы, яркий контрастный цвет (тёплый янтарь/оранжевый + светлый
+  шлем), тонкий светлый контур по краю, чтобы фишка не терялась на
+  тёмной карте с оранжевыми огнями. Никаких мелких деталей и лиц.
+* Небольшая мягкая тень под фишкой допустима (она добавит объём),
+  но фон всё равно прозрачный.
+
+Промпт (EN)
+-----------
+Top-down bird's-eye view game token of a bike messenger on a
+bicycle, seen strictly from directly above, facing right. Bold
+readable silhouette: helmet, shoulders, handlebars, front and rear
+wheel, a large courier bag on the back. Warm amber and orange
+clothing with a light cream helmet, thin light outline around the
+whole shape so it stays visible on a dark map. Painted illustration,
+simple bold shapes, no small details, no face, no text. Centred
+square composition, isolated on a fully transparent background, PNG
+with alpha.

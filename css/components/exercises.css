@@ -3655,9 +3655,16 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
   position: absolute;
   transform: translate(-50%, -60%);
   font-size: 1.7rem;
+  line-height: 1;
   filter: drop-shadow(0 4px 8px rgba(7, 14, 26, 0.8));
   transition: left 1s ease-in-out, top 1s ease-in-out;
   z-index: 3;
+}
+
+.exo-dg__rider-img {
+  display: block;
+  width: 3.1rem;
+  height: auto;
 }
 
 .exo-dg__toast {
@@ -3842,26 +3849,40 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
 @media (orientation: portrait) {
   .exo-dg__board { aspect-ratio: 16 / 9; }
   .exo-dg__rider { font-size: 1.35rem; }
+  .exo-dg__rider-img { width: 2.4rem; }
   .exo-dg__pin { width: 1.6rem; height: 1.6rem; font-size: 0.85rem; }
 }
 
 /* --- worksheet line numbers on reading texts --------------------- */
 
+/* Numbered lines must still READ as one running text: the rows sit
+   tight against each other, only real paragraph breaks get air. */
+.exo-glossary__lines {
+  margin-bottom: 0.2rem;
+}
+
 .exo-glossary__para--line {
-  margin: 0 0 0.12rem;
-  padding-left: 2.2rem;
-  text-indent: -2.2rem;
+  margin: 0;
+  padding-left: 2.1rem;
+  text-indent: -2.1rem;
+  line-height: 1.75;
+}
+
+.exo-glossary__para--pstart {
+  margin-top: 0.7rem;
 }
 
 .exo-glossary__lineno {
   display: inline-block;
-  width: 1.6rem;
+  width: 1.5rem;
   margin-right: 0.6rem;
   text-align: right;
   font-family: var(--j-font-body);
-  font-size: 0.7em;
+  font-size: 0.58em;
   color: var(--j-khaki);
+  opacity: 0.75;
   user-select: none;
+  vertical-align: 0.15em;
 }
 
 /* --- "prove it with a line number" input on quiz questions ------- */

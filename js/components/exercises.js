@@ -50,15 +50,17 @@ function shuffleOrder(arr, keyOf = (x) => x) {
  * paragraphs: array of segment-arrays; a segment is a plain string or
  * `{ w: "footprint", de: "der Fußabdruck" }`.
  *
- * `lineNumbers: true` treats every paragraph as ONE numbered line (the
+ * `lineNumbers: true` treats every entry as ONE numbered line (the
  * worksheet convention — learners prove answers with "Zeile 7"), so the
  * data supplies short author-split lines and the numbering is stable on
- * every screen size. `tapHint: false` suppresses the tap hint (for
- * one-line glossed intros).
+ * every screen size. The lines still have to READ as running prose, so
+ * they are set tight with no gaps; `paraStarts` lists the line numbers
+ * that open a new paragraph and get the paragraph spacing.
+ * `tapHint: false` suppresses the tap hint (for one-line glossed intros).
  *
- * @param {{ paragraphs: Array<Array<string|{w:string,de:string}>>, lineNumbers?: boolean, tapHint?: boolean }} data
+ * @param {{ paragraphs: Array<Array<string|{w:string,de:string}>>, lineNumbers?: boolean, paraStarts?: number[], tapHint?: boolean }} data
  */
-export function createGlossaryText({ paragraphs, highlight, lineNumbers, tapHint = true }) {
+export function createGlossaryText({ paragraphs, highlight, lineNumbers, paraStarts, tapHint = true }) {
   const wrap = document.createElement("div");
   wrap.className = "exo exo-glossary";
 
@@ -159,6 +161,16 @@ export function createGlossaryText({ paragraphs, highlight, lineNumbers, tapHint
     return s;
   };
 
+  // Numbered lines live inside one block so they read as running text
+  // instead of a stack of separate paragraphs.
+  let host = wrap;
+  if (lineNumbers) {
+    host = document.createElement("div");
+    host.className = "exo-glossary__lines";
+    wrap.appendChild(host);
+  }
+  const starts = new Set(paraStarts ?? []);
+
   let lineNo = 0;
   for (const para of paragraphs) {
     const p = document.createElement("p");
@@ -166,6 +178,7 @@ export function createGlossaryText({ paragraphs, highlight, lineNumbers, tapHint
     if (lineNumbers) {
       lineNo += 1;
       p.classList.add("exo-glossary__para--line");
+      if (starts.has(lineNo) && lineNo > 1) p.classList.add("exo-glossary__para--pstart");
       const no = document.createElement("span");
       no.className = "exo-glossary__lineno";
       no.textContent = String(lineNo);
@@ -203,7 +216,7 @@ export function createGlossaryText({ paragraphs, highlight, lineNumbers, tapHint
         p.appendChild(btn);
       }
     }
-    wrap.appendChild(p);
+    host.appendChild(p);
   }
 
   // Assign each verb form its expected tense (in text order) so the marks
@@ -3566,6 +3579,7 @@ export function createCommentLab({ post, comments, values, keyFor, onChange }) {
 /**
  * @param {{
  *   board: { img?: string, alt?: string },
+ *   rider?: { img?: string, alt?: string },
  *   start: { x: number, y: number },
  *   stops: Array<{
  *     pin: { x: number, y: number },
@@ -3578,7 +3592,7 @@ export function createCommentLab({ post, comments, values, keyFor, onChange }) {
  *   onResult: (summary: string) => void,
  * }} opts
  */
-export function createDispatchGame({ board, start, stops, onResult }) {
+export function createDispatchGame({ board, rider: riderArt, start, stops, onResult }) {
   const wrap = document.createElement("div");
   wrap.className = "exo exo-dg";
 
@@ -3613,7 +3627,20 @@ export function createDispatchGame({ board, start, stops, onResult }) {
   rider.className = "exo-dg__rider";
   rider.style.left = `${start.x}%`;
   rider.style.top = `${start.y}%`;
-  rider.textContent = "🚴";
+  if (riderArt?.img) {
+    const img = document.createElement("img");
+    img.className = "exo-dg__rider-img";
+    img.alt = riderArt.alt ?? "The bike messenger";
+    img.src = riderArt.img;
+    // No artwork yet (or a broken path) → fall back to the emoji rider.
+    img.addEventListener("error", () => {
+      img.remove();
+      rider.textContent = "🚴";
+    });
+    rider.appendChild(img);
+  } else {
+    rider.textContent = "🚴";
+  }
   map.appendChild(rider);
 
   // --- HUD: deliveries · dollars · kilometres ---

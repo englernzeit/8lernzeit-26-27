@@ -876,6 +876,7 @@ function buildCard(step, data, index, taskNo, ctx) {
           paragraphs: normalizeParagraphs(data.paragraphs),
           highlight: data.highlight,
           lineNumbers: data.lineNumbers,
+          paraStarts: data.paraStarts,
         }),
       );
       break;
@@ -1072,6 +1073,7 @@ function buildCard(step, data, index, taskNo, ctx) {
       body.appendChild(
         createDispatchGame({
           board: data.board,
+          rider: data.rider,
           start: data.start,
           stops: data.stops,
           onResult: (summary) => ctx && setAnswer(ctx.unitId, ctx.sectionId, key, summary),
