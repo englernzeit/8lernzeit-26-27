@@ -380,10 +380,20 @@ function downloadAnswerSheet(view, unit, section, content, name) {
           );
         }
         if (card.type === "story-maker") {
-          return card.blanks.map((b) => ({
-            label: `${card.title} — ${b.label}`,
-            answer: answers[`${base}-story-${b.key}`] ?? "",
-          }));
+          // The sheet shows the finished story, not the seven separate
+          // blanks — the whole point is the text the learner produced.
+          const render = (tpl) =>
+            (tpl ?? [])
+              .map((seg) =>
+                typeof seg === "string"
+                  ? seg
+                  : answers[`${base}-story-${seg.blank}`] || "____",
+              )
+              .join("");
+          const story = card.scenes
+            ? card.scenes.map((sc) => render(sc.template)).join(" ")
+            : render(card.template);
+          return [{ label: card.title, answer: story.trim() }];
         }
         if (card.type === "bilingual-card") {
           return card.rows.flatMap((row, k) => [

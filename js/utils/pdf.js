@@ -1,19 +1,27 @@
 /**
  * Minimal PDF writer — no libraries, no print dialog.
  *
- * Produces a single A4 page: black Helvetica on white, thin rules,
- * no fills — printer-friendly and ink-saving by construction.
- * Text uses WinAnsi encoding, so German umlauts/ß print correctly.
+ * Produces a single A4 page: black Helvetica on white and thin rules,
+ * printer-friendly by construction. Text uses WinAnsi encoding, so
+ * German umlauts/ß print correctly.
+ *
+ * House rule: everything the learner wrote is laid on a soft highlighter
+ * band, so their answers are instantly recognisable next to the printed
+ * prompts. The tint is light enough to stay readable on a mono printer
+ * (it renders as a pale grey) and cheap on ink.
  *
  * Only what the answer sheet needs is implemented: absolute-
- * positioned text lines and horizontal rules. Content that would
- * overflow the page is cut with an ellipsis line (one page, always).
+ * positioned text lines, horizontal rules and highlight bands. Content
+ * that would overflow the page is cut with an ellipsis (one page, always).
  */
 
 const PAGE_W = 595; // A4 portrait, points
 const PAGE_H = 842;
 const MARGIN = 50;
 const BOTTOM = 56;
+
+/** Highlighter tint for learner answers (soft yellow). */
+const HL = "1 0.93 0.6";
 
 /**
  * @param {{
@@ -35,13 +43,28 @@ export function buildAnswerSheetPdf(doc) {
   const rule = (x1, yy, x2, width = 0.5) => {
     ops.push(`${width} w ${x1} ${yy.toFixed(1)} m ${x2} ${yy.toFixed(1)} l S`);
   };
+  /** Highlighter band sized to the text, drawn before the text itself. */
+  const mark = (x, baseline, str, size) => {
+    const w = Math.min(textWidth(str, size) + 5, PAGE_W - MARGIN - x);
+    if (w <= 0) return;
+    ops.push(
+      `${HL} rg ${x - 2} ${(baseline - 2.5).toFixed(1)} ${w.toFixed(1)} ${(size + 3).toFixed(1)} re f 0 0 0 rg`,
+    );
+  };
 
   // Header
   text(MARGIN, y, "F2", 16, doc.title);
   y -= 16;
   text(MARGIN, y, "F1", 11, doc.subtitle);
   y -= 24;
-  text(MARGIN, y, "F1", 11, `Name: ${doc.name}`);
+  // The name is learner-written too, so it gets the same highlight —
+  // handy when a teacher is sorting a stack of sheets.
+  text(MARGIN, y, "F1", 11, "Name:");
+  if (doc.name) {
+    const nameX = MARGIN + textWidth("Name: ", 11);
+    mark(nameX, y, doc.name, 11);
+    text(nameX, y, "F1", 11, doc.name);
+  }
   text(PAGE_W - MARGIN - 130, y, "F1", 11, `Date: ${doc.date}`);
   y -= 6;
   rule(MARGIN, y, PAGE_W - MARGIN, 0.8);
@@ -64,7 +87,7 @@ export function buildAnswerSheetPdf(doc) {
       }
       const answer = (item.answer ?? "").trim();
       if (answer) {
-        // Label and wrapped answer text
+        // Label, then the learner's text on a highlighter band
         text(MARGIN, y, "F2", 10, `${item.label}:`);
         y -= 13;
         for (const line of wrap(answer, 92)) {
@@ -72,6 +95,7 @@ export function buildAnswerSheetPdf(doc) {
             clipped = true;
             break outer;
           }
+          mark(MARGIN + 12, y, line, 10);
           text(MARGIN + 12, y, "F1", 10, line);
           y -= 13;
         }
@@ -114,6 +138,27 @@ export function downloadPdf(blob, filename) {
 /** Escape PDF string delimiters. */
 function escapeText(str) {
   return str.replace(/\\/g, "\\\\").replace(/\(/g, "\\(").replace(/\)/g, "\\)");
+}
+
+/* Helvetica advance widths (units/1000) for printable ASCII 32–126, so a
+   highlight band can be sized to the text it actually covers. */
+const HELV_W = [
+  278, 278, 355, 556, 556, 889, 667, 191, 333, 333, 389, 584, 278, 333, 278, 278,
+  556, 556, 556, 556, 556, 556, 556, 556, 556, 556, 278, 278, 584, 584, 584, 556,
+  1015, 667, 667, 722, 722, 667, 611, 778, 722, 278, 500, 667, 556, 833, 722, 778,
+  667, 778, 722, 667, 611, 722, 667, 944, 667, 667, 611, 278, 278, 278, 469, 556,
+  333, 556, 556, 500, 556, 556, 278, 556, 556, 222, 222, 500, 222, 833, 556, 556,
+  556, 556, 333, 500, 278, 556, 500, 722, 500, 500, 500, 334, 260, 334, 584,
+];
+
+/** Width of a string in points at `size`. Non-ASCII falls back to 556. */
+function textWidth(str, size) {
+  let units = 0;
+  for (let i = 0; i < str.length; i++) {
+    const c = str.charCodeAt(i);
+    units += c >= 32 && c <= 126 ? HELV_W[c - 32] : 556;
+  }
+  return (units / 1000) * size;
 }
 
 /** Greedy word wrap by character count (~Helvetica 10pt fits ~95). */
