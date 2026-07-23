@@ -383,6 +383,19 @@ function downloadAnswerSheet(view, unit, section, content, name) {
             })),
           );
         }
+        if (card.type === "multiple-choice" && card.lineRef) {
+          // The self-check ran in-app; the sheet prints only the learner's
+          // line-number evidence (never validated, teacher checks it).
+          const refs = card.questions
+            .map((q, k) => {
+              const v = (answers[`${base}-line${k + 1}`] ?? "").trim();
+              return v ? `${k + 1} → Zeile ${v}` : null;
+            })
+            .filter(Boolean);
+          return refs.length
+            ? [{ label: `${card.title} — Beweis-Zeilen`, answer: refs.join(" · ") }]
+            : [];
+        }
         if (card.type === "dispatch-game") {
           // The finished day report (deliveries · $ · km · rank), if played.
           const r = answers[`${base}-game`];
@@ -823,6 +836,13 @@ function buildCard(step, data, index, taskNo, ctx) {
       intro.textContent = data.intro;
       body.appendChild(intro);
     }
+    // A glossed intro line: the task question itself carries tappable
+    // glossary words (e.g. the Reading warm-up's "delivered").
+    if (data.introGloss) {
+      const g = createGlossaryText({ paragraphs: [data.introGloss], tapHint: false });
+      g.classList.add("taskcard__introgloss");
+      body.appendChild(g);
+    }
   }
 
   // Optional listening track above the task body.
@@ -851,11 +871,31 @@ function buildCard(step, data, index, taskNo, ctx) {
       break; // the video/image is rendered above; the card is just that
 
     case "text":
-      body.appendChild(createGlossaryText({ paragraphs: normalizeParagraphs(data.paragraphs), highlight: data.highlight }));
+      body.appendChild(
+        createGlossaryText({
+          paragraphs: normalizeParagraphs(data.paragraphs),
+          highlight: data.highlight,
+          lineNumbers: data.lineNumbers,
+        }),
+      );
       break;
-    case "multiple-choice":
-      body.appendChild(createMultipleChoice({ questions: data.questions, columns: data.columns, shuffle: data.shuffle }));
+    case "multiple-choice": {
+      const base = `step${step.step}-task${index + 1}`;
+      const saved = ctx ? getAnswers(ctx.unitId, ctx.sectionId) : {};
+      const keyFor = (qi) => `${base}-line${qi + 1}`;
+      body.appendChild(
+        createMultipleChoice({
+          questions: data.questions,
+          columns: data.columns,
+          shuffle: data.shuffle,
+          lineRef: data.lineRef,
+          values: saved,
+          keyFor,
+          onChange: (qi, v) => ctx && setAnswer(ctx.unitId, ctx.sectionId, keyFor(qi), v),
+        }),
+      );
       break;
+    }
     case "group-sort":
       body.appendChild(createGroupSort({ groups: data.groups }));
       break;
@@ -913,6 +953,7 @@ function buildCard(step, data, index, taskNo, ctx) {
           chips: data.chips,
           subject: data.subject,
           comment: data.comment,
+          postcard: data.postcard,
           value: saved[key] ?? "",
           answerKey: key,
           onChange: (v) => ctx && setAnswer(ctx.unitId, ctx.sectionId, key, v),

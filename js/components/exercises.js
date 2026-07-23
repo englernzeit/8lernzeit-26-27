@@ -50,9 +50,15 @@ function shuffleOrder(arr, keyOf = (x) => x) {
  * paragraphs: array of segment-arrays; a segment is a plain string or
  * `{ w: "footprint", de: "der Fußabdruck" }`.
  *
- * @param {{ paragraphs: Array<Array<string|{w:string,de:string}>> }} data
+ * `lineNumbers: true` treats every paragraph as ONE numbered line (the
+ * worksheet convention — learners prove answers with "Zeile 7"), so the
+ * data supplies short author-split lines and the numbering is stable on
+ * every screen size. `tapHint: false` suppresses the tap hint (for
+ * one-line glossed intros).
+ *
+ * @param {{ paragraphs: Array<Array<string|{w:string,de:string}>>, lineNumbers?: boolean, tapHint?: boolean }} data
  */
-export function createGlossaryText({ paragraphs, highlight }) {
+export function createGlossaryText({ paragraphs, highlight, lineNumbers, tapHint = true }) {
   const wrap = document.createElement("div");
   wrap.className = "exo exo-glossary";
 
@@ -122,7 +128,7 @@ export function createGlossaryText({ paragraphs, highlight }) {
       pens.push(btn);
     });
     wrap.appendChild(bar);
-  } else if (hasGlossary) {
+  } else if (hasGlossary && tapHint) {
     const hint = document.createElement("p");
     hint.className = "exo-glossary__hint";
     hint.textContent = "Tippe die unterstrichenen Wörter an ↓";
@@ -153,9 +159,18 @@ export function createGlossaryText({ paragraphs, highlight }) {
     return s;
   };
 
+  let lineNo = 0;
   for (const para of paragraphs) {
     const p = document.createElement("p");
     p.className = "exo-glossary__para";
+    if (lineNumbers) {
+      lineNo += 1;
+      p.classList.add("exo-glossary__para--line");
+      const no = document.createElement("span");
+      no.className = "exo-glossary__lineno";
+      no.textContent = String(lineNo);
+      p.appendChild(no);
+    }
     for (const seg of para) {
       if (typeof seg === "string") {
         if (hlColors.length) {
@@ -282,9 +297,12 @@ export function createGlossaryText({ paragraphs, highlight }) {
 /**
  * `shuffle: false` keeps the option order fixed — for binary judgement
  * quizzes (Good ✔ / Bad ✖) where the two buttons must not swap sides.
- * @param {{ questions: Array<{q: string, options: string[], correct: number}>, shuffle?: boolean }} data
+ * `lineRef` adds a small free "Zeile (line) __" input under each
+ * question — never checked, it just persists and prints in the PDF, so
+ * learners can prove their answer with a line number as on paper.
+ * @param {{ questions: Array<{q: string, options: string[], correct: number}>, shuffle?: boolean, lineRef?: boolean, values?: Record<string,string>, keyFor?: (qi:number)=>string, onChange?: (qi:number, v:string)=>void }} data
  */
-export function createMultipleChoice({ questions, columns, shuffle = true }) {
+export function createMultipleChoice({ questions, columns, shuffle = true, lineRef, values, keyFor, onChange }) {
   const wrap = document.createElement("div");
   wrap.className = "exo exo-mc";
   if (columns === 2) wrap.classList.add("exo-mc--cols");
@@ -331,6 +349,25 @@ export function createMultipleChoice({ questions, columns, shuffle = true }) {
     });
 
     block.appendChild(opts);
+
+    if (lineRef && keyFor) {
+      const row = document.createElement("label");
+      row.className = "exo-mc__line";
+      const cap = document.createElement("span");
+      cap.textContent = "Beweis: Zeile";
+      const input = document.createElement("input");
+      input.type = "text";
+      input.inputMode = "numeric";
+      input.maxLength = 5;
+      input.className = "exo-mc__line-input";
+      input.autocomplete = "off";
+      input.dataset.answerKey = keyFor(qi);
+      input.value = values?.[keyFor(qi)] ?? "";
+      input.addEventListener("input", () => onChange?.(qi, input.value));
+      row.append(cap, input);
+      block.appendChild(row);
+    }
+
     wrap.appendChild(block);
   });
 
@@ -1394,7 +1431,7 @@ export function createParagraphBuilder({ paragraph, values, keyFor, onChange }) 
  *   value: string, answerKey: string, onChange: (v:string)=>void,
  * }} opts
  */
-export function createEssayEditor({ min = 120, max = 150, placeholder, checklist, chips, subject, comment, value, answerKey, onChange }) {
+export function createEssayEditor({ min = 120, max = 150, placeholder, checklist, chips, subject, comment, postcard, value, answerKey, onChange }) {
   const wrap = document.createElement("div");
   wrap.className = "exo exo-essay";
 
@@ -1419,6 +1456,62 @@ export function createEssayEditor({ min = 120, max = 150, placeholder, checklist
   area.placeholder = placeholder ?? `Write your written discussion here (${min}–${max} words)…`;
   area.dataset.answerKey = answerKey;
   area.value = value ?? "";
+
+  // Optional postcard chrome: a cream card with ruled lines, a stamp
+  // (artwork, with a dashed fallback slot) and an address block — the
+  // learner writes on the back of a real postcard.
+  if (postcard) {
+    const pc = document.createElement("div");
+    pc.className = "exo-essay__pc";
+    const cap = document.createElement("span");
+    cap.className = "exo-essay__pc-cap";
+    cap.textContent = "POST CARD";
+    pc.appendChild(cap);
+
+    area.classList.add("exo-essay__area--postcard");
+    area.rows = 9;
+    pc.appendChild(area);
+
+    const divider = document.createElement("span");
+    divider.className = "exo-essay__pc-divider";
+    pc.appendChild(divider);
+
+    const right = document.createElement("div");
+    right.className = "exo-essay__pc-right";
+    const stampBox = document.createElement("span");
+    stampBox.className = "exo-essay__pc-stamp";
+    if (postcard.stamp) {
+      const img = document.createElement("img");
+      img.className = "exo-essay__pc-stamp-img";
+      img.alt = "Stamp";
+      img.loading = "lazy";
+      img.src = postcard.stamp;
+      img.addEventListener("error", () => {
+        img.remove();
+        stampBox.classList.add("exo-essay__pc-stamp--pending");
+        stampBox.textContent = "🗽";
+      });
+      stampBox.appendChild(img);
+    } else {
+      stampBox.classList.add("exo-essay__pc-stamp--pending");
+      stampBox.textContent = "🗽";
+    }
+    right.appendChild(stampBox);
+    const addr = document.createElement("div");
+    addr.className = "exo-essay__pc-addr";
+    const to = document.createElement("span");
+    to.className = "exo-essay__pc-to";
+    to.textContent = "To:";
+    addr.appendChild(to);
+    for (let i = 0; i < 3; i++) {
+      const line = document.createElement("span");
+      line.className = "exo-essay__pc-line";
+      addr.appendChild(line);
+    }
+    right.appendChild(addr);
+    pc.appendChild(right);
+    wrap.appendChild(pc);
+  }
 
   // Optional comment-box chrome: the essay becomes a real "add a public
   // comment" form under the blog post (avatar + comment field).
@@ -1493,7 +1586,7 @@ export function createEssayEditor({ min = 120, max = 150, placeholder, checklist
     let level = "low", m = "Keep going…";
     if (words > max) { level = "over"; m = "Over the limit — trim a little."; }
     else if (words >= min) { level = "ok"; m = "Target reached!"; }
-    else if (words >= min - 40) { level = "near"; m = "Almost there!"; }
+    else if (words > 0 && words >= min - 40) { level = "near"; m = "Almost there!"; }
     fill.dataset.level = level;
     count.dataset.level = level;
     msg.textContent = m;
@@ -1504,7 +1597,7 @@ export function createEssayEditor({ min = 120, max = 150, placeholder, checklist
     paint();
   });
 
-  if (!subject && !comment) wrap.appendChild(area);
+  if (!subject && !comment && !postcard) wrap.appendChild(area);
   wrap.appendChild(meter);
 
   if (checklist?.length) {
@@ -3567,7 +3660,11 @@ export function createDispatchGame({ board, start, stops, onResult }) {
       const opts = document.createElement("div");
       opts.className = "exo-dg__opts";
       let locked = false;
-      question.options.forEach((label, oi) => {
+      // Shuffle so the right answer never settles into one position.
+      const order = shuffledCopy(
+        question.options.map((label, oi) => ({ label, oi })),
+      );
+      order.forEach(({ label, oi }) => {
         const btn = document.createElement("button");
         btn.type = "button";
         btn.className = "exo-dg__opt";

@@ -3844,3 +3844,180 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
   .exo-dg__rider { font-size: 1.35rem; }
   .exo-dg__pin { width: 1.6rem; height: 1.6rem; font-size: 0.85rem; }
 }
+
+/* --- worksheet line numbers on reading texts --------------------- */
+
+.exo-glossary__para--line {
+  margin: 0 0 0.12rem;
+  padding-left: 2.2rem;
+  text-indent: -2.2rem;
+}
+
+.exo-glossary__lineno {
+  display: inline-block;
+  width: 1.6rem;
+  margin-right: 0.6rem;
+  text-align: right;
+  font-family: var(--j-font-body);
+  font-size: 0.7em;
+  color: var(--j-khaki);
+  user-select: none;
+}
+
+/* --- "prove it with a line number" input on quiz questions ------- */
+
+.exo-mc__line {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-top: 0.4rem;
+  font-family: var(--j-font-body);
+  font-size: 0.85rem;
+  color: var(--j-secondary);
+}
+
+.exo-mc__line-input {
+  width: 3.4rem;
+  font-family: var(--j-font-body);
+  font-size: 0.95rem;
+  text-align: center;
+  color: var(--j-ink);
+  background: var(--j-field);
+  border: 1.5px solid rgba(126, 150, 176, 0.4);
+  border-radius: 7px;
+  padding: 0.15rem 0.3rem;
+}
+
+.exo-mc__line-input:focus-visible {
+  outline: none;
+  border-color: var(--j-ochre);
+}
+
+/* --- glossed intro line (task question with tappable words) ------ */
+
+.taskcard__introgloss .exo-glossary__para {
+  margin: 0 0 0.8rem;
+  font-size: 1.05rem;
+  line-height: 1.55;
+  color: var(--j-ink);
+}
+
+/* --- the postcard (Step-2 Reading final) ------------------------- */
+
+.exo-essay__pc {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1.45fr 1px 1fr;
+  gap: 1.1rem;
+  padding: 2.4rem 1.3rem 1.3rem;
+  border-radius: 10px;
+  background:
+    radial-gradient(120% 90% at 20% 0%, rgba(255, 252, 240, 0.5) 0%, rgba(255, 252, 240, 0) 55%),
+    linear-gradient(180deg, #f6efdc 0%, #eadfc3 100%);
+  box-shadow: inset 0 0 46px rgba(122, 96, 48, 0.16), 0 12px 30px rgba(7, 14, 26, 0.45);
+}
+
+.exo-essay__pc-cap {
+  position: absolute;
+  top: 0.75rem;
+  left: 1.3rem;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.34em;
+  color: rgba(94, 72, 38, 0.75);
+}
+
+.exo-essay__area--postcard {
+  background:
+    repeating-linear-gradient(
+      180deg,
+      transparent 0,
+      transparent calc(1.75em - 1px),
+      rgba(122, 96, 48, 0.28) calc(1.75em - 1px),
+      rgba(122, 96, 48, 0.28) 1.75em
+    );
+  border: none;
+  border-radius: 0;
+  padding: 0 0.2rem;
+  font-family: var(--j-font-display);
+  font-size: 1.2rem;
+  line-height: 1.75em;
+  color: #2c3a58;
+  resize: vertical;
+}
+
+.exo-essay__area--postcard::placeholder {
+  color: rgba(94, 72, 38, 0.45);
+}
+
+.exo-essay__area--postcard:focus-visible {
+  outline: none;
+}
+
+.exo-essay__pc-divider {
+  background: rgba(122, 96, 48, 0.35);
+}
+
+.exo-essay__pc-right {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.exo-essay__pc-stamp {
+  align-self: flex-end;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 4.4rem;
+  height: 5.2rem;
+  background: #fffdf6;
+  padding: 0.3rem;
+  transform: rotate(2.5deg);
+  box-shadow: 0 3px 9px rgba(60, 44, 16, 0.3);
+  /* perforated stamp edge */
+  --perf: radial-gradient(circle, transparent 0 2.5px, #fffdf6 2.6px);
+  overflow: hidden;
+}
+
+.exo-essay__pc-stamp-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.exo-essay__pc-stamp--pending {
+  font-size: 1.9rem;
+  border: 2px dashed rgba(122, 96, 48, 0.5);
+  background: rgba(255, 253, 246, 0.6);
+}
+
+.exo-essay__pc-addr {
+  display: flex;
+  flex-direction: column;
+  gap: 1.35rem;
+  padding-top: 0.4rem;
+}
+
+.exo-essay__pc-to {
+  font-family: var(--j-font-display);
+  font-size: 1.05rem;
+  color: rgba(94, 72, 38, 0.8);
+  margin-bottom: -0.9rem;
+}
+
+.exo-essay__pc-line {
+  border-bottom: 1.5px solid rgba(122, 96, 48, 0.4);
+}
+
+@media (orientation: portrait) {
+  .exo-essay__pc {
+    grid-template-columns: 1fr;
+    padding-top: 2.2rem;
+  }
+  .exo-essay__pc-divider { display: none; }
+  .exo-essay__pc-right { flex-direction: row; align-items: flex-start; }
+  .exo-essay__pc-stamp { order: 2; }
+  .exo-essay__pc-addr { flex: 1; order: 1; }
+}

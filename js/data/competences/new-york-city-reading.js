@@ -6,18 +6,25 @@
  * E-Kurs) and their answer keys, rebuilt as one interactive page and
  * mapped onto our four Steps:
  *
- *   Step 1 (LE)      — Leo, the Bike Messenger
+ *   Step 1 (LE)      — Leo, the Bike Messenger (+ read-aloud audio)
  *   Step 2 (G-Kurs)  — A Day with Maya (Manhattan)
  *   Step 3 (E-Kurs)  — Faster than Traffic (the long read)
  *   Step 4 (★)       — Rush Hour: the Dispatch Game (reading as play)
  *
- * The shared guide is a reading toolkit (skim / scan / read closely)
- * plus three golden rules. Every level keeps the draft's arc:
- * warm-up → text → words → comprehension → language → creative.
+ * House conventions on this page:
+ *  - Vocabulary is trained, not listed: every level gets a tap-match
+ *    task instead of a word table.
+ *  - Every level has a 6-question multiple-choice test (2 columns,
+ *    options shuffled; Step 2 keeps its True/False/Not-in-text labels
+ *    in fixed order — shuffling those would only confuse).
+ *  - The Step-2/3 texts carry worksheet line numbers (author-split
+ *    lines, stable on every screen), and the Step-2 quiz has a free
+ *    "Beweis: Zeile" input per question — never checked, printed in
+ *    the PDF for the teacher.
  *
  * The Step-4 board artwork lives at assets/images/unit1/dispatch/
- * board.jpg (16:9). Until the file lands the board renders as the
- * dark hatched panel — the game stays fully playable.
+ * board.jpg; the Step-2 postcard stamp is expected at
+ * assets/images/unit1/postcard/stamp.jpg (dashed 🗽 slot until then).
  */
 
 const BOARD = "assets/images/unit1/dispatch";
@@ -51,8 +58,8 @@ export default {
         tag: "prove it",
         accent: "ochre",
         formula: "read again slowly + quote the evidence",
-        de: "Genau lesen und mit Textstellen beweisen.",
-        example: "The job is dangerous — the text says: “accidents are common”.",
+        de: "Genau lesen und mit Textstellen (Zeile!) beweisen.",
+        example: "The job is dangerous — line 17 says: “accidents are common”.",
       },
     ],
     tensesLabel: "Three golden reading rules",
@@ -72,8 +79,8 @@ export default {
       {
         tense: "Rule 3",
         accent: "ochre",
-        use: "Prove your answer with words from the text — guessing is not reading.",
-        signals: "Beweis im Text",
+        use: "Prove your answer with the line number — that's what the little numbers are for.",
+        signals: "Beweis: Zeile …",
       },
     ],
   },
@@ -90,15 +97,24 @@ export default {
           type: "written",
           kind: "Aufwärmen",
           title: "Before you read",
-          intro: "Have you ever seen a person delivering something by bicycle? Write one sentence.",
-          starters: ["Yes, I have. I saw … / No, I haven't."],
-          help: "Jede ehrliche Antwort ist richtig!",
+          introGloss: [
+            "Have you ever got something ",
+            { w: "delivered", de: "geliefert (to deliver = liefern)" },
+            " by a person with a bike? When was it? What was ",
+            { w: "delivered", de: "geliefert" },
+            "?",
+          ],
+          answer: true,
         },
         {
           type: "text",
           kind: "Lesen",
           title: "Leo, the Bike Messenger",
-          intro: "Read about Leo. Tap the underlined words for German help.",
+          intro: "Read about Leo — or press play and read along. Tap the underlined words for German help.",
+          audio: {
+            src: "assets/audio/unit1/leo-text.mp3",
+            label: "Listen to the text",
+          },
           paragraphs: [
             [
               "This is Leo. Leo is 21 years old. He lives in New York City. Leo is a ",
@@ -124,56 +140,38 @@ export default {
           ],
         },
         {
-          type: "phrase-reference",
-          kind: "Wörter",
-          title: "Words: work & transport",
-          sections: [
-            {
-              label: "English – Deutsch",
-              accent: "coral",
-              pairs: [
-                ["bike messenger", "der/die Fahrradkurier·in"],
-                ["to deliver", "liefern"],
-                ["package", "das Paket"],
-                ["letter", "der Brief"],
-                ["traffic", "der Verkehr"],
-                ["helmet", "der Helm"],
-                ["office", "das Büro"],
-                ["street", "die Straße"],
-                ["GPS", "das Navigationssystem"],
-                ["I am on my way!", "Ich bin unterwegs!"],
-              ],
-            },
+          type: "tap-match",
+          kind: "Verbinden",
+          title: "Match the words",
+          intro: "Tap an English word, then tap its German partner — all ten pairs.",
+          leftLabel: "English",
+          rightLabel: "Deutsch",
+          pairs: [
+            { left: "bike messenger", right: "der Fahrradkurier" },
+            { left: "to deliver", right: "liefern" },
+            { left: "a package", right: "ein Paket" },
+            { left: "a letter", right: "ein Brief" },
+            { left: "the traffic", right: "der Verkehr" },
+            { left: "a helmet", right: "ein Helm" },
+            { left: "an office", right: "ein Büro" },
+            { left: "a street", right: "eine Straße" },
+            { left: "GPS", right: "das Navigationssystem" },
+            { left: "I am on my way!", right: "Ich bin unterwegs!" },
           ],
         },
         {
           type: "multiple-choice",
           kind: "Quiz",
-          title: "Right or wrong?",
-          intro: "Read each sentence. Right or wrong? Tap your answer — the text knows the truth.",
-          // Fixed order: Right always left, Wrong always right.
-          shuffle: false,
+          title: "What does the text say?",
+          intro: "Six questions about Leo. Read carefully, then tap the correct answer.",
+          columns: 2,
           questions: [
-            { q: "Leo is 21 years old.", options: ["Right ✔", "Wrong ✖"], correct: 0 },
-            { q: "Leo lives in London.", options: ["Right ✔", "Wrong ✖"], correct: 1 },
-            { q: "Leo rides a bike.", options: ["Right ✔", "Wrong ✖"], correct: 0 },
-            { q: "Leo delivers big cars to offices.", options: ["Right ✔", "Wrong ✖"], correct: 1 },
-            { q: "Leo wears a helmet.", options: ["Right ✔", "Wrong ✖"], correct: 0 },
-          ],
-        },
-        {
-          type: "tap-match",
-          kind: "Verbinden",
-          title: "Match the words",
-          intro: "Tap an English word, then tap its German partner.",
-          leftLabel: "English",
-          rightLabel: "Deutsch",
-          pairs: [
-            { left: "a letter", right: "ein Brief" },
-            { left: "the traffic", right: "der Verkehr" },
-            { left: "a helmet", right: "ein Helm" },
-            { left: "to deliver", right: "liefern" },
-            { left: "a package", right: "ein Paket" },
+            { q: "How old is Leo?", options: ["21", "12", "25"], correct: 0 },
+            { q: "Where does Leo live?", options: ["In New York City", "In London", "In Hamburg"], correct: 0 },
+            { q: "What does Leo deliver?", options: ["Letters and small packages", "Pizza and burgers", "Big cars"], correct: 0 },
+            { q: "Why doesn't Leo need a GPS?", options: ["He knows all the streets", "He has a paper map", "He asks the taxi drivers"], correct: 0 },
+            { q: "What does Leo wear?", options: ["A helmet and a big bag", "A cap and sunglasses", "A suit and a tie"], correct: 0 },
+            { q: "How many kilometres does he ride in one day?", options: ["About 60", "About 16", "About 600"], correct: 0 },
           ],
         },
         {
@@ -219,11 +217,13 @@ export default {
           type: "written",
           kind: "Kreativ",
           title: "YOUR bike messenger",
-          intro: "Invent your own bike messenger! Write three sentences about him or her.",
+          intro: "Invent your own bike messenger! Complete the five sentences.",
           starters: [
             "My messenger's name is …",
-            "He / She is … years old.",
-            "He / She delivers …",
+            "He is …",
+            "He has …",
+            "He lives …",
+            "He delivers …",
           ],
         },
       ],
@@ -241,67 +241,81 @@ export default {
           kind: "Aufwärmen",
           title: "Before you read",
           intro: "Have you ever seen a person delivering something by bicycle? Write one sentence — what and where?",
-          starters: ["Yes, I have. I once saw … / No, I haven't, but I think …"],
+          answer: true,
         },
         {
           type: "text",
           kind: "Lesen",
           title: "A Day with Maya — Bike Messenger in Manhattan",
-          intro: "Read about Maya's working day. Tap the underlined words for German help.",
+          intro: "Read about Maya's working day. The small numbers are line numbers — you will need them to prove your answers. Tap the underlined words for German help.",
+          lineNumbers: true,
           paragraphs: [
+            ["Maya is 22 years old and she works as a bike messenger"],
+            ["in Manhattan, the busiest part of New York City. Companies"],
+            ["pay her to deliver letters, documents and small packages"],
             [
-              "Maya is 22 years old and she works as a bike messenger in Manhattan, the busiest part of New York City. Companies pay her to deliver letters, documents and small packages quickly — much quicker than a car, because cars often stand in ",
+              "quickly — much quicker than a car, because cars often stand in ",
               { w: "traffic jams", de: "der Stau (Pl.: Staus)" },
               ".",
             ],
+            ["Her day starts at 8 a.m. She checks her bike, puts on her"],
+            ["helmet and turns on her radio. Then the first job comes in:"],
             [
-              "Her day starts at 8 a.m. She checks her bike, puts on her helmet and turns on her radio. Then the first job comes in: “Pick up a package on 42nd Street and take it to a ",
+              "“Pick up a package on 42nd Street and take it to a ",
               { w: "customer", de: "der Kunde / die Kundin" },
-              " on Wall Street!” Maya knows every ",
-              { w: "shortcut", de: "die Abkürzung" },
-              " in the city, so she arrives in only 15 minutes.",
+              "",
             ],
             [
-              "The job is not easy. The streets are full of yellow taxis, buses and people. Sometimes car drivers do not see cyclists, so Maya must be ",
+              "on Wall Street!” Maya knows every ",
+              { w: "shortcut", de: "die Abkürzung" },
+              " in the city,",
+            ],
+            ["so she arrives in only 15 minutes."],
+            ["The job is not easy. The streets are full of yellow taxis,"],
+            ["buses and people. Sometimes car drivers do not see cyclists,"],
+            [
+              "so Maya must be ",
               { w: "careful", de: "vorsichtig" },
-              " all the time. In summer it is hot, in winter it is icy — but the packages must arrive ",
+              " all the time. In summer it is hot,",
+            ],
+            [
+              "in winter it is icy — but the packages must arrive ",
               { w: "on time", de: "pünktlich" },
               ".",
             ],
-            [
-              "At about 6 p.m. Maya finishes work. She has ridden more than 70 kilometres and delivered around 25 packages. She is tired, but happy. “My office is the street,” she says, “and I love it.”",
-            ],
+            ["At about 6 p.m. Maya finishes work. She has ridden more"],
+            ["than 70 kilometres and delivered around 25 packages. She is"],
+            ["tired, but happy. “My office is the street,” she says, “and I love it.”"],
           ],
         },
         {
-          type: "phrase-reference",
-          kind: "Wörter",
+          type: "tap-match",
+          kind: "Verbinden",
           title: "Words for Maya's day",
-          sections: [
-            {
-              label: "English – Deutsch",
-              accent: "olive",
-              pairs: [
-                ["bike messenger", "der/die Fahrradkurier·in"],
-                ["to deliver", "liefern"],
-                ["document", "das Dokument"],
-                ["package", "das Paket"],
-                ["traffic jam", "der Stau"],
-                ["customer", "der Kunde / die Kundin"],
-                ["shortcut", "die Abkürzung"],
-                ["on time", "pünktlich"],
-                ["careful", "vorsichtig"],
-                ["route", "die Strecke"],
-              ],
-            },
+          intro: "Tap an English word, then tap its German partner — all ten pairs.",
+          leftLabel: "English",
+          rightLabel: "Deutsch",
+          pairs: [
+            { left: "bike messenger", right: "der Fahrradkurier" },
+            { left: "to deliver", right: "liefern" },
+            { left: "a document", right: "ein Dokument" },
+            { left: "a package", right: "ein Paket" },
+            { left: "a traffic jam", right: "ein Stau" },
+            { left: "a customer", right: "ein Kunde" },
+            { left: "a shortcut", right: "eine Abkürzung" },
+            { left: "on time", right: "pünktlich" },
+            { left: "careful", right: "vorsichtig" },
+            { left: "a route", right: "eine Strecke" },
           ],
         },
         {
           type: "multiple-choice",
           kind: "Quiz",
           title: "True, false — or not in the text?",
-          intro: "Careful: some sentences sound possible, but the text simply doesn't say it. That's the third button!",
+          intro: "Tick the right box — and write the line number that proves it (your teacher checks the lines on the PDF).",
           shuffle: false,
+          columns: 2,
+          lineRef: true,
           questions: [
             { q: "Maya works in Manhattan.", options: ["True", "False", "Not in the text"], correct: 0 },
             { q: "She starts work at 9 a.m.", options: ["True", "False", "Not in the text"], correct: 1 },
@@ -354,7 +368,8 @@ export default {
           intro: "Imagine you are a bike messenger in New York for one day. Write a short postcard (5–6 sentences) to a friend in Germany.",
           min: 40,
           max: 70,
-          placeholder: "Your postcard…",
+          placeholder: "",
+          postcard: { stamp: "assets/images/unit1/postcard/stamp.jpg" },
           chips: [
             "Dear …",
             "In the morning I …",
@@ -390,59 +405,100 @@ export default {
           type: "text",
           kind: "Lesen",
           title: "Faster than Traffic — New York's Bike Messengers",
-          intro: "A longer read in four paragraphs (¶ 1–4). Tap the underlined words for help in simple English.",
+          intro: "A longer read in four paragraphs (¶ 1–4). The small numbers are line numbers — use them as evidence. Tap the underlined words for help in simple English.",
+          lineNumbers: true,
           paragraphs: [
+            ["¶ 1  When people think of New York City, they imagine"],
+            ["skyscrapers, yellow taxis and crowded sidewalks. But between"],
+            ["the cars and buses, there is another group that keeps the city"],
+            ["moving: bike messengers. For more than a hundred years, these"],
             [
-              "¶ 1  When people think of New York City, they imagine skyscrapers, yellow taxis and crowded sidewalks. But between the cars and buses, there is another group that keeps the city moving: bike messengers. For more than a hundred years, these cyclists have carried letters, ",
+              "cyclists have carried letters, ",
               { w: "contracts", de: "contract = a legal document" },
-              ", film reels and packages across Manhattan — often faster than any car could.",
+              ", film reels and packages",
+            ],
+            ["across Manhattan — often faster than any car could."],
+            ["¶ 2  The golden age of the bike messenger was the 1980s and"],
+            ["1990s. Before e-mail existed, banks and law firms needed"],
+            ["original documents delivered within the hour, and thousands of"],
+            ["messengers raced through the streets every day. Then the"],
+            [
+              "internet arrived, and many people ",
+              { w: "predicted", de: "to predict = to say what will happen in the future" },
+              " that the job would",
             ],
             [
-              "¶ 2  The golden age of the bike messenger was the 1980s and 1990s. Before e-mail existed, banks and law firms needed original documents delivered within the hour, and thousands of messengers raced through the streets every day. Then the internet arrived, and many people ",
-              { w: "predicted", de: "to predict = to say what will happen in the future" },
-              " that the job would ",
               { w: "disappear", de: "to disappear = to go away completely" },
-              " completely. They were wrong. Digital files replaced paper, but online shopping and food delivery apps created new work. Today's messengers deliver everything from sushi to laptop computers.",
+              " completely. They were wrong. Digital files replaced",
             ],
+            ["paper, but online shopping and food delivery apps created new"],
+            ["work. Today's messengers deliver everything from sushi to"],
+            ["laptop computers."],
             [
               "¶ 3  It remains one of the ",
               { w: "toughest", de: "tough = very hard and difficult" },
-              " jobs in the city. Messengers ride up to 80 kilometres a day, in burning summer heat and icy winter winds. Car doors open suddenly, taxis change lanes without warning, and accidents are common. Most messengers are paid ",
+              " jobs in the city. Messengers",
+            ],
+            ["ride up to 80 kilometres a day, in burning summer heat and icy"],
+            ["winter winds. Car doors open suddenly, taxis change lanes"],
+            ["without warning, and accidents are common. Most messengers"],
+            [
+              "are paid ",
               { w: "per delivery", de: "for each package they bring" },
-              ", not per hour — so speed means money, and waiting at a red light can feel like losing a dollar.",
+              ", not per hour — so speed means money, and",
+            ],
+            ["waiting at a red light can feel like losing a dollar."],
+            ["¶ 4  Yet many messengers would never change their job. They"],
+            ["describe a feeling of freedom that no office can offer, and they"],
+            [
+              "belong to a proud ",
+              { w: "subculture", de: "a small group with its own style and rules" },
+              " with its own style, slang and even",
             ],
             [
-              "¶ 4  Yet many messengers would never change their job. They describe a feeling of freedom that no office can offer, and they belong to a proud ",
-              { w: "subculture", de: "a small group with its own style and rules" },
-              " with its own style, slang and even illegal street races called “",
+              "illegal street races called “",
               { w: "alleycats", de: "an illegal street race for messengers" },
               "”. As one ",
               { w: "veteran", de: "a person with many years of experience" },
-              " messenger put it: “In an office you watch the city through a window. On my bike, I am part of it.”",
+              " messenger",
             ],
+            ["put it: “In an office you watch the city through a window."],
+            ["On my bike, I am part of it.”"],
           ],
         },
         {
-          type: "phrase-reference",
-          kind: "Wörter",
+          type: "tap-match",
+          kind: "Verbinden",
           title: "Words: English · simple English",
-          sections: [
-            {
-              label: "no German this time — explain English with English",
-              accent: "slate",
-              pairs: [
-                ["bike messenger", "a person who delivers things by bicycle"],
-                ["contract", "a legal document"],
-                ["to predict", "to say what will happen in the future"],
-                ["to disappear", "to go away completely"],
-                ["tough", "very hard and difficult"],
-                ["per delivery", "for each package you bring"],
-                ["subculture", "a small group with its own style and rules"],
-                ["veteran", "a person with many years of experience"],
-                ["alleycat", "an illegal street race for messengers"],
-                ["freedom", "the feeling that you can do what you want"],
-              ],
-            },
+          intro: "No German this time — match each word with its meaning in simple English.",
+          leftLabel: "Word",
+          rightLabel: "Meaning",
+          pairs: [
+            { left: "contract", right: "a legal document" },
+            { left: "to predict", right: "to say what will happen" },
+            { left: "to disappear", right: "to go away completely" },
+            { left: "tough", right: "very hard and difficult" },
+            { left: "per delivery", right: "for each package you bring" },
+            { left: "subculture", right: "a small group with its own style" },
+            { left: "veteran", right: "a person with years of experience" },
+            { left: "alleycat", right: "an illegal street race" },
+            { left: "freedom", right: "you can do what you want" },
+            { left: "bike messenger", right: "delivers things by bicycle" },
+          ],
+        },
+        {
+          type: "multiple-choice",
+          kind: "Quiz",
+          title: "Check the facts",
+          intro: "Six questions about the text. Tap the correct answer.",
+          columns: 2,
+          questions: [
+            { q: "Why were the 1980s and 1990s the “golden age”?", options: ["Banks needed original documents within the hour", "E-mail made the job popular", "Messengers earned more than bankers"], correct: 0 },
+            { q: "What almost killed the job?", options: ["The internet", "The yellow taxis", "The alleycat races"], correct: 0 },
+            { q: "What saved the job?", options: ["Online shopping and delivery apps", "New bike lanes", "Higher pay per hour"], correct: 0 },
+            { q: "How are most messengers paid?", options: ["Per delivery", "Per hour", "Per kilometre"], correct: 0 },
+            { q: "What are “alleycats”?", options: ["Illegal street races", "Angry taxi drivers", "Delivery apps"], correct: 0 },
+            { q: "Why do many messengers love the job?", options: ["A feeling of freedom", "The high salary", "The quiet streets"], correct: 0 },
           ],
         },
         {
@@ -472,30 +528,24 @@ export default {
           type: "written",
           kind: "Beweise",
           title: "…and quote the proof",
-          intro: "Now copy the exact words from the text that prove each statement.",
+          intro: "Now copy the exact words from the text that prove each statement — with the line number.",
           starters: [
-            "Dangerous — the text says: “…",
-            "Own identity — the text says: “…",
-            "Older than people think — the text says: “…",
+            "Dangerous — line … says: “…",
+            "Own identity — line … says: “…",
+            "Older than people think — line … says: “…",
           ],
         },
         {
-          type: "essay-editor",
+          type: "written",
           kind: "Zusammenfassen",
-          title: "Summary — 50 to 60 words",
-          intro: "Summarise the text in 50–60 words. Do not copy sentences from the text!",
-          min: 50,
-          max: 60,
-          placeholder: "Your summary…",
-          chips: [
-            "What bike messengers do",
-            "How the job has changed",
-            "Why people still love it",
-          ],
-          checklist: [
-            "All three points covered?",
-            "Your own words — nothing copied?",
-            "50–60 words?",
+          title: "Summary in five sentences",
+          intro: "Summarise the text in five sentences — about 50–60 words in total. Your own words, nothing copied!",
+          starters: [
+            "The text is about …",
+            "In the past, bike messengers …",
+            "When the internet arrived, …",
+            "Today they deliver …",
+            "Many messengers still love the job because …",
           ],
         },
         {
@@ -547,12 +597,14 @@ export default {
           type: "dispatch-game",
           title: "Rush Hour — your first day as a messenger",
           intro:
-            "The radio is on, the bag is packed. Five deliveries, one night shift. Read every dispatch carefully — the details pay your wage: answer both questions right and the delivery is yours. Wrong taps cost you your rank, not your money. Ready? Ride!",
+            "The radio is on, the bag is packed. Five deliveries, one night shift. Read every dispatch carefully — the right answer never repeats the words of the note, it SAYS THE SAME THING differently. Answer both questions right and the delivery is yours. Wrong taps cost you your rank, not your money. Ready? Ride!",
           board: {
             img: `${BOARD}/board.jpg`,
             alt: "Painted night map of Manhattan streets seen from above",
           },
           start: { x: 10, y: 80 },
+          // House rule for the questions: the correct option is a synonym /
+          // paraphrase of the note's wording, never a verbatim repeat.
           stops: [
             {
               pin: { x: 26, y: 58 },
@@ -561,8 +613,8 @@ export default {
               km: 6,
               note: "Good morning, rookie! Easy start: pick up a small envelope at the flower shop on 7th Avenue. Take it to Mrs. Rossi at the Hotel Astoria. She is waiting in the lobby — not at the pool.",
               questions: [
-                { q: "What do you pick up?", options: ["A small envelope", "A box of flowers", "A pizza"], correct: 0 },
-                { q: "Where is Mrs. Rossi waiting?", options: ["At the pool", "In the lobby", "On the roof"], correct: 1 },
+                { q: "What do you pick up?", options: ["A thin paper letter", "A bunch of roses", "Something warm to eat"], correct: 0 },
+                { q: "Where is Mrs. Rossi waiting?", options: ["In the swimming area", "In the entrance hall of the hotel", "At the top of the building"], correct: 1 },
               ],
             },
             {
@@ -572,8 +624,8 @@ export default {
               km: 11,
               note: "Next job! A lawyer on Wall Street needs a blue folder with contracts. Pick it up at the bank on 42nd Street, window 3. And hurry — it starts raining in ten minutes, and the folder must stay dry!",
               questions: [
-                { q: "What is in the folder?", options: ["Money", "Photos", "Contracts"], correct: 2 },
-                { q: "Where exactly do you pick it up?", options: ["At the bank, window 3", "At the lawyer's office", "At the bank, window 13"], correct: 0 },
+                { q: "What is in the folder?", options: ["A pile of cash", "Holiday pictures", "Important legal papers"], correct: 2 },
+                { q: "Why must you hurry?", options: ["Wet weather is on its way", "The bank is about to close", "The lawyer is leaving town"], correct: 0 },
               ],
             },
             {
@@ -583,8 +635,8 @@ export default {
               km: 14,
               note: "Rush order from Little Italy! Two boxes of cannoli must reach the TV studio before 12 o'clock — they start filming at noon. The guard at the back door knows you. Do NOT use the front entrance: the street there is closed for a parade.",
               questions: [
-                { q: "Why must you hurry?", options: ["The studio closes at noon", "They start filming at noon", "The cannoli melt at noon"], correct: 1 },
-                { q: "Which way do you go in?", options: ["Through the front entrance", "Through the window", "Through the back door"], correct: 2 },
+                { q: "Why must you hurry?", options: ["The sweets will melt in the sun", "The cameras start rolling at midday", "The studio closes for lunch"], correct: 1 },
+                { q: "How do you get in?", options: ["Through the main entrance", "Through an open window", "Through the door at the rear of the building"], correct: 2 },
               ],
             },
             {
@@ -594,8 +646,8 @@ export default {
               km: 16,
               note: "A doctor forgot her tablet computer in a taxi. The driver, Mr. Habib, is waiting at the taxi stand at Central Park — but only until 3 p.m. After that he starts his night shift and you won't find him. It is 2:40 now. Twenty minutes, messenger!",
               questions: [
-                { q: "What do you pick up?", options: ["A tablet computer", "Medicine", "A taxi"], correct: 0 },
-                { q: "Why must you arrive before 3 p.m.?", options: ["The park closes then", "The doctor flies home then", "Mr. Habib starts his night shift then"], correct: 2 },
+                { q: "What do you pick up?", options: ["A small flat computer", "A box of medicine", "The keys to a taxi"], correct: 0 },
+                { q: "Why must you arrive before 3 p.m.?", options: ["The park gates close then", "The driver starts his evening work then", "The doctor's plane leaves then"], correct: 1 },
               ],
             },
             {
@@ -605,12 +657,12 @@ export default {
               km: 21,
               note: "Last run, superstar! A gallery in SoHo sold a small painting — it is a hundred years old and worth more than your bike. The new owner waits at the harbour; her ship leaves at seven. And if the lights are against you, remember: a late painting is better than a broken one.",
               questions: [
-                { q: "What does the last sentence really mean?", options: ["Ride faster when the lights are red", "Ride safely, even if you lose time", "The painting is already broken"], correct: 1 },
-                { q: "Why is seven o'clock important?", options: ["The ship leaves then", "The gallery closes then", "The harbour opens then"], correct: 0 },
+                { q: "What does the last sentence really mean?", options: ["Speed is always more important than safety", "The painting is already damaged", "Arrive safely, even if you arrive late"], correct: 2 },
+                { q: "Why is seven o'clock important?", options: ["The boat sails away then", "The gallery locks its doors then", "The harbour opens then"], correct: 0 },
               ],
             },
           ],
-          help: "★ Read like a messenger: WHAT do I take, WHERE does it go, WHEN must it arrive — the answer is always in the note.",
+          help: "★ Read like a messenger: WHAT do I take, WHERE does it go, WHEN must it arrive — the answer is always in the note, just in other words.",
         },
       ],
     },

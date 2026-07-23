@@ -1,7 +1,7 @@
 /**
  * Minimal PDF writer — no libraries, no print dialog.
  *
- * Produces a single A4 page: black Helvetica on white and thin rules,
+ * Produces A4 pages: black Helvetica on white and thin rules,
  * printer-friendly by construction. Text uses WinAnsi encoding, so
  * German umlauts/ß print correctly.
  *
@@ -11,8 +11,9 @@
  * (it renders as a pale grey) and cheap on ink.
  *
  * Only what the answer sheet needs is implemented: absolute-
- * positioned text lines, horizontal rules and highlight bands. Content
- * that would overflow the page is cut with an ellipsis (one page, always).
+ * positioned text lines, horizontal rules and highlight bands. When a
+ * lesson carries more items than fit on one page, the sheet simply
+ * grows more pages (with page numbers in the footer).
  */
 
 const PAGE_W = 595; // A4 portrait, points
@@ -34,8 +35,17 @@ const HL = "1 0.93 0.6";
  * @returns {Blob}
  */
 export function buildAnswerSheetPdf(doc) {
-  const ops = [];
-  let y = PAGE_H - 64;
+  const TOP = PAGE_H - 64;
+  /** One ops array per page; a new page opens whenever space runs out. */
+  const pages = [];
+  let ops;
+  let y;
+  const openPage = () => {
+    ops = [];
+    pages.push(ops);
+    y = TOP;
+  };
+  openPage();
 
   const text = (x, yy, font, size, str) => {
     ops.push(`BT /${font} ${size} Tf ${x} ${yy.toFixed(1)} Td (${escapeText(str)}) Tj ET`);
@@ -51,8 +61,12 @@ export function buildAnswerSheetPdf(doc) {
       `${HL} rg ${x - 2} ${(baseline - 2.5).toFixed(1)} ${w.toFixed(1)} ${(size + 3).toFixed(1)} re f 0 0 0 rg`,
     );
   };
+  /** Break to a fresh page unless `needed` points still fit on this one. */
+  const ensure = (needed) => {
+    if (y < BOTTOM + needed) openPage();
+  };
 
-  // Header
+  // Header (first page only)
   text(MARGIN, y, "F2", 16, doc.title);
   y -= 16;
   text(MARGIN, y, "F1", 11, doc.subtitle);
@@ -70,31 +84,20 @@ export function buildAnswerSheetPdf(doc) {
   rule(MARGIN, y, PAGE_W - MARGIN, 0.8);
   y -= 20;
 
-  let clipped = false;
-
-  outer: for (const step of doc.steps) {
-    if (y < BOTTOM + 40) {
-      clipped = true;
-      break;
-    }
+  for (const step of doc.steps) {
+    ensure(56); // never leave a heading orphaned at the very bottom
     text(MARGIN, y, "F2", 12, step.heading);
     y -= 16;
 
     for (const item of step.items) {
-      if (y < BOTTOM + 24) {
-        clipped = true;
-        break outer;
-      }
+      ensure(28);
       const answer = (item.answer ?? "").trim();
       if (answer) {
         // Label, then the learner's text on a highlighter band
         text(MARGIN, y, "F2", 10, `${item.label}:`);
         y -= 13;
         for (const line of wrap(answer, 92)) {
-          if (y < BOTTOM) {
-            clipped = true;
-            break outer;
-          }
+          ensure(13);
           mark(MARGIN + 12, y, line, 10);
           text(MARGIN + 12, y, "F1", 10, line);
           y -= 13;
@@ -110,11 +113,16 @@ export function buildAnswerSheetPdf(doc) {
     y -= 8;
   }
 
-  if (clipped) {
-    text(MARGIN, BOTTOM - 14, "F1", 8, "…");
+  // Page numbers, only when the sheet actually grew
+  if (pages.length > 1) {
+    pages.forEach((pageOps, k) => {
+      pageOps.push(
+        `BT /F1 8 Tf ${PAGE_W - MARGIN - 40} 30 Td (${escapeText(`Seite ${k + 1} / ${pages.length}`)}) Tj ET`,
+      );
+    });
   }
 
-  return assemblePdf(ops.join("\n"));
+  return assemblePdf(pages.map((p) => p.join("\n")));
 }
 
 /**
@@ -179,20 +187,27 @@ function wrap(str, max) {
 }
 
 /**
- * Wrap a content stream into a complete one-page PDF file.
- * @param {string} content
+ * Wrap one content stream per page into a complete PDF file.
+ * Object layout: 1 catalog · 2 pages · 3/4 fonts · then, per page,
+ * a page object followed by its content stream.
+ * @param {string[]} contents
  * @returns {Blob}
  */
-function assemblePdf(content) {
+function assemblePdf(contents) {
+  const kids = contents.map((_, k) => `${5 + k * 2} 0 R`).join(" ");
   const objects = [
     "<< /Type /Catalog /Pages 2 0 R >>",
-    "<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
-    `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${PAGE_W} ${PAGE_H}] ` +
-      "/Resources << /Font << /F1 5 0 R /F2 6 0 R >> >> /Contents 4 0 R >>",
-    `<< /Length ${content.length} >>\nstream\n${content}\nendstream`,
+    `<< /Type /Pages /Kids [${kids}] /Count ${contents.length} >>`,
     "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>",
     "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>",
   ];
+  for (const content of contents) {
+    objects.push(
+      `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${PAGE_W} ${PAGE_H}] ` +
+        `/Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents ${objects.length + 2} 0 R >>`,
+    );
+    objects.push(`<< /Length ${content.length} >>\nstream\n${content}\nendstream`);
+  }
 
   let file = "%PDF-1.4\n";
   const offsets = [];
