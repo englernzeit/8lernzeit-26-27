@@ -3663,7 +3663,7 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
 
 .exo-dg__rider-img {
   display: block;
-  width: 3.1rem;
+  width: 4.4rem;
   height: auto;
 }
 
@@ -3849,7 +3849,7 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
 @media (orientation: portrait) {
   .exo-dg__board { aspect-ratio: 16 / 9; }
   .exo-dg__rider { font-size: 1.35rem; }
-  .exo-dg__rider-img { width: 2.4rem; }
+  .exo-dg__rider-img { width: 3.2rem; }
   .exo-dg__pin { width: 1.6rem; height: 1.6rem; font-size: 0.85rem; }
 }
 
@@ -3991,14 +3991,13 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  /* box ratio follows the artwork so nothing gets cropped */
   width: 4.4rem;
-  height: 5.2rem;
+  height: 5.8rem;
   background: #fffdf6;
   padding: 0.3rem;
   transform: rotate(2.5deg);
   box-shadow: 0 3px 9px rgba(60, 44, 16, 0.3);
-  /* perforated stamp edge */
-  --perf: radial-gradient(circle, transparent 0 2.5px, #fffdf6 2.6px);
   overflow: hidden;
 }
 

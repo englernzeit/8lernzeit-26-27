@@ -1465,7 +1465,9 @@ export function createEssayEditor({ min = 120, max = 150, placeholder, checklist
 
   const area = document.createElement("textarea");
   area.className = "exo-essay__area";
-  area.rows = 12;
+  // A short target deserves a short box — a 20-word comment in a
+  // twelve-row field reads like "write an essay here".
+  area.rows = max <= 40 ? 3 : 12;
   area.placeholder = placeholder ?? `Write your written discussion here (${min}–${max} words)…`;
   area.dataset.answerKey = answerKey;
   area.value = value ?? "";
