@@ -47,6 +47,7 @@ import {
   createBilingualPoster,
   createComicSpeech,
   createStoryMaker,
+  createCommentLab,
 } from "../components/exercises.js";
 import {
   getName,
@@ -378,6 +379,12 @@ function downloadAnswerSheet(view, unit, section, content, name) {
               answer: answers[`${base}-comicx-p${k}-b${j}`] ?? "",
             })),
           );
+        }
+        if (card.type === "comment-lab") {
+          // Step-4 house rule: the sheet shows the whole written comment.
+          const user = (answers[`${base}-clab-user`] ?? "").trim();
+          const text = (answers[`${base}-clab-text`] ?? "").trim();
+          return [{ label: card.title, answer: text ? (user ? `@${user}: ${text}` : text) : "" }];
         }
         if (card.type === "story-maker") {
           // The sheet shows the finished story, not the seven separate
@@ -830,7 +837,7 @@ function buildCard(step, data, index, taskNo, ctx) {
       body.appendChild(createGlossaryText({ paragraphs: normalizeParagraphs(data.paragraphs), highlight: data.highlight }));
       break;
     case "multiple-choice":
-      body.appendChild(createMultipleChoice({ questions: data.questions, columns: data.columns }));
+      body.appendChild(createMultipleChoice({ questions: data.questions, columns: data.columns, shuffle: data.shuffle }));
       break;
     case "group-sort":
       body.appendChild(createGroupSort({ groups: data.groups }));
@@ -860,7 +867,7 @@ function buildCard(step, data, index, taskNo, ctx) {
       body.appendChild(createTapMatch({ pairs: data.pairs, leftLabel: data.leftLabel, rightLabel: data.rightLabel }));
       break;
     case "argument-pick":
-      body.appendChild(createArgumentPick({ args: data.args }));
+      body.appendChild(createArgumentPick({ args: data.args, lead: data.lead, labels: data.labels }));
       break;
     case "paragraph-builder": {
       const base = `step${step.step}-task${index + 1}`;
@@ -991,6 +998,20 @@ function buildCard(step, data, index, taskNo, ctx) {
         createComicStrip({
           panels: data.panels,
           base: data.base,
+          values: prefix(saved, base),
+          keyFor: (f) => `${base}-${f}`,
+          onChange: (f, v) => ctx && setAnswer(ctx.unitId, ctx.sectionId, `${base}-${f}`, v),
+        }),
+      );
+      break;
+    }
+    case "comment-lab": {
+      const base = `step${step.step}-task${index + 1}-clab`;
+      const saved = ctx ? getAnswers(ctx.unitId, ctx.sectionId) : {};
+      body.appendChild(
+        createCommentLab({
+          post: data.post,
+          comments: data.comments,
           values: prefix(saved, base),
           keyFor: (f) => `${base}-${f}`,
           onChange: (f, v) => ctx && setAnswer(ctx.unitId, ctx.sectionId, `${base}-${f}`, v),

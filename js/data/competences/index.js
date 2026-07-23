@@ -14,9 +14,11 @@
  */
 
 import nycGrammar from "./new-york-city-grammar.js";
+import nycWriting from "./new-york-city-writing.js";
 
 const CONTENT = {
   "new-york-city/grammar": nycGrammar,
+  "new-york-city/writing": nycWriting,
 };
 
 /**

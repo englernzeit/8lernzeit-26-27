@@ -3074,3 +3074,421 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
   .exo-story__scenes { grid-template-columns: 1fr; }
   .exo-story__scene { min-height: 13rem; }
 }
+
+/* =====================================================================
+   Comment Lab — the live comment section (Writing Step-4 star).
+   The post, the thread and the composer are all "comment UI": glass
+   panels, initial-letter avatars, a likes chip and a gold pin for the
+   winning comment. Alex's rows carry the gold author treatment.
+   ===================================================================== */
+
+.exo-clab {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* --- the blog post being commented on --- */
+.exo-clab__post {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.9rem 1.1rem 1rem;
+  background: var(--j-panel);
+  border: 1px solid rgba(126, 150, 176, 0.28);
+  border-left: 4px solid var(--j-ochre);
+  border-radius: 12px;
+}
+
+.exo-clab__blog {
+  font-family: var(--j-font-body);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--j-ochre);
+}
+
+.exo-clab__ptitle {
+  margin: 0;
+  font-family: var(--j-font-display);
+  font-size: 1.35rem;
+  color: var(--j-ink);
+}
+
+.exo-clab__pmeta {
+  font-family: var(--j-font-body);
+  font-size: 0.82rem;
+  color: var(--j-secondary);
+}
+
+.exo-clab__ptext {
+  margin: 0.45rem 0 0;
+  font-family: var(--j-font-body);
+  font-size: 1.02rem;
+  line-height: 1.55;
+  color: var(--j-ink);
+}
+
+/* --- thread --- */
+.exo-clab__thread {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.exo-clab__pinslot {
+  padding: 0.65rem 1rem;
+  border: 1.5px dashed rgba(245, 185, 74, 0.55);
+  border-radius: 12px;
+  font-family: var(--j-font-body);
+  font-size: 0.95rem;
+  color: var(--j-ochre);
+  background: rgba(245, 185, 74, 0.07);
+}
+
+.exo-clab__comment {
+  position: relative;
+  display: flex;
+  gap: 0.7rem;
+  padding: 0.75rem 0.9rem;
+  background: var(--j-panel);
+  border: 1px solid rgba(126, 150, 176, 0.24);
+  border-radius: 12px;
+}
+
+.exo-clab__comment--mine {
+  border-color: rgba(95, 180, 245, 0.5);
+}
+
+.exo-clab__comment--pinned {
+  border: 1.5px solid rgba(245, 185, 74, 0.75);
+  box-shadow: 0 0 0 3px rgba(245, 185, 74, 0.14), 0 10px 26px rgba(7, 14, 26, 0.35);
+  padding-top: 1.6rem;
+}
+
+.exo-clab__pin {
+  position: absolute;
+  top: -0.7rem;
+  left: 0.9rem;
+  padding: 0.16rem 0.65rem;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #f5c96a, #eaa93d);
+  color: #2a1c05;
+  font-family: var(--j-font-body);
+  font-size: 0.8rem;
+  font-weight: 800;
+  box-shadow: 0 4px 12px rgba(7, 14, 26, 0.45);
+}
+
+.exo-clab__avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 50%;
+  background: rgba(95, 180, 245, 0.22);
+  color: var(--j-teal);
+  font-family: var(--j-font-display);
+  font-weight: 800;
+  font-size: 1.05rem;
+}
+
+.exo-clab__avatar--alex {
+  background: rgba(245, 185, 74, 0.25);
+  color: var(--j-ochre);
+}
+
+.exo-clab__cbody {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.exo-clab__meta {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.exo-clab__user {
+  font-family: var(--j-font-body);
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: var(--j-ink);
+}
+
+.exo-clab__author {
+  padding: 0.05rem 0.5rem;
+  border-radius: 999px;
+  background: rgba(245, 185, 74, 0.18);
+  color: var(--j-ochre);
+  font-family: var(--j-font-body);
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.exo-clab__when {
+  font-family: var(--j-font-body);
+  font-size: 0.8rem;
+  color: var(--j-secondary);
+}
+
+.exo-clab__ctext {
+  margin: 0;
+  font-family: var(--j-font-body);
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--j-ink);
+  overflow-wrap: anywhere;
+}
+
+.exo-clab__likes {
+  align-self: flex-start;
+  font-family: var(--j-font-body);
+  font-size: 0.85rem;
+  color: var(--j-coral);
+}
+
+/* Alex's indented reply (typing dots, then the answer slides in) */
+.exo-clab__reply {
+  margin-top: 0.4rem;
+  padding-left: 0.8rem;
+  border-left: 2px solid rgba(245, 185, 74, 0.4);
+}
+
+.exo-clab__reply .exo-clab__comment {
+  padding: 0.5rem 0.7rem;
+  background: rgba(245, 185, 74, 0.06);
+  border-color: rgba(245, 185, 74, 0.3);
+}
+
+.exo-clab__reply--in .exo-clab__comment {
+  animation: clab-reply-in 320ms ease-out both;
+}
+
+@keyframes clab-reply-in {
+  from { opacity: 0; transform: translateY(0.4rem); }
+  to { opacity: 1; transform: none; }
+}
+
+.exo-clab__dots {
+  display: inline-flex;
+  gap: 0.28rem;
+  padding: 0.45rem 0.2rem;
+}
+
+.exo-clab__dots i {
+  width: 0.42rem;
+  height: 0.42rem;
+  border-radius: 50%;
+  background: var(--j-secondary);
+  animation: clab-dot 900ms ease-in-out infinite;
+}
+
+.exo-clab__dots i:nth-child(2) { animation-delay: 150ms; }
+.exo-clab__dots i:nth-child(3) { animation-delay: 300ms; }
+
+@keyframes clab-dot {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
+  30% { transform: translateY(-0.25rem); opacity: 1; }
+}
+
+/* --- composer --- */
+/* `display` on these beats the [hidden] UA rule — restore it. */
+.exo-clab__composer[hidden],
+.exo-clab__editbar[hidden] {
+  display: none;
+}
+
+.exo-clab__composer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  padding: 0.9rem 1rem 1rem;
+  background: var(--j-field);
+  border: 1.5px solid rgba(95, 180, 245, 0.35);
+  border-radius: 12px;
+}
+
+.exo-clab__userrow {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.exo-clab__at {
+  font-family: var(--j-font-display);
+  font-weight: 800;
+  font-size: 1.1rem;
+  color: var(--j-teal);
+}
+
+.exo-clab__userinput {
+  width: 12rem;
+  max-width: 45%;
+  font-family: var(--j-font-body);
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--j-ink);
+  background: var(--j-panel);
+  border: 1.5px solid rgba(126, 150, 176, 0.4);
+  border-radius: 8px;
+  padding: 0.35rem 0.6rem;
+}
+
+.exo-clab__userinput:focus-visible {
+  outline: none;
+  border-color: var(--j-teal);
+}
+
+.exo-clab__userinput--missing {
+  border-color: var(--j-coral);
+  animation: clab-shake 260ms ease-in-out;
+}
+
+@keyframes clab-shake {
+  25% { transform: translateX(-0.2rem); }
+  75% { transform: translateX(0.2rem); }
+}
+
+.exo-clab__usercap {
+  font-family: var(--j-font-body);
+  font-size: 0.82rem;
+  color: var(--j-secondary);
+}
+
+.exo-clab__area {
+  font-family: var(--j-font-body);
+  font-size: 1.02rem;
+  line-height: 1.55;
+  color: var(--j-ink);
+  background: var(--j-panel);
+  border: 1.5px solid rgba(126, 150, 176, 0.4);
+  border-radius: 10px;
+  padding: 0.6rem 0.8rem;
+  resize: vertical;
+}
+
+.exo-clab__area:focus-visible {
+  outline: none;
+  border-color: var(--j-teal);
+}
+
+/* the five gems */
+.exo-clab__gems {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.exo-clab__gem {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.28rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid rgba(126, 150, 176, 0.35);
+  background: var(--j-panel);
+  font-family: var(--j-font-body);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--j-secondary);
+  filter: grayscale(1);
+  opacity: 0.75;
+  transition: filter 200ms ease, opacity 200ms ease;
+}
+
+.exo-clab__gem--on {
+  filter: none;
+  opacity: 1;
+  border-color: rgba(245, 185, 74, 0.65);
+  background: rgba(245, 185, 74, 0.12);
+  color: var(--j-ochre);
+}
+
+.exo-clab__gem--pop {
+  animation: clab-pop 340ms cubic-bezier(0.2, 1.6, 0.4, 1);
+}
+
+@keyframes clab-pop {
+  0% { transform: scale(0.85); }
+  55% { transform: scale(1.12); }
+  100% { transform: scale(1); }
+}
+
+/* netiquette bot */
+.exo-clab__guard {
+  display: none;
+  margin: 0;
+  padding: 0.5rem 0.8rem;
+  border-radius: 10px;
+  background: rgba(240, 110, 100, 0.12);
+  border: 1px solid rgba(240, 110, 100, 0.45);
+  font-family: var(--j-font-body);
+  font-size: 0.92rem;
+  color: var(--j-coral);
+}
+
+.exo-clab__guard--on {
+  display: block;
+}
+
+.exo-clab__actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+}
+
+.exo-clab__preview {
+  font-family: var(--j-font-body);
+  font-size: 0.92rem;
+  color: var(--j-secondary);
+}
+
+.exo-clab__postbtn {
+  padding: 0.5rem 1.3rem;
+  border: none;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #f5c96a, #eaa93d);
+  color: #2a1c05;
+  font-family: var(--j-font-body);
+  font-size: 1rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(7, 14, 26, 0.4);
+}
+
+.exo-clab__postbtn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.exo-clab__editbar {
+  display: flex;
+  justify-content: center;
+}
+
+.exo-clab__editbtn {
+  padding: 0.45rem 1.1rem;
+  border-radius: 999px;
+  border: 1.5px solid rgba(95, 180, 245, 0.5);
+  background: var(--j-panel);
+  color: var(--j-teal);
+  font-family: var(--j-font-body);
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+@media (orientation: portrait) {
+  .exo-clab__userinput { max-width: 55%; }
+  .exo-clab__actions { flex-direction: column; align-items: stretch; text-align: center; }
+}

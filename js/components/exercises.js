@@ -280,9 +280,11 @@ export function createGlossaryText({ paragraphs, highlight }) {
 /* ---------- Multiple choice ------------------------------------ */
 
 /**
- * @param {{ questions: Array<{q: string, options: string[], correct: number}> }} data
+ * `shuffle: false` keeps the option order fixed — for binary judgement
+ * quizzes (Good ✔ / Bad ✖) where the two buttons must not swap sides.
+ * @param {{ questions: Array<{q: string, options: string[], correct: number}>, shuffle?: boolean }} data
  */
-export function createMultipleChoice({ questions, columns }) {
+export function createMultipleChoice({ questions, columns, shuffle = true }) {
   const wrap = document.createElement("div");
   wrap.className = "exo exo-mc";
   if (columns === 2) wrap.classList.add("exo-mc--cols");
@@ -303,9 +305,8 @@ export function createMultipleChoice({ questions, columns }) {
     // Shuffle the options randomly so the correct answer isn't always in
     // the same position. The answer is still never revealed — only the
     // picked option is marked right or wrong.
-    const order = shuffleInPlace(
-      question.options.map((label, i) => ({ label, correct: i === question.correct })),
-    );
+    const mapped = question.options.map((label, i) => ({ label, correct: i === question.correct }));
+    const order = shuffle ? shuffleInPlace(mapped) : mapped;
 
     order.forEach(({ label, correct }) => {
       const btn = document.createElement("button");
@@ -1240,16 +1241,19 @@ export function createTapMatch({ pairs, leftLabel = "English", rightLabel = "Deu
  * Each argument shows a German hint (suitable) or a "think about it"
  * nudge (absurd) before checking, and clear feedback after.
  *
- * @param {{ args: Array<{ text: string, hint: string, correct: boolean }> }} data
+ * `lead` may hold "{n}" for the number of correct rows; `labels`
+ * overrides the four verdict lines; a row's own `note` (shown after
+ * checking) explains the truth about that row.
+ * @param {{ args: Array<{ text: string, hint?: string, note?: string, correct: boolean }>, lead?: string, labels?: {good?:string, miss?:string, bad?:string, ignored?:string} }} data
  */
-export function createArgumentPick({ args }) {
+export function createArgumentPick({ args, lead: leadText, labels = {} }) {
   const wrap = document.createElement("div");
   wrap.className = "exo exo-args";
 
   const suitable = args.filter((a) => a.correct).length;
   const lead = document.createElement("p");
   lead.className = "exo-args__lead";
-  lead.textContent = `Tick the ${suitable} suitable arguments — ignore the absurd ones.`;
+  lead.textContent = (leadText ?? "Tick the {n} suitable arguments — ignore the absurd ones.").replace("{n}", suitable);
   wrap.appendChild(lead);
 
   const rows = shuffledCopy(args).map((arg) => {
@@ -1278,20 +1282,22 @@ export function createArgumentPick({ args }) {
       const ticked = r.box.checked;
       r.box.disabled = true;
       r.label.classList.remove("exo-args__row--good", "exo-args__row--miss", "exo-args__row--bad");
+      let verdict;
       if (r.arg.correct && ticked) {
         r.label.classList.add("exo-args__row--good");
-        r.note.textContent = "A suitable argument.";
+        verdict = labels.good ?? "A suitable argument.";
         right += 1;
       } else if (r.arg.correct && !ticked) {
         r.label.classList.add("exo-args__row--miss");
-        r.note.textContent = "You missed this suitable argument.";
+        verdict = labels.miss ?? "You missed this suitable argument.";
       } else if (!r.arg.correct && ticked) {
         r.label.classList.add("exo-args__row--bad");
-        r.note.textContent = "Not a suitable argument.";
+        verdict = labels.bad ?? "Not a suitable argument.";
       } else {
-        r.note.textContent = "Correctly ignored.";
+        verdict = labels.ignored ?? "Correctly ignored.";
         right += 1;
       }
+      r.note.textContent = r.arg.note ? `${verdict} ${r.arg.note}` : verdict;
     }
     checkBtn.result(`${right} / ${rows.length} correct`);
   });
@@ -3082,5 +3088,342 @@ export function createStoryMaker({ template, scenes, blanks, values, keyFor, onC
   wrap.prepend(head);
   wrap.appendChild(grid);
   paintStory();
+  return wrap;
+}
+
+/* ============================================================
+ * Comment Lab — "get your comment pinned" (Writing Step-4 star)
+ *
+ * A live blog comment section. The learner reads Alex's post and the
+ * existing comments (which model a near-miss and a one-word failure,
+ * each already answered by Alex), then writes their own comment. Five
+ * gems light up as the five building blocks appear in their text; a
+ * netiquette bot blocks shouting and insults. On Post, the comment
+ * joins the thread, the likes count up, and Alex replies — nudging at
+ * the first missing block, or pinning the comment to the top when all
+ * five gems glow. No right/wrong marks: the feedback IS the fiction.
+ * ============================================================ */
+
+/** The five building blocks, detected live in the learner's text. */
+const CLAB_GEMS = [
+  {
+    key: "react",
+    icon: "👋",
+    label: "React",
+    tip: "Say hi and thanks",
+    test: (t) => /\b(hi|hello|hey)\b/i.test(t) || /\bthanks?\b|\bthank you\b/i.test(t) || /enjoyed (reading )?your|made me think/i.test(t),
+  },
+  {
+    key: "refer",
+    icon: "🔎",
+    label: "Refer",
+    tip: "Name a detail from the post",
+    test: (t) => /\b(part|bit) about\b/i.test(t) || /\byou (wrote|said)\b/i.test(t) || /\bwrote about\b/i.test(t) || /\bliked the\b/i.test(t) || /surprised me/i.test(t),
+  },
+  {
+    key: "opinion",
+    icon: "💡",
+    label: "Opinion + because",
+    tip: "What you think — with a reason",
+    test: (t) => (/\bi think\b/i.test(t) || /\bin my opinion\b/i.test(t) || /\bi believe\b/i.test(t) || /\bagree\b/i.test(t)) && /\bbecause\b/i.test(t),
+  },
+  {
+    key: "answer",
+    icon: "🗽",
+    label: "Answer",
+    tip: "Could YOU live there?",
+    test: (t) => /\b(could|would)(n't| not)?\b[\s\S]{0,40}?\blive\b/i.test(t),
+  },
+  {
+    key: "close",
+    icon: "🤝",
+    label: "Close",
+    tip: "A friendly ending",
+    test: (t) => /greetings from/i.test(t) || /keep (writing|posting|blogging)/i.test(t) || /can'?t wait|looking forward/i.test(t) || /next post/i.test(t) || /\bbye\b|see you/i.test(t),
+  },
+];
+
+/** Alex's reply when a block is missing — nudges the FIRST missing one. */
+const CLAB_NUDGES = {
+  react: "Thanks for the comment! It starts a bit suddenly — a friendly “Hi” and a little thanks work wonders. 😉",
+  refer: "Thanks! But which part of my post are you talking about? Try “I liked the part about …”.",
+  opinion: "Interesting! But WHY do you think that? An opinion without a because convinces nobody. 😄",
+  answer: "Nice comment — but you didn't answer my question: could YOU live in New York?",
+  close: "Good points! But your comment just… stops. How about a friendly ending — greetings from your city?",
+};
+
+/** Netiquette bot: insults and shouting never reach the thread. */
+function clabGuard(text) {
+  if (/\b(stupid|idiot|dumb|pointless|sucks?|shut up|loser|trash|nobody wants)\b/i.test(text) || /\b(ur|u r) (so )?wrong\b/i.test(text)) {
+    return "🤖 Netiquette bot: that sounds like an insult. Criticise ideas, never the person — or the filter hides your comment.";
+  }
+  // A 4+-letter ALL-CAPS word reads as shouting (YORK etc. get a pass).
+  const caps = text.match(/\b[A-Z]{4,}\b/g) ?? [];
+  if (caps.some((w) => !["YORK", "YOUR"].includes(w))) {
+    return "🤖 Netiquette bot: CAPITAL LETTERS look like shouting. Calm letters, please — or the filter hides your comment.";
+  }
+  return "";
+}
+
+/** One rendered comment row (avatar initial, meta, text, likes chip). */
+function clabComment({ user, when, likes, text, author }) {
+  const row = document.createElement("article");
+  row.className = "exo-clab__comment";
+  const av = document.createElement("span");
+  av.className = "exo-clab__avatar";
+  if (author) av.classList.add("exo-clab__avatar--alex");
+  av.textContent = (user[0] ?? "?").toUpperCase();
+  const bodyEl = document.createElement("div");
+  bodyEl.className = "exo-clab__cbody";
+  const meta = document.createElement("div");
+  meta.className = "exo-clab__meta";
+  const name = document.createElement("span");
+  name.className = "exo-clab__user";
+  name.textContent = user;
+  meta.appendChild(name);
+  if (author) {
+    const badge = document.createElement("span");
+    badge.className = "exo-clab__author";
+    badge.textContent = "✔ Author";
+    meta.appendChild(badge);
+  }
+  const time = document.createElement("span");
+  time.className = "exo-clab__when";
+  time.textContent = when;
+  meta.appendChild(time);
+  const body = document.createElement("p");
+  body.className = "exo-clab__ctext";
+  body.textContent = text;
+  const heart = document.createElement("span");
+  heart.className = "exo-clab__likes";
+  heart.innerHTML = `♥ <b>${likes}</b>`;
+  bodyEl.append(meta, body, heart);
+  row.append(av, bodyEl);
+  return { row, bodyEl, heart };
+}
+
+/** Alex's indented reply under a comment (with a short typing pause). */
+function clabReply(text, { delay = 0 } = {}) {
+  const reply = document.createElement("div");
+  reply.className = "exo-clab__reply";
+  const paint = () => {
+    const { row } = clabComment({ user: "Alex", when: "just now", likes: 0, text, author: true });
+    row.querySelector(".exo-clab__likes").remove();
+    reply.appendChild(row);
+    reply.classList.add("exo-clab__reply--in");
+  };
+  if (delay) {
+    reply.classList.add("exo-clab__reply--typing");
+    reply.innerHTML = '<span class="exo-clab__dots"><i></i><i></i><i></i></span>';
+    setTimeout(() => {
+      reply.innerHTML = "";
+      reply.classList.remove("exo-clab__reply--typing");
+      paint();
+    }, delay);
+  } else {
+    paint();
+  }
+  return reply;
+}
+
+/**
+ * @param {{
+ *   post: { blog: string, title: string, meta: string, text: string },
+ *   comments: Array<{ user: string, when: string, likes: number, text: string, reply?: string }>,
+ *   values: { user?: string, text?: string },
+ *   keyFor: (field: string) => string,
+ *   onChange: (field: string, value: string) => void,
+ * }} opts
+ */
+export function createCommentLab({ post, comments, values, keyFor, onChange }) {
+  const wrap = document.createElement("div");
+  wrap.className = "exo exo-clab";
+
+  // --- The post being commented on ---
+  const postEl = document.createElement("article");
+  postEl.className = "exo-clab__post";
+  postEl.innerHTML =
+    `<span class="exo-clab__blog">${post.blog}</span>` +
+    `<h4 class="exo-clab__ptitle"></h4><span class="exo-clab__pmeta"></span><p class="exo-clab__ptext"></p>`;
+  postEl.querySelector(".exo-clab__ptitle").textContent = post.title;
+  postEl.querySelector(".exo-clab__pmeta").textContent = post.meta;
+  postEl.querySelector(".exo-clab__ptext").textContent = post.text;
+  wrap.appendChild(postEl);
+
+  // --- Thread: pinned placeholder + the model comments ---
+  const thread = document.createElement("div");
+  thread.className = "exo-clab__thread";
+  const pinSlot = document.createElement("div");
+  pinSlot.className = "exo-clab__pinslot";
+  pinSlot.textContent = "📌 No pinned comment yet — Alex pins the best one. Yours?";
+  thread.appendChild(pinSlot);
+  for (const c of comments) {
+    const { row, bodyEl } = clabComment(c);
+    if (c.reply) bodyEl.appendChild(clabReply(c.reply));
+    thread.appendChild(row);
+  }
+  wrap.appendChild(thread);
+
+  // --- Composer ---
+  const composer = document.createElement("div");
+  composer.className = "exo-clab__composer";
+
+  const userRow = document.createElement("label");
+  userRow.className = "exo-clab__userrow";
+  const at = document.createElement("span");
+  at.className = "exo-clab__at";
+  at.textContent = "@";
+  const userInput = document.createElement("input");
+  userInput.type = "text";
+  userInput.className = "exo-clab__userinput";
+  userInput.autocomplete = "off";
+  userInput.maxLength = 24;
+  userInput.dataset.answerKey = keyFor("user");
+  userInput.value = values?.user ?? "";
+  userInput.setAttribute("aria-label", "Your username");
+  const userCap = document.createElement("span");
+  userCap.className = "exo-clab__usercap";
+  userCap.textContent = "your username";
+  userRow.append(at, userInput, userCap);
+
+  const area = document.createElement("textarea");
+  area.className = "exo-clab__area";
+  area.rows = 6;
+  area.dataset.answerKey = keyFor("text");
+  area.value = values?.text ?? "";
+  area.setAttribute("aria-label", "Your comment");
+
+  // Five gems, lighting up live as the blocks appear.
+  const gemRow = document.createElement("div");
+  gemRow.className = "exo-clab__gems";
+  const gems = CLAB_GEMS.map((g) => {
+    const gem = document.createElement("span");
+    gem.className = "exo-clab__gem";
+    gem.innerHTML = `<span class="exo-clab__gem-ico">${g.icon}</span><span class="exo-clab__gem-txt">${g.label}</span>`;
+    gem.title = g.tip;
+    gemRow.appendChild(gem);
+    return { el: gem, def: g };
+  });
+
+  const guardEl = document.createElement("p");
+  guardEl.className = "exo-clab__guard";
+
+  const actions = document.createElement("div");
+  actions.className = "exo-clab__actions";
+  const preview = document.createElement("span");
+  preview.className = "exo-clab__preview";
+  const postBtn = document.createElement("button");
+  postBtn.type = "button";
+  postBtn.className = "exo-clab__postbtn";
+  postBtn.textContent = "Post comment";
+  actions.append(preview, postBtn);
+
+  composer.append(userRow, area, gemRow, guardEl, actions);
+  wrap.appendChild(composer);
+
+  const litCount = () => gems.filter((g) => g.el.classList.contains("exo-clab__gem--on")).length;
+
+  const paint = () => {
+    const t = area.value;
+    for (const g of gems) {
+      const on = t.trim() && g.def.test(t);
+      const was = g.el.classList.contains("exo-clab__gem--on");
+      g.el.classList.toggle("exo-clab__gem--on", !!on);
+      if (on && !was) {
+        g.el.classList.remove("exo-clab__gem--pop");
+        void g.el.offsetWidth; // restart the pop animation
+        g.el.classList.add("exo-clab__gem--pop");
+      }
+    }
+    const guard = clabGuard(t);
+    guardEl.textContent = guard;
+    guardEl.classList.toggle("exo-clab__guard--on", !!guard);
+    postBtn.disabled = !!guard || !t.trim();
+    const n = litCount();
+    preview.innerHTML = `♥ <b>${n * 6}</b> · ${n} / 5 blocks`;
+  };
+
+  userInput.addEventListener("input", () => {
+    userInput.classList.remove("exo-clab__userinput--missing");
+    onChange("user", userInput.value);
+  });
+  area.addEventListener("input", () => {
+    onChange("text", area.value);
+    paint();
+  });
+
+  // --- Post: the comment joins the thread and Alex answers ---
+  let posted = null;
+  postBtn.addEventListener("click", () => {
+    const user = userInput.value.trim();
+    if (!user) {
+      userInput.classList.add("exo-clab__userinput--missing");
+      userInput.focus();
+      return;
+    }
+    const lit = litCount();
+    const perfect = lit === CLAB_GEMS.length;
+    const finalLikes = perfect ? lit * 6 + 17 : lit * 6;
+
+    const { row, bodyEl, heart } = clabComment({
+      user, when: "just now", likes: 0, text: area.value.trim(),
+    });
+    row.classList.add("exo-clab__comment--mine");
+    if (perfect) {
+      row.classList.add("exo-clab__comment--pinned");
+      const pin = document.createElement("span");
+      pin.className = "exo-clab__pin";
+      pin.textContent = "📌 Pinned by Alex";
+      row.prepend(pin);
+      pinSlot.replaceWith(row);
+    } else {
+      thread.appendChild(row);
+    }
+
+    // Likes count up one by one — small, but very satisfying.
+    let shown = 0;
+    const tick = setInterval(() => {
+      shown += 1;
+      heart.innerHTML = `♥ <b>${shown}</b>`;
+      if (shown >= finalLikes) clearInterval(tick);
+    }, perfect ? 55 : 90);
+
+    const missing = gems.find((g) => !g.el.classList.contains("exo-clab__gem--on"));
+    const replyText = perfect
+      ? `Wow, ${user} — this is exactly how a perfect comment looks: friendly, specific, with reasons and a real answer to my question. Pinned to the top! 📌`
+      : CLAB_NUDGES[missing.def.key];
+    bodyEl.appendChild(clabReply(replyText, { delay: 1400 }));
+
+    // Swap the composer for an "edit" bar so the thread takes the stage.
+    composer.hidden = true;
+    posted = row;
+    editBar.hidden = false;
+    row.scrollIntoView({ behavior: "smooth", block: "center" });
+  });
+
+  const editBar = document.createElement("div");
+  editBar.className = "exo-clab__editbar";
+  editBar.hidden = true;
+  const editBtn = document.createElement("button");
+  editBtn.type = "button";
+  editBtn.className = "exo-clab__editbtn";
+  editBtn.textContent = "✏️ Edit my comment";
+  editBtn.addEventListener("click", () => {
+    if (posted) {
+      if (posted.classList.contains("exo-clab__comment--pinned")) {
+        posted.replaceWith(pinSlot);
+      } else {
+        posted.remove();
+      }
+      posted = null;
+    }
+    editBar.hidden = true;
+    composer.hidden = false;
+    area.focus();
+  });
+  editBar.appendChild(editBtn);
+  wrap.appendChild(editBar);
+
+  paint();
   return wrap;
 }
