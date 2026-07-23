@@ -50,6 +50,7 @@ import {
   createCommentLab,
   createCommentThread,
   createCommentFill,
+  createDispatchGame,
 } from "../components/exercises.js";
 import {
   getName,
@@ -381,6 +382,11 @@ function downloadAnswerSheet(view, unit, section, content, name) {
               answer: answers[`${base}-comicx-p${k}-b${j}`] ?? "",
             })),
           );
+        }
+        if (card.type === "dispatch-game") {
+          // The finished day report (deliveries · $ · km · rank), if played.
+          const r = answers[`${base}-game`];
+          return r ? [{ label: card.title, answer: r }] : [];
         }
         if (card.type === "comment-fill") {
           // Sam's completed comment prints as one whole text (like the
@@ -1020,6 +1026,18 @@ function buildCard(step, data, index, taskNo, ctx) {
     case "comment-view":
       body.appendChild(createCommentThread({ comments: data.comments }));
       break;
+    case "dispatch-game": {
+      const key = `step${step.step}-task${index + 1}-game`;
+      body.appendChild(
+        createDispatchGame({
+          board: data.board,
+          start: data.start,
+          stops: data.stops,
+          onResult: (summary) => ctx && setAnswer(ctx.unitId, ctx.sectionId, key, summary),
+        }),
+      );
+      break;
+    }
     case "comment-fill": {
       const base = `step${step.step}-task${index + 1}-cfill`;
       const saved = ctx ? getAnswers(ctx.unitId, ctx.sectionId) : {};

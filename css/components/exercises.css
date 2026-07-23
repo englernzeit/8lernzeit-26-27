@@ -3571,3 +3571,265 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
   flex: 1;
   min-width: 0;
 }
+
+/* =====================================================================
+   Dispatch Game — "Rush Hour" (Reading Step-4 star). A painted night
+   board with pins and a pedalling rider, a walkie-talkie dispatch panel
+   and a day-report card. Without the artwork the board degrades to the
+   dark hatched panel (same pattern as the Story Machine scenes).
+   ===================================================================== */
+
+.exo-dg {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.exo-dg__board {
+  --img: none;
+  position: relative;
+  aspect-ratio: 16 / 9;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid rgba(126, 150, 176, 0.3);
+  background-image: var(--img),
+    repeating-linear-gradient(45deg, rgba(126, 150, 176, 0.08) 0 2px, transparent 2px 14px);
+  background-color: rgba(7, 14, 26, 0.6);
+  background-size: cover, auto;
+  background-position: center;
+}
+
+.exo-dg__pin {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.9rem;
+  height: 1.9rem;
+  border-radius: 50%;
+  background: rgba(13, 21, 38, 0.85);
+  border: 2px solid rgba(126, 150, 176, 0.6);
+  color: var(--j-secondary);
+  font-family: var(--j-font-display);
+  font-weight: 800;
+  font-size: 0.95rem;
+  z-index: 2;
+}
+
+.exo-dg__pin--depot {
+  font-size: 1rem;
+  border-color: rgba(245, 185, 74, 0.5);
+}
+
+.exo-dg__pin--next {
+  border-color: var(--j-ochre);
+  color: var(--j-ochre);
+  box-shadow: 0 0 0 4px rgba(245, 185, 74, 0.18), 0 0 18px rgba(245, 185, 74, 0.35);
+  animation: dg-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes dg-pulse {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); }
+  50% { transform: translate(-50%, -50%) scale(1.12); }
+}
+
+.exo-dg__pin--done {
+  background: rgba(90, 217, 143, 0.25);
+  border-color: var(--j-olive);
+  color: var(--j-olive);
+}
+
+.exo-dg__rider {
+  position: absolute;
+  transform: translate(-50%, -60%);
+  font-size: 1.7rem;
+  filter: drop-shadow(0 4px 8px rgba(7, 14, 26, 0.8));
+  transition: left 1s ease-in-out, top 1s ease-in-out;
+  z-index: 3;
+}
+
+.exo-dg__toast {
+  position: absolute;
+  transform: translate(-50%, -140%);
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #f5c96a, #eaa93d);
+  color: #2a1c05;
+  font-family: var(--j-font-body);
+  font-weight: 800;
+  font-size: 0.85rem;
+  white-space: nowrap;
+  animation: dg-toast 1.6s ease-out both;
+  z-index: 4;
+}
+
+@keyframes dg-toast {
+  0% { opacity: 0; margin-top: 0; }
+  15% { opacity: 1; }
+  100% { opacity: 0; margin-top: -1.6rem; }
+}
+
+.exo-dg__hud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.exo-dg__stat {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.3rem;
+  padding: 0.28rem 0.8rem;
+  border-radius: 999px;
+  background: var(--j-panel);
+  border: 1px solid rgba(126, 150, 176, 0.3);
+  font-family: var(--j-font-body);
+  font-size: 0.92rem;
+  color: var(--j-secondary);
+}
+
+.exo-dg__stat b {
+  color: var(--j-ink);
+  font-size: 1.02rem;
+}
+
+.exo-dg__panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  padding: 0.9rem 1rem 1rem;
+  border-radius: 12px;
+  background: var(--j-field);
+  border: 1.5px solid rgba(245, 185, 74, 0.35);
+}
+
+.exo-dg__radio {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--j-font-body);
+  font-weight: 800;
+  font-size: 0.85rem;
+  letter-spacing: 0.09em;
+  color: var(--j-ochre);
+}
+
+.exo-dg__radio-dot {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  background: #ff5f56;
+  animation: dg-blink 1.1s steps(2, start) infinite;
+}
+
+@keyframes dg-blink {
+  to { opacity: 0.25; }
+}
+
+.exo-dg__note {
+  margin: 0;
+  font-family: var(--j-font-body);
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: var(--j-ink);
+  padding: 0.65rem 0.9rem;
+  border-left: 3px solid rgba(245, 185, 74, 0.55);
+  background: var(--j-panel);
+  border-radius: 0 10px 10px 0;
+}
+
+.exo-dg__q-prompt {
+  margin: 0 0 0.4rem;
+  font-family: var(--j-font-body);
+  font-weight: 700;
+  font-size: 0.98rem;
+  color: var(--j-ink);
+}
+
+.exo-dg__opts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.exo-dg__opt {
+  padding: 0.38rem 0.9rem;
+  border-radius: 999px;
+  border: 1.5px solid rgba(126, 150, 176, 0.4);
+  background: var(--j-panel);
+  color: var(--j-ink);
+  font-family: var(--j-font-body);
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.exo-dg__opt:hover:not(:disabled) {
+  border-color: var(--j-ochre);
+}
+
+.exo-dg__opt--right {
+  border-color: var(--j-olive);
+  background: rgba(90, 217, 143, 0.16);
+  color: var(--j-olive);
+  font-weight: 700;
+}
+
+.exo-dg__opt--wrong {
+  border-color: rgba(240, 110, 100, 0.6);
+  background: rgba(240, 110, 100, 0.12);
+  color: var(--j-coral);
+  text-decoration: line-through;
+}
+
+.exo-dg__opt:disabled {
+  cursor: default;
+  opacity: 0.85;
+}
+
+.exo-dg__report {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  align-items: flex-start;
+}
+
+.exo-dg__report-cap {
+  margin: 0;
+  font-family: var(--j-font-display);
+  font-size: 1.3rem;
+  color: var(--j-ochre);
+}
+
+.exo-dg__report-row {
+  margin: 0;
+  font-family: var(--j-font-body);
+  font-size: 1rem;
+  color: var(--j-ink);
+}
+
+.exo-dg__report-rank {
+  margin: 0.3rem 0 0;
+  font-family: var(--j-font-display);
+  font-size: 1.45rem;
+  color: var(--j-ink);
+}
+
+.exo-dg__again {
+  margin-top: 0.6rem;
+  padding: 0.45rem 1.1rem;
+  border-radius: 999px;
+  border: 1.5px solid rgba(95, 180, 245, 0.5);
+  background: var(--j-panel);
+  color: var(--j-teal);
+  font-family: var(--j-font-body);
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+@media (orientation: portrait) {
+  .exo-dg__board { aspect-ratio: 16 / 9; }
+  .exo-dg__rider { font-size: 1.35rem; }
+  .exo-dg__pin { width: 1.6rem; height: 1.6rem; font-size: 0.85rem; }
+}

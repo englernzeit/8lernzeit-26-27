@@ -3459,6 +3459,202 @@ export function createCommentLab({ post, comments, values, keyFor, onChange }) {
   return wrap;
 }
 
+/* ============================================================
+ * Dispatch Game — "Rush Hour" (Reading Step-4 star)
+ *
+ * Reading as gameplay: the radio prints a dispatch note, the learner
+ * reads it carefully and answers 2 quick detail questions to complete
+ * the delivery. The bike rider then pedals to the next pin on a painted
+ * night map of Manhattan, dollars and kilometres add up, and the day
+ * ends with a report card and a rank. Wrong taps are never punished
+ * beyond the rank — the game is a reason to read closely, not a test.
+ * ============================================================ */
+
+/**
+ * @param {{
+ *   board: { img?: string, alt?: string },
+ *   start: { x: number, y: number },
+ *   stops: Array<{
+ *     pin: { x: number, y: number },
+ *     time: string,
+ *     note: string,
+ *     questions: Array<{ q: string, options: string[], correct: number }>,
+ *     pay: number,
+ *     km: number,
+ *   }>,
+ *   onResult: (summary: string) => void,
+ * }} opts
+ */
+export function createDispatchGame({ board, start, stops, onResult }) {
+  const wrap = document.createElement("div");
+  wrap.className = "exo exo-dg";
+
+  // --- The city board: painted map, pins, rider ---
+  const map = document.createElement("div");
+  map.className = "exo-dg__board";
+  if (board?.img) {
+    // Absolute URL on purpose — a relative url() in a custom property
+    // resolves against the stylesheet, not the document (see StoryMaker).
+    map.style.setProperty("--img", `url("${new URL(board.img, document.baseURI).href}")`);
+  }
+  if (board?.alt) map.setAttribute("aria-label", board.alt);
+
+  const depot = document.createElement("span");
+  depot.className = "exo-dg__pin exo-dg__pin--depot";
+  depot.style.left = `${start.x}%`;
+  depot.style.top = `${start.y}%`;
+  depot.textContent = "🏠";
+  map.appendChild(depot);
+
+  const pins = stops.map((s, i) => {
+    const pin = document.createElement("span");
+    pin.className = "exo-dg__pin";
+    pin.style.left = `${s.pin.x}%`;
+    pin.style.top = `${s.pin.y}%`;
+    pin.textContent = String(i + 1);
+    map.appendChild(pin);
+    return pin;
+  });
+
+  const rider = document.createElement("span");
+  rider.className = "exo-dg__rider";
+  rider.style.left = `${start.x}%`;
+  rider.style.top = `${start.y}%`;
+  rider.textContent = "🚴";
+  map.appendChild(rider);
+
+  // --- HUD: deliveries · dollars · kilometres ---
+  const hud = document.createElement("div");
+  hud.className = "exo-dg__hud";
+  const hudBox = (icon) => {
+    const b = document.createElement("span");
+    b.className = "exo-dg__stat";
+    b.innerHTML = `${icon} <b>0</b>`;
+    hud.appendChild(b);
+    return b.querySelector("b");
+  };
+  const elDone = hudBox("📦");
+  const elCash = hudBox("💵 $");
+  const elKm = hudBox("🛞");
+  hud.querySelectorAll(".exo-dg__stat")[2].appendChild(document.createTextNode(" km"));
+
+  // --- Dispatch panel: radio chrome + note + questions ---
+  const panel = document.createElement("div");
+  panel.className = "exo-dg__panel";
+
+  const state = { i: 0, cash: 0, km: 0, wrong: 0 };
+
+  const showStop = () => {
+    const s = stops[state.i];
+    pins.forEach((p, k) => p.classList.toggle("exo-dg__pin--next", k === state.i));
+    panel.innerHTML = "";
+    const head = document.createElement("div");
+    head.className = "exo-dg__radio";
+    head.innerHTML = `<span class="exo-dg__radio-dot"></span>📻 DISPATCH ${state.i + 1} / ${stops.length} · ${s.time}`;
+    const note = document.createElement("p");
+    note.className = "exo-dg__note";
+    note.textContent = s.note;
+    panel.append(head, note);
+
+    let solved = 0;
+    s.questions.forEach((question) => {
+      const qEl = document.createElement("div");
+      qEl.className = "exo-dg__q";
+      const prompt = document.createElement("p");
+      prompt.className = "exo-dg__q-prompt";
+      prompt.textContent = question.q;
+      qEl.appendChild(prompt);
+      const opts = document.createElement("div");
+      opts.className = "exo-dg__opts";
+      let locked = false;
+      question.options.forEach((label, oi) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "exo-dg__opt";
+        btn.textContent = label;
+        btn.addEventListener("click", () => {
+          if (locked || btn.disabled) return;
+          if (oi === question.correct) {
+            locked = true;
+            btn.classList.add("exo-dg__opt--right");
+            opts.querySelectorAll("button").forEach((b) => (b.disabled = true));
+            solved += 1;
+            if (solved === s.questions.length) deliver();
+          } else {
+            state.wrong += 1;
+            btn.classList.add("exo-dg__opt--wrong");
+            btn.disabled = true;
+          }
+        });
+        opts.appendChild(btn);
+      });
+      qEl.appendChild(opts);
+      panel.appendChild(qEl);
+    });
+  };
+
+  const deliver = () => {
+    const s = stops[state.i];
+    state.cash += s.pay;
+    state.km += s.km;
+    elDone.textContent = `${state.i + 1} / ${stops.length}`;
+    elCash.textContent = String(state.cash);
+    elKm.textContent = String(state.km);
+    pins[state.i].classList.add("exo-dg__pin--done");
+    pins[state.i].classList.remove("exo-dg__pin--next");
+    rider.style.left = `${s.pin.x}%`;
+    rider.style.top = `${s.pin.y}%`;
+    const toast = document.createElement("span");
+    toast.className = "exo-dg__toast";
+    toast.textContent = `Delivered! +$${s.pay}`;
+    toast.style.left = `${s.pin.x}%`;
+    toast.style.top = `${s.pin.y}%`;
+    map.appendChild(toast);
+    setTimeout(() => toast.remove(), 1600);
+
+    state.i += 1;
+    if (state.i < stops.length) {
+      setTimeout(showStop, 1100);
+    } else {
+      setTimeout(report, 1100);
+    }
+  };
+
+  const report = () => {
+    const rank =
+      state.wrong <= 1 ? "Street King 👑" : state.wrong <= 4 ? "City Rider 🚴" : "Brave Rookie 🐣";
+    onResult?.(
+      `${stops.length}/${stops.length} deliveries · $${state.cash} · ${state.km} km · rank: ${rank}`,
+    );
+    panel.innerHTML = "";
+    const card = document.createElement("div");
+    card.className = "exo-dg__report";
+    card.innerHTML =
+      `<p class="exo-dg__report-cap">🌙 End of shift — day report</p>` +
+      `<p class="exo-dg__report-row">Deliveries: <b>${stops.length} / ${stops.length}</b></p>` +
+      `<p class="exo-dg__report-row">Earned: <b>$${state.cash}</b> · Ridden: <b>${state.km} km</b></p>` +
+      `<p class="exo-dg__report-rank">Your rank: <b>${rank}</b></p>`;
+    const again = document.createElement("button");
+    again.type = "button";
+    again.className = "exo-dg__again";
+    again.textContent = "🔄 Ride again";
+    again.addEventListener("click", () => {
+      state.i = 0; state.cash = 0; state.km = 0; state.wrong = 0;
+      elDone.textContent = "0"; elCash.textContent = "0"; elKm.textContent = "0";
+      pins.forEach((p) => p.classList.remove("exo-dg__pin--done", "exo-dg__pin--next"));
+      rider.style.left = `${start.x}%`;
+      rider.style.top = `${start.y}%`;
+      showStop();
+    });
+    card.appendChild(again);
+    panel.appendChild(card);
+  };
+
+  wrap.append(map, hud, panel);
+  showStop();
+  return wrap;
+}
+
 /**
  * Read-only thread of model comments, rendered exactly like the Comment
  * Lab thread — so the models look like the real thing the learner will

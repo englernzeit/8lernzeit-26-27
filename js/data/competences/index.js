@@ -15,10 +15,12 @@
 
 import nycGrammar from "./new-york-city-grammar.js";
 import nycWriting from "./new-york-city-writing.js";
+import nycReading from "./new-york-city-reading.js";
 
 const CONTENT = {
   "new-york-city/grammar": nycGrammar,
   "new-york-city/writing": nycWriting,
+  "new-york-city/reading": nycReading,
 };
 
 /**
