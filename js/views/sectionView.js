@@ -51,6 +51,7 @@ import {
   createCommentThread,
   createCommentFill,
   createDispatchGame,
+  createSubwayGame,
 } from "../components/exercises.js";
 import {
   getName,
@@ -396,8 +397,8 @@ function downloadAnswerSheet(view, unit, section, content, name) {
             ? [{ label: `${card.title} — Beweis-Zeilen`, answer: refs.join(" · ") }]
             : [];
         }
-        if (card.type === "dispatch-game") {
-          // The finished day report (deliveries · $ · km · rank), if played.
+        if (card.type === "dispatch-game" || card.type === "subway-game") {
+          // The finished result (deliveries/rank or arrival/rank), if played.
           const r = answers[`${base}-game`];
           return r ? [{ label: card.title, answer: r }] : [];
         }
@@ -1075,6 +1076,17 @@ function buildCard(step, data, index, taskNo, ctx) {
           board: data.board,
           rider: data.rider,
           start: data.start,
+          stops: data.stops,
+          onResult: (summary) => ctx && setAnswer(ctx.unitId, ctx.sectionId, key, summary),
+        }),
+      );
+      break;
+    }
+    case "subway-game": {
+      const key = `step${step.step}-task${index + 1}-game`;
+      body.appendChild(
+        createSubwayGame({
+          stations: data.stations,
           stops: data.stops,
           onResult: (summary) => ctx && setAnswer(ctx.unitId, ctx.sectionId, key, summary),
         }),

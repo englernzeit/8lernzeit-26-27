@@ -4041,3 +4041,261 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
   .exo-essay__pc-stamp { order: 2; }
   .exo-essay__pc-addr { flex: 1; order: 1; }
 }
+
+/* --- "Help me" transcript on the audio player -------------------- */
+
+.exo-audio-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.exo-audio__help {
+  align-self: flex-start;
+  padding: 0.35rem 0.9rem;
+  border-radius: 999px;
+  border: 1.5px solid rgba(95, 180, 245, 0.45);
+  background: var(--j-panel);
+  color: var(--j-teal);
+  font-family: var(--j-font-body);
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.exo-audio__help:hover { border-color: var(--j-teal); }
+
+.exo-audio__transcript {
+  padding: 0.8rem 1rem;
+  border-radius: 12px;
+  background: var(--j-panel);
+  border: 1px solid rgba(126, 150, 176, 0.28);
+  border-left: 3px solid var(--j-teal);
+}
+
+.exo-audio__tline {
+  margin: 0 0 0.4rem;
+  font-family: var(--j-font-body);
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--j-ink);
+}
+.exo-audio__tline:last-child { margin-bottom: 0; }
+
+.exo-audio__tspeaker {
+  font-weight: 800;
+  color: var(--j-teal);
+}
+
+/* =====================================================================
+   Subway Challenge — "Mind the Gap" (Listening Step-4 star). A station
+   line with a moving train, a walkie-talkie situation panel and a
+   day-report card. The audio player (with Help-me transcript) rides on
+   top, reused from the listening tasks.
+   ===================================================================== */
+
+.exo-sub {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.exo-sub__line {
+  position: relative;
+  height: 5.4rem;
+  margin: 0.6rem 0.4rem 0;
+}
+
+.exo-sub__rail {
+  position: absolute;
+  top: 1.4rem;
+  left: 0;
+  right: 0;
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(126, 150, 176, 0.3);
+  overflow: hidden;
+}
+
+.exo-sub__rail-fill {
+  height: 100%;
+  width: 0;
+  border-radius: 3px;
+  background: linear-gradient(90deg, var(--j-teal), var(--j-ochre));
+  transition: width 0.85s ease-in-out;
+}
+
+.exo-sub__station {
+  position: absolute;
+  top: 0;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  width: 5rem;
+}
+
+.exo-sub__dot {
+  width: 1rem;
+  height: 1rem;
+  margin-top: 0.9rem;
+  border-radius: 50%;
+  background: rgba(13, 21, 38, 0.9);
+  border: 2px solid rgba(126, 150, 176, 0.6);
+}
+
+.exo-sub__station--reached .exo-sub__dot {
+  background: var(--j-teal);
+  border-color: var(--j-teal);
+}
+
+.exo-sub__station--home .exo-sub__dot {
+  border-color: var(--j-ochre);
+}
+.exo-sub__station--home.exo-sub__station--reached .exo-sub__dot {
+  background: var(--j-ochre);
+  border-color: var(--j-ochre);
+}
+
+.exo-sub__stname {
+  font-family: var(--j-font-body);
+  font-size: 0.72rem;
+  line-height: 1.1;
+  text-align: center;
+  color: var(--j-secondary);
+}
+
+.exo-sub__station--reached .exo-sub__stname { color: var(--j-ink); }
+
+.exo-sub__train {
+  position: absolute;
+  top: 0.15rem;
+  transform: translateX(-50%);
+  font-size: 1.7rem;
+  filter: drop-shadow(0 3px 6px rgba(7, 14, 26, 0.8));
+  transition: left 0.85s ease-in-out;
+  z-index: 2;
+}
+
+.exo-sub__hud {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.exo-sub__stat {
+  padding: 0.28rem 0.9rem;
+  border-radius: 999px;
+  background: var(--j-panel);
+  border: 1px solid rgba(126, 150, 176, 0.3);
+  font-family: var(--j-font-body);
+  font-size: 0.92rem;
+  color: var(--j-secondary);
+}
+.exo-sub__stat b { color: var(--j-ink); }
+
+.exo-sub__panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  padding: 0.9rem 1rem 1rem;
+  border-radius: 12px;
+  background: var(--j-field);
+  border: 1.5px solid rgba(95, 180, 245, 0.35);
+}
+
+.exo-sub__tag {
+  font-family: var(--j-font-body);
+  font-weight: 800;
+  font-size: 0.8rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--j-teal);
+}
+
+.exo-sub__prompt {
+  margin: 0;
+  font-family: var(--j-font-body);
+  font-size: 1.08rem;
+  line-height: 1.5;
+  color: var(--j-ink);
+}
+
+.exo-sub__opts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.exo-sub__opt {
+  padding: 0.45rem 1rem;
+  border-radius: 999px;
+  border: 1.5px solid rgba(126, 150, 176, 0.4);
+  background: var(--j-panel);
+  color: var(--j-ink);
+  font-family: var(--j-font-body);
+  font-size: 0.98rem;
+  cursor: pointer;
+}
+.exo-sub__opt:hover:not(:disabled) { border-color: var(--j-teal); }
+
+.exo-sub__opt--right {
+  border-color: var(--j-olive);
+  background: rgba(90, 217, 143, 0.16);
+  color: var(--j-olive);
+  font-weight: 700;
+}
+.exo-sub__opt--wrong {
+  border-color: rgba(240, 110, 100, 0.6);
+  background: rgba(240, 110, 100, 0.12);
+  color: var(--j-coral);
+  text-decoration: line-through;
+}
+.exo-sub__opt:disabled { cursor: default; opacity: 0.85; }
+
+.exo-sub__note {
+  margin: 0;
+  padding: 0.5rem 0.8rem;
+  border-radius: 10px;
+  background: rgba(90, 217, 143, 0.1);
+  border-left: 3px solid var(--j-olive);
+  font-family: var(--j-font-body);
+  font-size: 0.95rem;
+  color: var(--j-ink);
+}
+
+.exo-sub__report-cap {
+  margin: 0;
+  font-family: var(--j-font-display);
+  font-size: 1.4rem;
+  color: var(--j-ochre);
+}
+.exo-sub__report-row {
+  margin: 0;
+  font-family: var(--j-font-body);
+  color: var(--j-ink);
+}
+.exo-sub__report-rank {
+  margin: 0.2rem 0 0;
+  font-family: var(--j-font-display);
+  font-size: 1.5rem;
+  color: var(--j-ink);
+}
+
+.exo-sub__again {
+  margin-top: 0.5rem;
+  align-self: flex-start;
+  padding: 0.45rem 1.1rem;
+  border-radius: 999px;
+  border: 1.5px solid rgba(95, 180, 245, 0.5);
+  background: var(--j-panel);
+  color: var(--j-teal);
+  font-family: var(--j-font-body);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+@media (orientation: portrait) {
+  .exo-sub__stname { font-size: 0.6rem; }
+  .exo-sub__train { font-size: 1.35rem; }
+}

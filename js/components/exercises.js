@@ -604,11 +604,19 @@ export function createGame(data) {
  * Compact journal-styled audio player: round play/pause, seekable
  * progress bar and a running time. Wraps a native <audio> element.
  *
- * @param {{ src: string, label?: string }} data
+ * `transcript` (a "Help me" safety net for the weakest learners) adds a
+ * button that reveals the words under the player: an array of plain
+ * strings, or `{ speaker, text }` objects for a dialogue.
+ *
+ * @param {{ src: string, label?: string, transcript?: Array<string|{speaker:string,text:string}> }} data
  */
-export function createAudioPlayer({ src, label }) {
+export function createAudioPlayer({ src, label, transcript }) {
   const wrap = document.createElement("div");
-  wrap.className = "exo-audio";
+  wrap.className = "exo-audio-wrap";
+
+  const player = document.createElement("div");
+  player.className = "exo-audio";
+  wrap.appendChild(player);
 
   const audio = document.createElement("audio");
   audio.src = src;
@@ -638,7 +646,7 @@ export function createAudioPlayer({ src, label }) {
   time.textContent = "0:00 / 0:00";
 
   body.append(cap, bar, time);
-  wrap.append(btn, body, audio);
+  player.append(btn, body, audio);
 
   const fmt = (s) => {
     if (!isFinite(s)) return "0:00";
@@ -658,18 +666,18 @@ export function createAudioPlayer({ src, label }) {
   audio.addEventListener("play", () => {
     btn.textContent = "❚❚";
     btn.setAttribute("aria-label", "Pause");
-    wrap.classList.add("exo-audio--playing");
+    player.classList.add("exo-audio--playing");
   });
   audio.addEventListener("pause", () => {
     btn.textContent = "▶";
     btn.setAttribute("aria-label", "Play");
-    wrap.classList.remove("exo-audio--playing");
+    player.classList.remove("exo-audio--playing");
   });
   audio.addEventListener("timeupdate", paint);
   audio.addEventListener("loadedmetadata", paint);
   audio.addEventListener("ended", () => {
     btn.textContent = "▶";
-    wrap.classList.remove("exo-audio--playing");
+    player.classList.remove("exo-audio--playing");
   });
   bar.addEventListener("click", (e) => {
     if (!audio.duration) return;
@@ -677,6 +685,36 @@ export function createAudioPlayer({ src, label }) {
     audio.currentTime = ((e.clientX - rect.left) / rect.width) * audio.duration;
     paint();
   });
+
+  // "Help me" transcript — a safety net, hidden until the learner asks.
+  if (transcript?.length) {
+    const help = document.createElement("button");
+    help.type = "button";
+    help.className = "exo-audio__help";
+    const panel = document.createElement("div");
+    panel.className = "exo-audio__transcript";
+    panel.hidden = true;
+    for (const line of transcript) {
+      const p = document.createElement("p");
+      p.className = "exo-audio__tline";
+      if (typeof line === "string") {
+        p.textContent = line;
+      } else {
+        const who = document.createElement("span");
+        who.className = "exo-audio__tspeaker";
+        who.textContent = `${line.speaker}: `;
+        p.append(who, document.createTextNode(line.text));
+      }
+      panel.appendChild(p);
+    }
+    const setLabel = () => (help.textContent = panel.hidden ? "🆘 Help me — show the text" : "🙈 Hide the text");
+    help.addEventListener("click", () => {
+      panel.hidden = !panel.hidden;
+      setLabel();
+    });
+    setLabel();
+    wrap.append(help, panel);
+  }
 
   return wrap;
 }
@@ -3777,6 +3815,154 @@ export function createDispatchGame({ board, rider: riderArt, start, stops, onRes
   };
 
   wrap.append(map, hud, panel);
+  showStop();
+  return wrap;
+}
+
+/* ============================================================
+ * Subway Challenge — "Mind the Gap" (Listening Step-4 star)
+ *
+ * Listening as gameplay. The player listens to the six real station
+ * announcements (the whole clip, replayable — no fragile segmentation),
+ * then rides the line: each stop is a SITUATION (never a quote), and the
+ * right choice depends on having understood an announcement. A correct
+ * call moves the train one station toward Times Square; wrong calls only
+ * cost the final rank. The announcements player (with its "Help me"
+ * transcript) is rendered by the card above, so a stuck learner can
+ * still finish.
+ *
+ * @param {{
+ *   stations: string[],           // N+1 names; the train starts at [0], home is the last
+ *   stops: Array<{ prompt: string, options: string[], correct: number, note?: string }>,
+ *   onResult: (summary: string) => void,
+ * }} opts
+ */
+export function createSubwayGame({ stations, stops, onResult }) {
+  const wrap = document.createElement("div");
+  wrap.className = "exo exo-sub";
+
+  // --- The line: a strip of stations with a moving train ---
+  const strip = document.createElement("div");
+  strip.className = "exo-sub__line";
+  const rail = document.createElement("div");
+  rail.className = "exo-sub__rail";
+  const fill = document.createElement("div");
+  fill.className = "exo-sub__rail-fill";
+  rail.appendChild(fill);
+  strip.appendChild(rail);
+
+  const dots = stations.map((name, i) => {
+    const st = document.createElement("div");
+    st.className = "exo-sub__station";
+    if (i === stations.length - 1) st.classList.add("exo-sub__station--home");
+    const dot = document.createElement("span");
+    dot.className = "exo-sub__dot";
+    const lab = document.createElement("span");
+    lab.className = "exo-sub__stname";
+    lab.textContent = name;
+    st.append(dot, lab);
+    st.style.left = `${(i / (stations.length - 1)) * 100}%`;
+    strip.appendChild(st);
+    return st;
+  });
+
+  const train = document.createElement("span");
+  train.className = "exo-sub__train";
+  train.textContent = "🚇";
+  strip.appendChild(train);
+
+  const placeTrain = (i) => {
+    const pct = (i / (stations.length - 1)) * 100;
+    train.style.left = `${pct}%`;
+    fill.style.width = `${pct}%`;
+    dots.forEach((d, k) => d.classList.toggle("exo-sub__station--reached", k <= i));
+  };
+  placeTrain(0);
+
+  // --- HUD + situation panel ---
+  const hud = document.createElement("div");
+  hud.className = "exo-sub__hud";
+  const prog = document.createElement("span");
+  prog.className = "exo-sub__stat";
+  hud.appendChild(prog);
+
+  const panel = document.createElement("div");
+  panel.className = "exo-sub__panel";
+
+  const state = { i: 0, wrong: 0 };
+
+  const showStop = () => {
+    const s = stops[state.i];
+    prog.innerHTML = `🚉 Station <b>${state.i + 1}</b> / ${stops.length}`;
+    panel.innerHTML = "";
+    const tag = document.createElement("div");
+    tag.className = "exo-sub__tag";
+    tag.textContent = `Situation ${state.i + 1}`;
+    const q = document.createElement("p");
+    q.className = "exo-sub__prompt";
+    q.textContent = s.prompt;
+    panel.append(tag, q);
+
+    const opts = document.createElement("div");
+    opts.className = "exo-sub__opts";
+    let locked = false;
+    shuffledCopy(s.options.map((label, oi) => ({ label, oi }))).forEach(({ label, oi }) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "exo-sub__opt";
+      b.textContent = label;
+      b.addEventListener("click", () => {
+        if (locked || b.disabled) return;
+        if (oi === s.correct) {
+          locked = true;
+          b.classList.add("exo-sub__opt--right");
+          opts.querySelectorAll("button").forEach((x) => (x.disabled = true));
+          if (s.note) {
+            const note = document.createElement("p");
+            note.className = "exo-sub__note";
+            note.textContent = s.note;
+            panel.appendChild(note);
+          }
+          advance();
+        } else {
+          state.wrong += 1;
+          b.classList.add("exo-sub__opt--wrong");
+          b.disabled = true;
+        }
+      });
+      opts.appendChild(b);
+    });
+    panel.appendChild(opts);
+  };
+
+  const advance = () => {
+    state.i += 1;
+    placeTrain(state.i);
+    if (state.i < stops.length) setTimeout(showStop, 900);
+    else setTimeout(report, 1000);
+  };
+
+  const report = () => {
+    const rank = state.wrong === 0 ? "Local Legend 🗽" : state.wrong <= 2 ? "Real New Yorker 🚇" : "Brave Tourist 🎒";
+    onResult?.(`Reached ${stations[stations.length - 1]} · ${state.wrong} wrong · rank: ${rank}`);
+    prog.innerHTML = `🏁 Arrived!`;
+    panel.innerHTML =
+      `<p class="exo-sub__report-cap">🗽 You made it to ${stations[stations.length - 1]}!</p>` +
+      `<p class="exo-sub__report-row">Wrong turns: <b>${state.wrong}</b></p>` +
+      `<p class="exo-sub__report-rank">Your rank: <b>${rank}</b></p>`;
+    const again = document.createElement("button");
+    again.type = "button";
+    again.className = "exo-sub__again";
+    again.textContent = "🔄 Ride again";
+    again.addEventListener("click", () => {
+      state.i = 0; state.wrong = 0;
+      placeTrain(0);
+      showStop();
+    });
+    panel.appendChild(again);
+  };
+
+  wrap.append(strip, hud, panel);
   showStop();
   return wrap;
 }
