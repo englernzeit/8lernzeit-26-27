@@ -193,7 +193,7 @@ export function renderSectionView(root, unitId, sectionId) {
 
   // --- Vocabulary hub (Picture Vocabulary + Word Master) ---------
   // Word Master is only offered in units that have picture vocabulary.
-  const hasPicture = content.pictureVocab?.courses?.some((c) => c.count > 0);
+  const hasPicture = content.pictureVocab?.courses?.some((c) => (c.count ?? c.cards?.length ?? 0) > 0);
   const showWordMaster =
     Boolean(content.wordMaster?.courses?.some((c) => c.items?.length)) && unitHasPictureVocab(unitId);
   if (hasPicture || showWordMaster) {
@@ -662,7 +662,7 @@ function buildVocabHub(content, ctx, { showWordMaster = false } = {}) {
   hub.className = "vocab-hub";
 
   // Picture Vocabulary — sits above Word Master.
-  if (content.pictureVocab?.courses?.some((c) => c.count > 0)) {
+  if (content.pictureVocab?.courses?.some((c) => (c.count ?? c.cards?.length ?? 0) > 0)) {
     const pv = content.pictureVocab;
     const picBtn = document.createElement("button");
     picBtn.className = "vocab-hub__btn";

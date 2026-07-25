@@ -25,6 +25,105 @@
 export default {
   title: "Two Words, One City",
 
+  /* ============ Picture Vocabulary — "Neon Postcard" deck ============
+   * Wordless neon NYC illustrations live at assets/vocab/unit1/<dir>/NN.jpg
+   * (01…12). The English word, German translation and example below are
+   * drawn as a crisp CSS layer on top, so the artwork can be dropped in
+   * any time; until then each card shows a neon placeholder. Word Master
+   * (further down) drills exactly these words. */
+  pictureVocab: {
+    title: "Picture Vocabulary",
+    base: "assets/vocab/unit1",
+    courses: [
+      {
+        key: "gk",
+        dir: "gkurs",
+        name: "G-Kurs",
+        tag: "Shopping & city words",
+        cards: [
+          { word: "subway", de: "die U-Bahn", example: "Let's take the subway to Times Square." },
+          { word: "store", de: "der Laden", example: "This store sells cool T-shirts and caps." },
+          { word: "elevator", de: "der Aufzug", example: "We take the elevator up to the fifth floor." },
+          { word: "sneakers", de: "die Turnschuhe", example: "I need new sneakers for gym class." },
+          { word: "pants", de: "die Hose", example: "These pants are too small for me." },
+          { word: "candy", de: "die Süßigkeiten", example: "I love American candy!" },
+          { word: "cab", de: "das Taxi", example: "Let's take a yellow cab downtown." },
+          { word: "fries", de: "die Pommes", example: "Can I have a burger and fries?" },
+          { word: "cookie", de: "der Keks", example: "She baked a huge chocolate cookie." },
+          { word: "skyscraper", de: "der Wolkenkratzer", example: "That skyscraper is really tall!" },
+          { word: "restroom", de: "die Toilette", example: "Excuse me, where is the restroom?" },
+          { word: "line", de: "die Schlange", example: "There is a long line in front of the store." },
+        ],
+      },
+      {
+        key: "ek",
+        dir: "ekurs",
+        name: "E-Kurs",
+        tag: "Shopping, tours & mediation",
+        cards: [
+          { word: "receipt", de: "der Kassenbon", example: "Keep the receipt if you want a refund." },
+          { word: "checkout", de: "die Kasse", example: "Please pay at the checkout." },
+          { word: "changing room", de: "die Umkleidekabine", example: "Can I try these on in the changing room?" },
+          { word: "souvenir", de: "das Souvenir", example: "I bought a souvenir for my aunt." },
+          { word: "landmark", de: "das Wahrzeichen", example: "The Statue of Liberty is a famous landmark." },
+          { word: "bargain", de: "das Schnäppchen", example: "Ten dollars? That's a real bargain!" },
+          { word: "guided tour", de: "die geführte Tour", example: "We booked a guided tour of the city." },
+          { word: "sightseeing bus", de: "der Sightseeing-Bus", example: "The sightseeing bus leaves from Times Square." },
+          { word: "first floor", de: "das Erdgeschoss", example: "In the US the first floor is street level." },
+          { word: "the check", de: "die Rechnung", example: "Could we have the check, please?" },
+          { word: "Exit", de: "der Ausgang", example: "Follow the green Exit signs." },
+          { word: "MetroCard", de: "die U-Bahn-Karte", example: "Tap your MetroCard at the gate to pay." },
+        ],
+      },
+    ],
+  },
+
+  /* ============ Word Master — same words, gap-fill drill ============ */
+  wordMaster: {
+    courses: [
+      {
+        key: "gk",
+        name: "G-Kurs",
+        tag: "Shopping & city words",
+        subtitle: "Complete each sentence with the American word from the cards.",
+        items: [
+          { de: "die **U-Bahn**", en: "Let's take the ___ to Times Square.", answer: "subway" },
+          { de: "der **Laden**", en: "This ___ sells cool T-shirts.", answer: "store" },
+          { de: "der **Aufzug**", en: "We take the ___ up to the fifth floor.", answer: "elevator" },
+          { de: "die **Turnschuhe**", en: "I need new ___ for gym class.", answer: "sneakers" },
+          { de: "die **Hose**", en: "These ___ are too small.", answer: "pants" },
+          { de: "die **Süßigkeiten**", en: "I love American ___!", answer: "candy" },
+          { de: "das **Taxi**", en: "Let's take a yellow ___ downtown.", answer: "cab", accept: ["taxi"] },
+          { de: "die **Pommes**", en: "Can I have a burger and ___?", answer: "fries" },
+          { de: "der **Keks**", en: "She baked a huge chocolate ___.", answer: "cookie" },
+          { de: "der **Wolkenkratzer**", en: "That ___ is really tall!", answer: "skyscraper" },
+          { de: "die **Toilette**", en: "Excuse me, where is the ___?", answer: "restroom" },
+          { de: "die **Schlange** (anstehen)", en: "There is a long ___ in front of the store.", answer: "line", accept: ["queue"] },
+        ],
+      },
+      {
+        key: "ek",
+        name: "E-Kurs",
+        tag: "Shopping, tours & mediation",
+        subtitle: "Complete each sentence with the right English word.",
+        items: [
+          { de: "der **Kassenbon**", en: "Keep the ___ if you want a refund.", answer: "receipt" },
+          { de: "die **Kasse**", en: "Please pay at the ___.", answer: "checkout", accept: ["check-out"] },
+          { de: "die **Umkleidekabine**", en: "Can I try these on in the ___?", answer: "changing room", accept: ["changing-room", "fitting room"] },
+          { de: "das **Souvenir**", en: "I bought a ___ for my aunt.", answer: "souvenir" },
+          { de: "das **Wahrzeichen**", en: "The Statue of Liberty is a famous ___.", answer: "landmark" },
+          { de: "das **Schnäppchen**", en: "Ten dollars? That's a real ___!", answer: "bargain" },
+          { de: "die **geführte Tour**", en: "We booked a ___ of the city.", answer: "guided tour", accept: ["guided-tour"] },
+          { de: "der **Sightseeing-Bus**", en: "The ___ leaves from Times Square.", answer: "sightseeing bus", accept: ["sightseeing-bus", "tour bus"] },
+          { de: "das **Erdgeschoss** (US)", en: "In the US, the ___ is street level.", answer: "first floor", accept: ["first-floor"] },
+          { de: "die **Rechnung**", en: "Could we have the ___, please?", answer: "check" },
+          { de: "der **Ausgang**", en: "Follow the green ___ signs.", answer: "Exit", accept: ["exit"] },
+          { de: "die **U-Bahn-Karte**", en: "Tap your ___ at the gate to pay.", answer: "MetroCard", accept: ["metrocard", "metro card"] },
+        ],
+      },
+    ],
+  },
+
   /* ============ Shared reference card ============ */
   guide: {
     label: "How to Mediate",

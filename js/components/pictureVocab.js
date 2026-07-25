@@ -44,7 +44,7 @@ export function createPictureVocab({ title = "Picture Vocabulary", base, courses
   const courseRow = document.createElement("div");
   courseRow.className = "picvocab__courses";
   courses
-    .filter((c) => c.count > 0)
+    .filter((c) => (c.count ?? c.cards?.length ?? 0) > 0)
     .forEach((c) => {
       const b = document.createElement("button");
       b.className = "picvocab__course";
@@ -138,17 +138,67 @@ export function createPictureVocab({ title = "Picture Vocabulary", base, courses
   function buildCards(course) {
     cardLayer.innerHTML = "";
     cardEls = [];
-    for (let i = 0; i < course.count; i++) {
+    // A course either carries painted-in cards (legacy: image = everything)
+    // or "Neon Postcard" cards, where the illustration is wordless and the
+    // English word / German translation / example are drawn as a crisp CSS
+    // text layer on top — so the artwork can be swapped in any time.
+    const cards = Array.isArray(course.cards) ? course.cards : null;
+    const total = cards ? cards.length : course.count;
+    for (let i = 0; i < total; i++) {
       const card = document.createElement("button");
       card.className = "picvocab__card";
-      const img = document.createElement("img");
-      img.className = "picvocab__card-img";
-      img.loading = i < 3 ? "eager" : "lazy";
-      img.decoding = "async";
-      img.alt = "";
-      img.draggable = false;
-      img.src = `${base}/${course.dir}/${String(i + 1).padStart(2, "0")}.jpg`;
-      card.appendChild(img);
+      const src = `${base}/${course.dir}/${String(i + 1).padStart(2, "0")}.jpg`;
+
+      if (cards) {
+        card.classList.add("picvocab__card--neon");
+        const c = cards[i] ?? {};
+        const frame = document.createElement("div");
+        frame.className = "picvocab__frame";
+        const img = document.createElement("img");
+        img.className = "picvocab__card-img";
+        img.loading = i < 3 ? "eager" : "lazy";
+        img.decoding = "async";
+        img.alt = c.word ?? "";
+        img.draggable = false;
+        // Until the artwork lands, degrade to a neon placeholder, never a
+        // broken-image icon. The word/translation/example still show.
+        img.addEventListener("error", () => frame.classList.add("picvocab__frame--noimg"));
+        img.src = src;
+        const ph = document.createElement("span");
+        ph.className = "picvocab__ph";
+        ph.setAttribute("aria-hidden", "true");
+        frame.append(img, ph);
+
+        const ov = document.createElement("div");
+        ov.className = "picvocab__overlay";
+        const word = document.createElement("span");
+        word.className = "picvocab__word";
+        word.textContent = c.word ?? "";
+        const meta = document.createElement("div");
+        meta.className = "picvocab__meta";
+        const de = document.createElement("span");
+        de.className = "picvocab__de";
+        de.textContent = c.de ?? "";
+        meta.appendChild(de);
+        if (c.example) {
+          const eg = document.createElement("span");
+          eg.className = "picvocab__eg";
+          eg.textContent = c.example;
+          meta.appendChild(eg);
+        }
+        ov.append(word, meta);
+        card.append(frame, ov);
+      } else {
+        const img = document.createElement("img");
+        img.className = "picvocab__card-img";
+        img.loading = i < 3 ? "eager" : "lazy";
+        img.decoding = "async";
+        img.alt = "";
+        img.draggable = false;
+        img.src = src;
+        card.appendChild(img);
+      }
+
       card.addEventListener("click", () => {
         if (swipeGuard || i === state.index) return;
         state.index = i;

@@ -45,6 +45,7 @@ export function unitHasPictureVocab(unitId) {
   const prefix = `${unitId}/`;
   return Object.entries(CONTENT).some(
     ([key, content]) =>
-      key.startsWith(prefix) && content?.pictureVocab?.courses?.some((c) => c.count > 0),
+      key.startsWith(prefix) &&
+      content?.pictureVocab?.courses?.some((c) => (c.count ?? c.cards?.length ?? 0) > 0),
   );
 }

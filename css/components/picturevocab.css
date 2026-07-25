@@ -371,3 +371,125 @@
     padding: 34px 32px;
   }
 }
+
+/* ============================================================
+   "Neon Postcard" flashcard — wordless NYC illustration with a
+   crisp CSS text layer (word · translation · example) on top.
+   The illustration can be swapped in at any time; until then a
+   neon placeholder fills the frame.
+   ============================================================ */
+
+.picvocab__card--neon {
+  --pv-neon-teal: #5fb4f5;
+  --pv-neon-gold: #f5b94a;
+  /* also cap by viewport height (66vh) so the tall 4:5 card never clips
+     its word / translation on shorter laptop screens */
+  width: min(86vw, 620px, 66vh);
+}
+
+.picvocab__frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  border-radius: 8px;
+  overflow: hidden;
+  background: radial-gradient(120% 85% at 50% 0%, #1b2f4e 0%, #0c1830 58%, #081020 100%);
+}
+
+.picvocab__card--neon .picvocab__card-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+}
+.picvocab__frame--noimg .picvocab__card-img {
+  display: none;
+}
+
+/* neon placeholder — only shown when the artwork is missing */
+.picvocab__ph {
+  display: none;
+}
+.picvocab__frame--noimg .picvocab__ph {
+  display: block;
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(58% 40% at 50% 40%, rgba(95, 180, 245, 0.3), rgba(95, 180, 245, 0) 72%),
+    radial-gradient(52% 30% at 50% 80%, rgba(245, 185, 74, 0.24), rgba(245, 185, 74, 0) 72%),
+    linear-gradient(180deg, #0f1f38, #0a1428);
+}
+.picvocab__frame--noimg .picvocab__ph::after {
+  content: "✦";
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 2.6rem;
+  color: rgba(95, 180, 245, 0.5);
+  text-shadow: 0 0 20px rgba(95, 180, 245, 0.65);
+}
+
+/* the text layer sits over the illustration, with scrims for legibility */
+.picvocab__overlay {
+  position: absolute;
+  inset: 12px; /* aligns with the card's 12px paper mat */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 15px 15px 13px;
+  border-radius: 8px;
+  pointer-events: none; /* clicks fall through to the card button */
+  background:
+    linear-gradient(180deg, rgba(6, 12, 24, 0.8) 0%, rgba(6, 12, 24, 0) 26%),
+    linear-gradient(0deg, rgba(6, 12, 24, 0.88) 0%, rgba(6, 12, 24, 0) 36%);
+}
+
+/* the English word as a glowing neon sign */
+.picvocab__word {
+  align-self: flex-start;
+  max-width: 100%;
+  font-family: var(--pv-display);
+  font-weight: 700;
+  font-size: clamp(1.9rem, 5.6vw, 3rem);
+  line-height: 0.94;
+  color: #eafaff;
+  text-shadow:
+    0 0 6px rgba(95, 180, 245, 0.9),
+    0 0 16px rgba(95, 180, 245, 0.7),
+    0 0 30px rgba(46, 134, 217, 0.55);
+}
+
+.picvocab__meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 9px;
+}
+
+/* German translation on an enamel plate */
+.picvocab__de {
+  font-family: var(--pv-body);
+  font-weight: 700;
+  font-size: clamp(0.9rem, 2.4vw, 1.15rem);
+  color: #06233a;
+  background: linear-gradient(180deg, #a9dcff, #5fb4f5);
+  border-radius: 6px;
+  padding: 3px 13px;
+  box-shadow: 0 0 12px rgba(95, 180, 245, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.55);
+}
+
+/* example sentence on a ticket stub */
+.picvocab__eg {
+  font-family: var(--pv-body);
+  font-style: italic;
+  font-size: clamp(0.82rem, 2.1vw, 1.02rem);
+  line-height: 1.35;
+  color: #f3f7ff;
+  background: rgba(9, 17, 32, 0.62);
+  border-left: 3px dashed var(--pv-neon-gold);
+  border-radius: 0 6px 6px 0;
+  padding: 5px 11px;
+}
