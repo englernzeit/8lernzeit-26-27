@@ -25,9 +25,71 @@
 export default {
   title: "Two Words, One City",
 
-  /* Picture Vocabulary + Word Master for Unit 1 now live on the Reading
-   * page (that word list belongs to Reading). The Vocabulary-page list
-   * will be added here once supplied. */
+  /* ============ Picture Vocabulary — "Neon Postcard" deck ============
+   * The Unit 1 · Vocabulary word list. Wordless neon 2:3 illustrations live
+   * at assets/vocab/unit1/vocabulary/gkurs/NN.jpg (01…15, in list order);
+   * the word, German translation and example are drawn as a CSS layer on
+   * top. Word Master (below) drills the same words. E-Kurs to follow. */
+  pictureVocab: {
+    title: "Picture Vocabulary",
+    base: "assets/vocab/unit1/vocabulary",
+    courses: [
+      {
+        key: "gk",
+        dir: "gkurs",
+        name: "G-Kurs",
+        tag: "Vocabulary — key words",
+        cards: [
+          { word: "polite", de: "höflich", example: "It is polite to say thank you." },
+          { word: "wonder", de: "sich fragen, gern wissen wollen", example: "I wonder what New York looks like at night." },
+          { word: "movie", de: "der Film", example: "We watched a movie about New York." },
+          { word: "wing", de: "der Flügel", example: "The bird opened its wings and flew away." },
+          { word: "piece (of)", de: "das Stück", example: "Can I have a piece of pizza?" },
+          { word: "explain", de: "erklären", example: "Can you explain the way to the subway?" },
+          { word: "prefer to do sth", de: "etwas lieber tun", example: "I prefer to walk rather than take the bus." },
+          { word: "ask sb to do sth", de: "jn. bitten, etwas zu tun", example: "She asked me to help her." },
+          { word: "choose", de: "(aus)wählen — choose, chose, chosen", example: "You can choose any seat you like." },
+          { word: "helicopter", de: "der Hubschrauber", example: "A helicopter flew over the city." },
+          { word: "result", de: "das Ergebnis", example: "The result of the game was 3–2." },
+          { word: "mostly", de: "meistens, hauptsächlich", example: "In summer it is mostly warm here." },
+          { word: "homeless", de: "obdachlos", example: "The city helps homeless people in winter." },
+          { word: "invite", de: "einladen", example: "I want to invite my friends to a party." },
+          { word: "save", de: "sparen", example: "I save money for a trip to New York." },
+        ],
+      },
+    ],
+  },
+
+  /* ============ Word Master — same words, gap-fill drill ============
+   * German sentence gives the meaning; the learner completes the parallel
+   * English sentence. Item order is shuffled on every open. */
+  wordMaster: {
+    courses: [
+      {
+        key: "gk",
+        name: "G-Kurs",
+        tag: "Vocabulary — key words",
+        subtitle: "Read the German sentence, then complete the English one.",
+        items: [
+          { de: "Es ist höflich, danke zu sagen.", en: "It is ___ to say thank you.", answer: "polite" },
+          { de: "Ich frage mich, wie New York bei Nacht aussieht.", en: "I ___ what New York looks like at night.", answer: "wonder" },
+          { de: "Wir haben einen Film über New York gesehen.", en: "We watched a ___ about New York.", answer: "movie" },
+          { de: "Der Vogel verletzte seinen Flügel und konnte nicht fliegen.", en: "The bird hurt its ___ and could not fly.", answer: "wing" },
+          { de: "Kann ich ein Stück Pizza haben?", en: "Can I have a ___ of pizza?", answer: "piece" },
+          { de: "Kannst du mir den Weg zur U-Bahn erklären?", en: "Can you ___ the way to the subway?", answer: "explain" },
+          { de: "Ich gehe lieber zu Fuß, als den Bus zu nehmen.", en: "I ___ to walk rather than take the bus.", answer: "prefer" },
+          { de: "Ich möchte dich bitten, mir zu helfen.", en: "I want to ___ you to help me.", answer: "ask" },
+          { de: "Du kannst jeden Platz auswählen, den du magst.", en: "You can ___ any seat you like.", answer: "choose" },
+          { de: "Ein Hubschrauber flog über die Stadt.", en: "A ___ flew over the city.", answer: "helicopter" },
+          { de: "Das Ergebnis des Spiels war 3:2.", en: "The ___ of the game was 3–2.", answer: "result" },
+          { de: "Im Sommer ist es hier meistens warm.", en: "In summer it is ___ warm here.", answer: "mostly" },
+          { de: "Die Stadt hilft im Winter obdachlosen Menschen.", en: "The city helps ___ people in winter.", answer: "homeless" },
+          { de: "Ich möchte meine Freunde zu einer Party einladen.", en: "I want to ___ my friends to a party.", answer: "invite" },
+          { de: "Ich spare Geld für eine Reise nach New York.", en: "I ___ money for a trip to New York.", answer: "save" },
+        ],
+      },
+    ],
+  },
 
   /* ============ Shared reference card ============ */
   guide: {

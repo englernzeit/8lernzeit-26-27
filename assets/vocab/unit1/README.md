@@ -18,7 +18,9 @@ assets/vocab/unit1/
   writing/     ← Writing list (done)
     gkurs/  01.jpg … 15.jpg
     ekurs/  (awaiting E-Kurs list)
-  vocabulary/  ← later
+  vocabulary/  ← Vocabulary list (done)
+    gkurs/  01.jpg … 15.jpg
+    ekurs/  (awaiting E-Kurs list)
 ```
 
 ## Image format
@@ -86,7 +88,27 @@ Unit 1 · Writing word list, in deck order (illustrations are metaphorical):
 | 14 | turn – (sich) umdrehen | a person turning to look back |
 | 15 | both – beide | two identical subway tokens side by side |
 
-## Writing · E-Kurs / Vocabulary — ⏳ awaiting word lists
+## Vocabulary · G-Kurs — vocabulary/gkurs/NN.jpg  ✅ all 15 in
+
+| file | word | illustration |
+|------|------|--------------|
+| 01 | polite – höflich | a doorman holding open a brass hotel door |
+| 02 | wonder – sich fragen | a watcher gazing out on a fire escape |
+| 03 | movie – Film | a vintage projector beam in the dark |
+| 04 | wing – Flügel | a white bird on a lamppost |
+| 05 | piece (of) – Stück | a NYC pizza slice with stretching cheese |
+| 06 | explain – erklären | a hand pointing at a chalkboard |
+| 07 | prefer to do sth – lieber tun | a coffee cup and a tea cup side by side |
+| 08 | ask sb to do sth – bitten | a hand offering a dog leash |
+| 09 | choose – (aus)wählen | a hand reaching for a glowing apple |
+| 10 | helicopter – Hubschrauber | a helicopter over the rooftops |
+| 11 | result – Ergebnis | a golden trophy on a podium |
+| 12 | mostly – meistens | a crowd of mostly-golden umbrellas |
+| 13 | homeless – obdachlos | a cardboard shelter under a bridge arch |
+| 14 | invite – einladen | a warmly-lit café table for two |
+| 15 | save – sparen | a jar of glowing coins |
+
+## E-Kurs lists (Reading · Writing · Vocabulary) — ⏳ awaiting
 
 Drop each list here and I'll wire it the same way; each gets its own folder.
 
