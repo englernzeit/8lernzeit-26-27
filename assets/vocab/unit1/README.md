@@ -33,38 +33,30 @@ assets/vocab/unit1/
 > **no text, no letters, no words, no logos**, clean darker space at the top and
 > bottom, 2:3 portrait.
 
-## G-Kurs — gkurs/NN.jpg
+## G-Kurs — gkurs/NN.jpg  ✅ all 15 in
 
-| file | word | subject to put in the prompt |
-|------|------|------------------------------|
-| 01 | state | ✅ done — neon government building with US flag & NYC skyline |
-| 02 | age | ✅ done — neon birthday cake with candles, NYC skyline through a window |
-| 03 | liberty | ✅ done — vintage suitcase on a pier, glowing Statue of Liberty in the distance |
-| 04 | sneakers | a pair of cool sneakers on a pedestal under a neon spotlight |
-| 05 | pants | a pair of trousers on a hanger in a neon-lit clothing store |
-| 06 | candy | a colourful candy / sweets display in a glowing candy-store window |
-| 07 | cab | a classic yellow New York taxi cab under neon street lights |
-| 08 | fries | a paper cup of French fries glowing under a diner neon sign |
-| 09 | cookie | a big chocolate-chip cookie on a plate under warm neon light |
-| 10 | skyscraper | one tall lit New York skyscraper against the night sky |
-| 11 | restroom | a glowing restroom door with the male/female restroom pictogram |
-| 12 | line | a line (queue) of people waiting outside a glowing shop entrance |
+Unit 1 (Reading) word list, in deck order:
 
-## E-Kurs — ekurs/NN.jpg
+| file | word | illustration |
+|------|------|--------------|
+| 01 | state – (Bundes-)Staat | neon government building with US flag & NYC skyline |
+| 02 | age – Alter | neon birthday cake with candles, skyline through a window |
+| 03 | liberty – Freiheit | glowing Statue of Liberty torch at night |
+| 04 | island – Insel | small island with a lone tree, NYC across the water |
+| 05 | sight – Sehenswürdigkeit | observation-deck tower viewer (coin binoculars) over the skyline |
+| 06 | awesome – klasse, stark, großartig | fireworks over the NYC rooftops |
+| 07 | destroy – zerstören | wrecking ball crashing into a brick wall |
+| 08 | since 2012 – seit 2012 | brass hourglass over the nighttime city |
+| 09 | view (of) – (Aus-)Sicht, (Aus-)Blick | rooftop bench looking out over the skyline |
+| 10 | walkway – Fußweg, Laufgang | wooden Brooklyn Bridge walkway at night |
+| 11 | above – oben, über, oberhalb | water tower standing above the skyline |
+| 12 | traffic – (Straßen-)Verkehr | yellow taxi at a glowing traffic light |
+| 13 | build, built, built – (er)bauen | crane lifting a beam on the skyline |
+| 14 | star – Stern | glowing five-pointed star over the rooftops |
+| 15 | immigrant – Einwanderer | vintage suitcase on a pier, Statue of Liberty in the distance |
 
-| file | word | subject to put in the prompt |
-|------|------|------------------------------|
-| 01 | receipt | a long paper store receipt curling, glowing under neon light |
-| 02 | checkout | a store checkout counter with a cash register glowing |
-| 03 | changing room | a fitting-room booth with a curtain in a neon-lit store |
-| 04 | souvenir | small Statue of Liberty souvenir figurines glowing on a stall |
-| 05 | landmark | the Statue of Liberty lit up at night |
-| 06 | bargain | a bright red discount price tag tied to a product, glowing |
-| 07 | guided tour | a tour guide holding a small flag leading tourists past a lit landmark |
-| 08 | sightseeing bus | a red open-top double-decker sightseeing bus on a neon street |
-| 09 | first floor | an elevator control panel glowing, the lowest (ground) button lit |
-| 10 | the check | a small restaurant bill on a tray with a pen, under diner light |
-| 11 | Exit | a glowing green exit sign with a running-figure pictogram above a door |
-| 12 | MetroCard | a hand tapping a yellow-and-blue transit fare card on a subway gate reader |
+## E-Kurs — ekurs/NN.jpg  ⏳ awaiting word list
+
+Drop the E-Kurs list here and I'll wire it the same way.
 
 The same words drive **Word Master** (the gap-fill drill) — no extra assets needed there.

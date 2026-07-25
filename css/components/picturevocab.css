@@ -9,10 +9,13 @@
 .vocab-hub {
   display: flex;
   flex-direction: column;
-  align-items: flex-end; /* buttons hug the right edge */
-  gap: 0.7rem;
-  margin: -3.2rem 0 0.6rem auto; /* pull up, hug the right edge */
+  align-items: flex-end; /* buttons hug the right edge, under the PDF badge */
+  gap: 0.5rem;
+  /* tuck up just beneath the top-right PDF button and align to its edge */
+  margin: -3.6rem 1.6rem 0.6rem auto;
   width: max-content;
+  position: relative;
+  z-index: 4;
 }
 
 @media (orientation: portrait) {

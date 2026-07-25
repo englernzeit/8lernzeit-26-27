@@ -181,6 +181,16 @@ export function renderSectionView(root, unitId, sectionId) {
 
   const ctx = { unitId, sectionId };
 
+  // --- Vocabulary hub (Picture Vocabulary + Word Master) ---------
+  // Sits directly under the PDF button, top-right. Word Master is only
+  // offered in units that have picture vocabulary.
+  const hasPicture = content.pictureVocab?.courses?.some((c) => (c.count ?? c.cards?.length ?? 0) > 0);
+  const showWordMaster =
+    Boolean(content.wordMaster?.courses?.some((c) => c.items?.length)) && unitHasPictureVocab(unitId);
+  if (hasPicture || showWordMaster) {
+    view.appendChild(buildVocabHub(content, ctx, { showWordMaster }));
+  }
+
   // --- Reading passage (optional) --------------------------------
   if (content.passage) {
     view.appendChild(buildPassage(content.passage));
@@ -189,15 +199,6 @@ export function renderSectionView(root, unitId, sectionId) {
   // --- Grammar guide (optional) ----------------------------------
   if (content.guide) {
     view.appendChild(buildGuideSection(content.guide));
-  }
-
-  // --- Vocabulary hub (Picture Vocabulary + Word Master) ---------
-  // Word Master is only offered in units that have picture vocabulary.
-  const hasPicture = content.pictureVocab?.courses?.some((c) => (c.count ?? c.cards?.length ?? 0) > 0);
-  const showWordMaster =
-    Boolean(content.wordMaster?.courses?.some((c) => c.items?.length)) && unitHasPictureVocab(unitId);
-  if (hasPicture || showWordMaster) {
-    view.appendChild(buildVocabHub(content, ctx, { showWordMaster }));
   }
 
   // --- Steps ------------------------------------------------------
