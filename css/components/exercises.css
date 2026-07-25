@@ -4299,3 +4299,265 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
   .exo-sub__stname { font-size: 0.6rem; }
   .exo-sub__train { font-size: 1.35rem; }
 }
+
+/* ===== The Language Bridge (Vocabulary Step-4 star) ============== */
+.exo-bridge {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.exo-bridge__scene {
+  position: relative;
+  height: 8.6rem;
+  margin: 0.4rem 0.2rem 0.6rem;
+  padding: 0 2.6rem;
+}
+
+/* the draped main cables + suspenders (stretches to width) */
+.exo-bridge__cables {
+  position: absolute;
+  inset: 0.2rem 2.6rem auto;
+  width: calc(100% - 5.2rem);
+  height: 5.2rem;
+  overflow: visible;
+}
+.exo-bridge__cable {
+  fill: none;
+  stroke: rgba(126, 150, 176, 0.55);
+  stroke-width: 2;
+}
+.exo-bridge__cable--back { stroke: rgba(126, 150, 176, 0.3); }
+.exo-bridge__suspender {
+  stroke: rgba(126, 150, 176, 0.28);
+  stroke-width: 1;
+}
+
+/* the two gothic towers */
+.exo-bridge__tower {
+  position: absolute;
+  top: 0.4rem;
+  transform: translateX(-50%);
+  width: 1.5rem;
+  height: 5rem;
+  background: linear-gradient(180deg, #7d6a54, #5a4a3a);
+  border-radius: 3px 3px 0 0;
+  box-shadow: 0 2px 6px rgba(7, 14, 26, 0.5);
+  z-index: 1;
+}
+.exo-bridge__tower::before,
+.exo-bridge__tower::after {
+  content: "";
+  position: absolute;
+  top: 0.5rem;
+  width: 0.42rem;
+  height: 1.5rem;
+  background: rgba(13, 21, 38, 0.55);
+  border-radius: 0.42rem 0.42rem 0 0;
+}
+.exo-bridge__tower::before { left: 0.18rem; }
+.exo-bridge__tower::after { right: 0.18rem; }
+
+/* the roadway (deck) + the lit fill that grows as you cross */
+.exo-bridge__deck {
+  position: absolute;
+  left: 2.6rem;
+  right: 2.6rem;
+  top: 5.5rem;
+  height: 8px;
+  border-radius: 4px;
+  background: rgba(126, 150, 176, 0.3);
+  overflow: hidden;
+  z-index: 2;
+}
+.exo-bridge__deck-fill {
+  height: 100%;
+  width: 0;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--j-teal), var(--j-ochre));
+  transition: width 0.9s ease-in-out;
+}
+
+/* the two banks */
+.exo-bridge__bank {
+  position: absolute;
+  top: 3.9rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1;
+  z-index: 3;
+}
+.exo-bridge__bank--de { left: 0; }
+.exo-bridge__bank--us { right: 0; }
+.exo-bridge__who { font-size: 1.7rem; filter: drop-shadow(0 2px 4px rgba(7, 14, 26, 0.7)); }
+.exo-bridge__flag { font-size: 0.9rem; margin-top: 0.1rem; }
+.exo-bridge__bank--cheer .exo-bridge__who { animation: exo-bridge-cheer 0.6s ease-in-out 3; }
+@keyframes exo-bridge-cheer {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-0.4rem) scale(1.12); }
+}
+
+/* lamp nodes with topic labels along the deck */
+.exo-bridge__lamp {
+  position: absolute;
+  top: 4.6rem;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.9rem;
+  width: 4.6rem;
+  z-index: 2;
+}
+.exo-bridge__lampdot {
+  width: 0.8rem;
+  height: 0.8rem;
+  border-radius: 50%;
+  background: rgba(13, 21, 38, 0.9);
+  border: 2px solid rgba(126, 150, 176, 0.6);
+  transition: background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+}
+.exo-bridge__lamp--lit .exo-bridge__lampdot {
+  background: var(--j-ochre);
+  border-color: var(--j-ochre);
+  box-shadow: 0 0 8px 1px rgba(245, 185, 74, 0.7);
+}
+.exo-bridge__lamplabel {
+  font-family: var(--j-font-body);
+  font-size: 0.66rem;
+  line-height: 1.1;
+  text-align: center;
+  color: var(--j-secondary);
+}
+.exo-bridge__lamp--lit .exo-bridge__lamplabel { color: var(--j-ink); }
+
+/* the traveller crossing the bridge */
+.exo-bridge__walker {
+  position: absolute;
+  left: 0;
+  top: 4.15rem;
+  transform: translateX(-50%);
+  font-size: 1.65rem;
+  filter: drop-shadow(0 3px 6px rgba(7, 14, 26, 0.8));
+  transition: left 0.9s ease-in-out;
+  z-index: 4;
+}
+
+/* HUD + situation panel (mirrors the subway game) */
+.exo-bridge__hud { display: flex; gap: 0.5rem; }
+.exo-bridge__stat {
+  padding: 0.28rem 0.9rem;
+  border-radius: 999px;
+  background: var(--j-panel);
+  border: 1px solid rgba(126, 150, 176, 0.3);
+  font-family: var(--j-font-body);
+  font-size: 0.92rem;
+  color: var(--j-secondary);
+}
+.exo-bridge__stat b { color: var(--j-ink); }
+
+.exo-bridge__panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  padding: 0.9rem 1rem 1rem;
+  border-radius: 12px;
+  background: var(--j-field);
+  border: 1.5px solid rgba(245, 185, 74, 0.35);
+}
+.exo-bridge__tag {
+  font-family: var(--j-font-body);
+  font-weight: 800;
+  font-size: 0.8rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--j-ochre);
+}
+.exo-bridge__sit {
+  margin: 0;
+  padding: 0.5rem 0.8rem;
+  border-radius: 10px;
+  background: rgba(95, 180, 245, 0.1);
+  border-left: 3px solid var(--j-teal);
+  font-family: var(--j-font-body);
+  font-size: 0.98rem;
+  font-style: italic;
+  color: var(--j-ink);
+}
+.exo-bridge__prompt {
+  margin: 0;
+  font-family: var(--j-font-body);
+  font-size: 1.08rem;
+  line-height: 1.5;
+  color: var(--j-ink);
+}
+.exo-bridge__opts { display: flex; flex-direction: column; gap: 0.5rem; }
+.exo-bridge__opt {
+  text-align: left;
+  padding: 0.5rem 1rem;
+  border-radius: 12px;
+  border: 1.5px solid rgba(126, 150, 176, 0.4);
+  background: var(--j-panel);
+  color: var(--j-ink);
+  font-family: var(--j-font-body);
+  font-size: 0.98rem;
+  cursor: pointer;
+}
+.exo-bridge__opt:hover:not(:disabled) { border-color: var(--j-ochre); }
+.exo-bridge__opt--right {
+  border-color: var(--j-olive);
+  background: rgba(90, 217, 143, 0.16);
+  color: var(--j-olive);
+  font-weight: 700;
+}
+.exo-bridge__opt--wrong {
+  border-color: rgba(240, 110, 100, 0.6);
+  background: rgba(240, 110, 100, 0.12);
+  color: var(--j-coral);
+  text-decoration: line-through;
+}
+.exo-bridge__opt:disabled { cursor: default; opacity: 0.85; }
+
+.exo-bridge__note {
+  margin: 0;
+  padding: 0.5rem 0.8rem;
+  border-radius: 10px;
+  background: rgba(90, 217, 143, 0.1);
+  border-left: 3px solid var(--j-olive);
+  font-family: var(--j-font-body);
+  font-size: 0.95rem;
+  color: var(--j-ink);
+}
+
+.exo-bridge__report-cap {
+  margin: 0;
+  font-family: var(--j-font-display);
+  font-size: 1.4rem;
+  color: var(--j-ochre);
+}
+.exo-bridge__report-row { margin: 0; font-family: var(--j-font-body); color: var(--j-ink); }
+.exo-bridge__report-rank {
+  margin: 0.2rem 0 0;
+  font-family: var(--j-font-display);
+  font-size: 1.5rem;
+  color: var(--j-ink);
+}
+.exo-bridge__again {
+  margin-top: 0.5rem;
+  align-self: flex-start;
+  padding: 0.45rem 1.1rem;
+  border-radius: 999px;
+  border: 1.5px solid rgba(245, 185, 74, 0.5);
+  background: var(--j-panel);
+  color: var(--j-ochre);
+  font-family: var(--j-font-body);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+@media (orientation: portrait) {
+  .exo-bridge__lamplabel { font-size: 0.56rem; }
+  .exo-bridge__walker { font-size: 1.35rem; }
+  .exo-bridge__who { font-size: 1.45rem; }
+}

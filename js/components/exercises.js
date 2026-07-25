@@ -3967,6 +3967,210 @@ export function createSubwayGame({ stations, stops, onResult }) {
   return wrap;
 }
 
+/* ============================================================
+ * The Language Bridge — mediation as gameplay (Vocabulary Step-4 star)
+ *
+ * You are the "language bridge" between a German visitor (Oma, on the
+ * left bank) and New York (the Statue of Liberty, on the right bank).
+ * Each stop is a real shopping / tour situation where the right choice
+ * depends on knowing the American word or dodging a false friend
+ * ("pants", the "first floor" trap, "check" vs "bill"…). Every correct
+ * mediation walks your traveller one span further across the Brooklyn
+ * Bridge; wrong calls only cost the final rank. Reach the far bank and
+ * the two languages are connected.
+ *
+ * @param {{
+ *   spans: string[],              // one short topic label per stop (deck segments)
+ *   stops: Array<{ prompt: string, situation?: string, options: string[], correct: number, note?: string }>,
+ *   onResult: (summary: string) => void,
+ * }} opts
+ */
+export function createBridgeGame({ spans, stops, onResult }) {
+  const n = stops.length;
+  const wrap = document.createElement("div");
+  wrap.className = "exo exo-bridge";
+
+  // --- The bridge scene: two banks, towers, cables, a walking traveller ---
+  const scene = document.createElement("div");
+  scene.className = "exo-bridge__scene";
+
+  // Iconic suspension silhouette (decorative, stretches to width).
+  const svgNS = "http://www.w3.org/2000/svg";
+  const svg = document.createElementNS(svgNS, "svg");
+  svg.setAttribute("class", "exo-bridge__cables");
+  svg.setAttribute("viewBox", "0 0 100 44");
+  svg.setAttribute("preserveAspectRatio", "none");
+  const mk = (tag, attrs) => {
+    const el = document.createElementNS(svgNS, tag);
+    for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, v);
+    el.setAttribute("vector-effect", "non-scaling-stroke");
+    return el;
+  };
+  // Two main draped cables between the towers (x=24, x=76) and the banks.
+  svg.appendChild(mk("path", { d: "M0 30 Q12 8 24 8 Q37 24 50 24 Q63 24 76 8 Q88 8 100 30", class: "exo-bridge__cable" }));
+  svg.appendChild(mk("path", { d: "M0 34 Q12 14 24 12 Q37 27 50 27 Q63 27 76 12 Q88 14 100 34", class: "exo-bridge__cable exo-bridge__cable--back" }));
+  // Vertical suspenders.
+  for (let x = 6; x < 100; x += 6) {
+    let cy;
+    if (x <= 24) cy = 30 - (30 - 8) * (x / 24);
+    else if (x <= 50) cy = 8 + (24 - 8) * ((x - 24) / 26);
+    else if (x <= 76) cy = 24 - (24 - 8) * ((x - 50) / 26);
+    else cy = 8 + (30 - 8) * ((x - 76) / 24);
+    svg.appendChild(mk("line", { x1: x, y1: cy, x2: x, y2: 30, class: "exo-bridge__suspender" }));
+  }
+  scene.appendChild(svg);
+
+  // Two gothic towers.
+  [24, 76].forEach((x) => {
+    const t = document.createElement("div");
+    t.className = "exo-bridge__tower";
+    t.style.left = `${x}%`;
+    scene.appendChild(t);
+  });
+
+  // The deck (roadway) + the fill that grows as you cross.
+  const deck = document.createElement("div");
+  deck.className = "exo-bridge__deck";
+  const fill = document.createElement("div");
+  fill.className = "exo-bridge__deck-fill";
+  deck.appendChild(fill);
+  scene.appendChild(deck);
+
+  // The two banks.
+  const bankDe = document.createElement("div");
+  bankDe.className = "exo-bridge__bank exo-bridge__bank--de";
+  bankDe.innerHTML = '<span class="exo-bridge__who">🧓</span><span class="exo-bridge__flag">🇩🇪</span>';
+  const bankUs = document.createElement("div");
+  bankUs.className = "exo-bridge__bank exo-bridge__bank--us";
+  bankUs.innerHTML = '<span class="exo-bridge__who">🗽</span>';
+  scene.append(bankDe, bankUs);
+
+  // Lamp nodes (one per stop) with their topic labels.
+  const lamps = spans.map((label, i) => {
+    const lamp = document.createElement("div");
+    lamp.className = "exo-bridge__lamp";
+    lamp.style.left = `${((i + 0.5) / n) * 100}%`;
+    const dot = document.createElement("span");
+    dot.className = "exo-bridge__lampdot";
+    const lab = document.createElement("span");
+    lab.className = "exo-bridge__lamplabel";
+    lab.textContent = label ?? "";
+    lamp.append(dot, lab);
+    scene.appendChild(lamp);
+    return lamp;
+  });
+
+  // The traveller who crosses the bridge.
+  const walker = document.createElement("span");
+  walker.className = "exo-bridge__walker";
+  walker.textContent = "🚶";
+  scene.appendChild(walker);
+
+  const place = (i) => {
+    const pct = (i / n) * 100;
+    walker.style.left = `${pct}%`;
+    fill.style.width = `${pct}%`;
+    lamps.forEach((l, k) => l.classList.toggle("exo-bridge__lamp--lit", k < i));
+  };
+  place(0);
+
+  // --- HUD + situation panel ---
+  const hud = document.createElement("div");
+  hud.className = "exo-bridge__hud";
+  const prog = document.createElement("span");
+  prog.className = "exo-bridge__stat";
+  hud.appendChild(prog);
+
+  const panel = document.createElement("div");
+  panel.className = "exo-bridge__panel";
+
+  const state = { i: 0, wrong: 0 };
+
+  const showStop = () => {
+    const s = stops[state.i];
+    prog.innerHTML = `🌉 Span <b>${state.i + 1}</b> / ${n}`;
+    panel.innerHTML = "";
+    const tag = document.createElement("div");
+    tag.className = "exo-bridge__tag";
+    tag.textContent = spans[state.i] ?? `Situation ${state.i + 1}`;
+    panel.appendChild(tag);
+    if (s.situation) {
+      const sit = document.createElement("p");
+      sit.className = "exo-bridge__sit";
+      sit.textContent = s.situation;
+      panel.appendChild(sit);
+    }
+    const q = document.createElement("p");
+    q.className = "exo-bridge__prompt";
+    q.textContent = s.prompt;
+    panel.appendChild(q);
+
+    const opts = document.createElement("div");
+    opts.className = "exo-bridge__opts";
+    let locked = false;
+    shuffledCopy(s.options.map((label, oi) => ({ label, oi }))).forEach(({ label, oi }) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "exo-bridge__opt";
+      b.textContent = label;
+      b.addEventListener("click", () => {
+        if (locked || b.disabled) return;
+        if (oi === s.correct) {
+          locked = true;
+          b.classList.add("exo-bridge__opt--right");
+          opts.querySelectorAll("button").forEach((x) => (x.disabled = true));
+          if (s.note) {
+            const note = document.createElement("p");
+            note.className = "exo-bridge__note";
+            note.textContent = s.note;
+            panel.appendChild(note);
+          }
+          advance();
+        } else {
+          state.wrong += 1;
+          b.classList.add("exo-bridge__opt--wrong");
+          b.disabled = true;
+        }
+      });
+      opts.appendChild(b);
+    });
+    panel.appendChild(opts);
+  };
+
+  const advance = () => {
+    state.i += 1;
+    place(state.i);
+    if (state.i < n) setTimeout(showStop, 950);
+    else setTimeout(report, 1050);
+  };
+
+  const report = () => {
+    const rank = state.wrong === 0 ? "Perfect Bridge 🌉" : state.wrong <= 2 ? "Great Interpreter 🗽" : "Helpful Guide 🙂";
+    onResult?.(`Crossed the bridge · ${state.wrong} wrong · rank: ${rank}`);
+    prog.innerHTML = `🏁 Connected!`;
+    bankUs.classList.add("exo-bridge__bank--cheer");
+    panel.innerHTML =
+      `<p class="exo-bridge__report-cap">🌉 You are the language bridge!</p>` +
+      `<p class="exo-bridge__report-row">Oma understood everything. Wrong turns: <b>${state.wrong}</b></p>` +
+      `<p class="exo-bridge__report-rank">Your rank: <b>${rank}</b></p>`;
+    const again = document.createElement("button");
+    again.type = "button";
+    again.className = "exo-bridge__again";
+    again.textContent = "🔄 Cross again";
+    again.addEventListener("click", () => {
+      state.i = 0; state.wrong = 0;
+      bankUs.classList.remove("exo-bridge__bank--cheer");
+      place(0);
+      showStop();
+    });
+    panel.appendChild(again);
+  };
+
+  wrap.append(scene, hud, panel);
+  showStop();
+  return wrap;
+}
+
 /**
  * Read-only thread of model comments, rendered exactly like the Comment
  * Lab thread — so the models look like the real thing the learner will
