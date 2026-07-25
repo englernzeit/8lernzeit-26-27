@@ -6,12 +6,17 @@ and the word / translation / example already display on top.
 
 ## Where the files go (exact names)
 
-The engine loads `assets/vocab/unit1/<course>/NN.jpg` — two-digit, starting at `01`.
+Each **competence** has its own folder, and inside it a folder per **course**.
+The engine loads `assets/vocab/unit1/<competence>/<course>/NN.jpg` — two-digit,
+starting at `01`, in word-list order.
 
 ```
 assets/vocab/unit1/
-  gkurs/  01.jpg … 12.jpg   (G-Kurs)
-  ekurs/  01.jpg … 12.jpg   (E-Kurs)
+  reading/     ← Unit 1 Reading list (done below)
+    gkurs/  01.jpg … 15.jpg
+    ekurs/  (awaiting E-Kurs list)
+  writing/     ← later
+  vocabulary/  ← later
 ```
 
 ## Image format
@@ -33,9 +38,9 @@ assets/vocab/unit1/
 > **no text, no letters, no words, no logos**, clean darker space at the top and
 > bottom, 2:3 portrait.
 
-## G-Kurs — gkurs/NN.jpg  ✅ all 15 in
+## Reading · G-Kurs — reading/gkurs/NN.jpg  ✅ all 15 in
 
-Unit 1 (Reading) word list, in deck order:
+Unit 1 · Reading word list, in deck order:
 
 | file | word | illustration |
 |------|------|--------------|
@@ -55,8 +60,9 @@ Unit 1 (Reading) word list, in deck order:
 | 14 | star – Stern | glowing five-pointed star over the rooftops |
 | 15 | immigrant – Einwanderer | vintage suitcase on a pier, Statue of Liberty in the distance |
 
-## E-Kurs — ekurs/NN.jpg  ⏳ awaiting word list
+## Reading · E-Kurs — reading/ekurs/NN.jpg  ⏳ awaiting word list
 
-Drop the E-Kurs list here and I'll wire it the same way.
+Drop the E-Kurs list here and I'll wire it the same way. Writing and
+Vocabulary decks get their own `writing/` and `vocabulary/` folders later.
 
 The same words drive **Word Master** (the gap-fill drill) — no extra assets needed there.

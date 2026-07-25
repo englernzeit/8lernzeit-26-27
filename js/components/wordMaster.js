@@ -107,8 +107,11 @@ export function createWordMaster({ title = "Word Master", courses, onScore, onCl
     list.className = "wordmaster__list";
     sheet.appendChild(list);
 
+    // Shuffle the item order on every open so the drill isn't memorised
+    // by position — the words appear in a fresh order each time.
+    const items = shuffle(course.items.slice());
     const solved = new Set();
-    const total = course.items.length;
+    const total = items.length;
 
     const updateScore = () => {
       scoreBadge.textContent = `Correct: ${solved.size} / ${total}`;
@@ -116,7 +119,7 @@ export function createWordMaster({ title = "Word Master", courses, onScore, onCl
       onScore?.(course.key, solved.size, total);
     };
 
-    course.items.forEach((item, i) => {
+    items.forEach((item, i) => {
       const li = document.createElement("li");
       li.className = "wordmaster__item";
 
@@ -249,3 +252,12 @@ function buildGap(el, item, onSolved) {
 }
 
 const norm = (s) => (s ?? "").trim().toLowerCase().replace(/\s+/g, " ");
+
+/** Fisher–Yates shuffle, in place; returns the same array. */
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}

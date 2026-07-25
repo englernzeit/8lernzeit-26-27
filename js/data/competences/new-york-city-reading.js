@@ -33,6 +33,74 @@ const MAGAZINE = "assets/images/unit1/magazine";
 export default {
   title: "Faster than Traffic",
 
+  /* ============ Picture Vocabulary — "Neon Postcard" deck ============
+   * The Unit 1 · Reading word list. Wordless neon 2:3 illustrations live
+   * at assets/vocab/unit1/reading/gkurs/NN.jpg (01…15, in list order); the
+   * word, German translation and example are drawn as a CSS layer on top.
+   * Word Master (below) drills the same words. Each competence gets its
+   * own folder (reading/ · writing/ · vocabulary/); E-Kurs to follow. */
+  pictureVocab: {
+    title: "Picture Vocabulary",
+    base: "assets/vocab/unit1/reading",
+    courses: [
+      {
+        key: "gk",
+        dir: "gkurs",
+        name: "G-Kurs",
+        tag: "New York — key words",
+        cards: [
+          { word: "state", de: "der (Bundes-)Staat", example: "New York is a state in the USA." },
+          { word: "age", de: "das Alter", example: "What is your age? I am 14." },
+          { word: "liberty", de: "die Freiheit", example: "The torch is a symbol of liberty." },
+          { word: "island", de: "die Insel", example: "The Statue of Liberty stands on an island." },
+          { word: "sight", de: "die Sehenswürdigkeit", example: "The Empire State Building is a famous sight." },
+          { word: "awesome", de: "klasse, stark, großartig", example: "The view from the top is awesome!" },
+          { word: "destroy", de: "zerstören", example: "A big storm can destroy old buildings." },
+          { word: "since 2012", de: "seit 2012", example: "The tower has been open since 2012." },
+          { word: "view (of)", de: "die Aussicht, der Ausblick (auf)", example: "We have a great view of the skyline." },
+          { word: "walkway", de: "der Fußweg, der Laufgang", example: "We walked along the walkway on the bridge." },
+          { word: "above", de: "oben, über, oberhalb (von)", example: "The plane flew high above the city." },
+          { word: "traffic", de: "der (Straßen-)Verkehr", example: "There is a lot of traffic in New York." },
+          { word: "build", de: "(er)bauen — build, built, built", example: "They built the Brooklyn Bridge long ago." },
+          { word: "star", de: "der Stern", example: "You can see one bright star in the sky." },
+          { word: "immigrant", de: "der Einwanderer", example: "The immigrant arrived in New York by ship." },
+        ],
+      },
+    ],
+  },
+
+  /* ============ Word Master — same words, gap-fill drill ============
+   * Format: a full German sentence gives the meaning, and the learner
+   * types the missing English word into the parallel English sentence.
+   * The item order is shuffled on every open. */
+  wordMaster: {
+    courses: [
+      {
+        key: "gk",
+        name: "G-Kurs",
+        tag: "New York — key words",
+        subtitle: "Read the German sentence, then complete the English one.",
+        items: [
+          { de: "New York ist ein (Bundes-)Staat in den USA.", en: "New York is a ___ in the USA.", answer: "state" },
+          { de: "Mit 18 Jahren (in diesem Alter) darf man wählen.", en: "You can vote at the ___ of 18.", answer: "age" },
+          { de: "Die Freiheitsstatue ist ein Symbol der Freiheit.", en: "The Statue of Liberty is a symbol of ___.", answer: "liberty" },
+          { de: "Die Freiheitsstatue steht auf einer Insel.", en: "The Statue of Liberty stands on an ___.", answer: "island" },
+          { de: "Das Empire State Building ist eine berühmte Sehenswürdigkeit.", en: "The Empire State Building is a famous ___.", answer: "sight" },
+          { de: "Die Aussicht von oben ist großartig!", en: "The view from the top is ___!", answer: "awesome" },
+          { de: "Ein starker Sturm kann alte Gebäude zerstören.", en: "A strong storm can ___ old buildings.", answer: "destroy" },
+          { de: "Der Turm ist seit 2012 geöffnet.", en: "The tower has been open ___.", answer: "since 2012", accept: ["since twenty twelve"] },
+          { de: "Wir haben einen tollen Ausblick auf die Skyline.", en: "We have a great ___ of the skyline.", answer: "view" },
+          { de: "Wir gingen über den Fußweg auf der Brücke.", en: "We walked along the ___ on the bridge.", answer: "walkway" },
+          { de: "Das Flugzeug flog hoch über der Stadt.", en: "The plane flew high ___ the city.", answer: "above" },
+          { de: "In New York gibt es viel (Straßen-)Verkehr.", en: "There is a lot of ___ in New York.", answer: "traffic" },
+          { de: "Sie bauten die Brooklyn Bridge vor langer Zeit.", en: "They ___ the Brooklyn Bridge long ago.", answer: "built", accept: ["build"] },
+          { de: "Am Himmel sieht man einen hellen Stern.", en: "You can see one bright ___ in the sky.", answer: "star" },
+          { de: "Der Einwanderer kam mit dem Schiff in New York an.", en: "The ___ arrived in New York by ship.", answer: "immigrant" },
+        ],
+      },
+    ],
+  },
+
   /* ============ Shared reference card ============ */
   guide: {
     label: "The Reading Toolkit",

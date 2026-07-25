@@ -25,70 +25,9 @@
 export default {
   title: "Two Words, One City",
 
-  /* ============ Picture Vocabulary — "Neon Postcard" deck ============
-   * The Unit 1 (Reading) word list. Wordless neon NYC illustrations live
-   * at assets/vocab/unit1/gkurs/NN.jpg (01…15, in list order). The English
-   * word, German translation and example are drawn as a crisp CSS layer on
-   * top; a missing image degrades to a neon placeholder. Word Master (below)
-   * drills exactly these words. E-Kurs list to be added once supplied. */
-  pictureVocab: {
-    title: "Picture Vocabulary",
-    base: "assets/vocab/unit1",
-    courses: [
-      {
-        key: "gk",
-        dir: "gkurs",
-        name: "G-Kurs",
-        tag: "New York — key words",
-        cards: [
-          { word: "state", de: "der (Bundes-)Staat", example: "New York is a state in the USA." },
-          { word: "age", de: "das Alter", example: "What is your age? I am 14." },
-          { word: "liberty", de: "die Freiheit", example: "The torch is a symbol of liberty." },
-          { word: "island", de: "die Insel", example: "The Statue of Liberty stands on an island." },
-          { word: "sight", de: "die Sehenswürdigkeit", example: "The Empire State Building is a famous sight." },
-          { word: "awesome", de: "klasse, stark, großartig", example: "The view from the top is awesome!" },
-          { word: "destroy", de: "zerstören", example: "A big storm can destroy old buildings." },
-          { word: "since 2012", de: "seit 2012", example: "The tower has been open since 2012." },
-          { word: "view (of)", de: "die Aussicht, der Ausblick (auf)", example: "We have a great view of the skyline." },
-          { word: "walkway", de: "der Fußweg, der Laufgang", example: "We walked along the walkway on the bridge." },
-          { word: "above", de: "oben, über, oberhalb (von)", example: "The plane flew high above the city." },
-          { word: "traffic", de: "der (Straßen-)Verkehr", example: "There is a lot of traffic in New York." },
-          { word: "build", de: "(er)bauen — build, built, built", example: "They built the Brooklyn Bridge long ago." },
-          { word: "star", de: "der Stern", example: "You can see one bright star in the sky." },
-          { word: "immigrant", de: "der Einwanderer", example: "The immigrant arrived in New York by ship." },
-        ],
-      },
-    ],
-  },
-
-  /* ============ Word Master — same words, gap-fill drill ============ */
-  wordMaster: {
-    courses: [
-      {
-        key: "gk",
-        name: "G-Kurs",
-        tag: "New York — key words",
-        subtitle: "Complete each sentence with the right word from the cards.",
-        items: [
-          { de: "der **(Bundes-)Staat**", en: "New York is a ___ in the USA.", answer: "state" },
-          { de: "das **Alter**", en: "You can vote at the ___ of 18.", answer: "age" },
-          { de: "die **Freiheit**", en: "The Statue of Liberty is a symbol of ___.", answer: "liberty" },
-          { de: "die **Insel**", en: "The Statue of Liberty stands on an ___.", answer: "island" },
-          { de: "die **Sehenswürdigkeit**", en: "The Empire State Building is a famous ___.", answer: "sight" },
-          { de: "**klasse, stark, großartig**", en: "The view from the top is ___!", answer: "awesome" },
-          { de: "**zerstören**", en: "A big storm can ___ old buildings.", answer: "destroy" },
-          { de: "**seit 2012**", en: "The tower has been open ___.", answer: "since 2012", accept: ["since twenty twelve"] },
-          { de: "die **Aussicht**, der **Ausblick**", en: "We have a great ___ of the skyline.", answer: "view" },
-          { de: "der **Fußweg**, der **Laufgang**", en: "We walked along the ___ on the bridge.", answer: "walkway" },
-          { de: "**oben, über, oberhalb**", en: "The plane flew high ___ the city.", answer: "above" },
-          { de: "der **(Straßen-)Verkehr**", en: "There is a lot of ___ in New York.", answer: "traffic" },
-          { de: "**(er)bauen** (build, built, built)", en: "They ___ the Brooklyn Bridge long ago.", answer: "built", accept: ["build"] },
-          { de: "der **Stern**", en: "You can see one bright ___ in the sky.", answer: "star" },
-          { de: "der **Einwanderer**", en: "The ___ arrived in New York by ship.", answer: "immigrant" },
-        ],
-      },
-    ],
-  },
+  /* Picture Vocabulary + Word Master for Unit 1 now live on the Reading
+   * page (that word list belongs to Reading). The Vocabulary-page list
+   * will be added here once supplied. */
 
   /* ============ Shared reference card ============ */
   guide: {
