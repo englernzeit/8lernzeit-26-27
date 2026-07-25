@@ -16,28 +16,30 @@ assets/vocab/unit1/
 
 ## Image format
 
-- **JPG**, **4:5 portrait** (e.g. 1024×1280 or 1200×1500 px). Keep each file well
-  under 25 MiB (Cloudflare Pages limit) — a few hundred KB is plenty.
+- **JPG**, **2:3 portrait** (1024×1536 px — gpt-image-1's portrait size). The site
+  re-encodes/optimises; drop originals in and they get archived under
+  `assets/_original/vocab/unit1/`. Keep files well under 25 MiB (a few hundred KB
+  is plenty).
 - **Wordless.** The English word, German translation and example are drawn by the
   site as crisp text on top — do **not** bake any text/letters into the image.
-- Leave the **top ~22 %** and **bottom ~30 %** darker / calmer: the site lays a
+- Leave the **top ~20 %** and **bottom ~30 %** darker / calmer: the site lays a
   neon word-sign over the top and the translation + example over the bottom.
 
 ## Shared style prompt (put the SUBJECT in the [brackets])
 
 > Neon night illustration of **[SUBJECT]**, single hero subject centered, deep
 > navy New York night background, glowing teal and warm-gold neon rim-light,
-> subtle coral accents, cinematic soft glow, modern flat vector style with
-> painterly light, **no text, no letters, no words, no logos**, clean darker
-> space at the top and bottom, 4:5 portrait.
+> subtle coral accents, cinematic soft glow, painterly cinematic light,
+> **no text, no letters, no words, no logos**, clean darker space at the top and
+> bottom, 2:3 portrait.
 
 ## G-Kurs — gkurs/NN.jpg
 
 | file | word | subject to put in the prompt |
 |------|------|------------------------------|
-| 01 | subway | a glowing NYC subway entrance with a green globe lamp and stairs going underground |
-| 02 | store | a small brightly-lit New York corner store / bodega front with a glowing awning |
-| 03 | elevator | an open elevator with a glowing floor-number panel in a building lobby |
+| 01 | state | ✅ done — neon government building with US flag & NYC skyline |
+| 02 | age | ✅ done — neon birthday cake with candles, NYC skyline through a window |
+| 03 | liberty | ✅ done — vintage suitcase on a pier, glowing Statue of Liberty in the distance |
 | 04 | sneakers | a pair of cool sneakers on a pedestal under a neon spotlight |
 | 05 | pants | a pair of trousers on a hanger in a neon-lit clothing store |
 | 06 | candy | a colourful candy / sweets display in a glowing candy-store window |

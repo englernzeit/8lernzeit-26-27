@@ -382,15 +382,15 @@
 .picvocab__card--neon {
   --pv-neon-teal: #5fb4f5;
   --pv-neon-gold: #f5b94a;
-  /* also cap by viewport height (66vh) so the tall 4:5 card never clips
-     its word / translation on shorter laptop screens */
-  width: min(86vw, 620px, 66vh);
+  /* the illustrations are 2:3 portrait; cap by viewport height (52vh) too
+     so the tall card never clips its word / translation on laptops */
+  width: min(88vw, 520px, 52vh);
 }
 
 .picvocab__frame {
   position: relative;
   width: 100%;
-  aspect-ratio: 4 / 5;
+  aspect-ratio: 2 / 3;
   border-radius: 8px;
   overflow: hidden;
   background: radial-gradient(120% 85% at 50% 0%, #1b2f4e 0%, #0c1830 58%, #081020 100%);
