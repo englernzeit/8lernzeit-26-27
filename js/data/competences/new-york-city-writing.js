@@ -33,6 +33,73 @@ const B5 = "5 · Close";
 export default {
   title: "The Perfect Comment",
 
+  /* ============ Picture Vocabulary — "Neon Postcard" deck ============
+   * The Unit 1 · Writing word list. Wordless neon 2:3 illustrations live
+   * at assets/vocab/unit1/writing/gkurs/NN.jpg (01…15, in list order); the
+   * word, German translation and example are drawn as a CSS layer on top.
+   * Word Master (below) drills the same words. E-Kurs to follow.
+   * (German translations are standard — adjust if the textbook differs.) */
+  pictureVocab: {
+    title: "Picture Vocabulary",
+    base: "assets/vocab/unit1/writing",
+    courses: [
+      {
+        key: "gk",
+        dir: "gkurs",
+        name: "G-Kurs",
+        tag: "Writing — key words",
+        cards: [
+          { word: "stoop", de: "die (Vor-)Treppe am Hauseingang", example: "We sat on the stoop and watched the street." },
+          { word: "mood", de: "die Stimmung, die Laune", example: "The music put me in a great mood." },
+          { word: "everything", de: "alles", example: "In New York, everything felt new." },
+          { word: "step", de: "der Schritt", example: "She took one step forward." },
+          { word: "introduction (to)", de: "die Einleitung; die Einführung (in)", example: "Every story needs a short introduction." },
+          { word: "friendship", de: "die Freundschaft", example: "Their friendship began at school." },
+          { word: "practice", de: "das Training, die Übung", example: "He has basketball practice every week." },
+          { word: "nearly", de: "fast, beinahe", example: "I nearly missed the train." },
+          { word: "fall asleep", de: "einschlafen", example: "I always fall asleep on the subway." },
+          { word: "nowhere", de: "nirgends, nirgendwo(hin)", example: "The bus went nowhere for an hour." },
+          { word: "forward", de: "vorwärts, nach vorn", example: "She kept moving forward." },
+          { word: "distance", de: "die Entfernung, die Ferne", example: "The skyline shone in the distance." },
+          { word: "as", de: "als, während", example: "As the sun set, the lights came on." },
+          { word: "turn", de: "(sich) umdrehen; abbiegen", example: "She turned to look back." },
+          { word: "both", de: "beide", example: "Both tokens looked exactly the same." },
+        ],
+      },
+    ],
+  },
+
+  /* ============ Word Master — same words, gap-fill drill ============
+   * German sentence gives the meaning; the learner completes the parallel
+   * English sentence. Item order is shuffled on every open. */
+  wordMaster: {
+    courses: [
+      {
+        key: "gk",
+        name: "G-Kurs",
+        tag: "Writing — key words",
+        subtitle: "Read the German sentence, then complete the English one.",
+        items: [
+          { de: "Wir saßen auf der Treppe vor dem Haus und schauten der Straße zu.", en: "We sat on the ___ and watched the street.", answer: "stoop" },
+          { de: "Die Musik brachte mich in super Stimmung.", en: "The music put me in a great ___.", answer: "mood" },
+          { de: "In New York fühlte sich alles neu an.", en: "In New York, ___ felt new.", answer: "everything" },
+          { de: "Sie machte einen Schritt nach vorn.", en: "She took one ___ forward.", answer: "step" },
+          { de: "Jede Geschichte braucht eine kurze Einleitung.", en: "Every story needs a short ___.", answer: "introduction" },
+          { de: "Ihre Freundschaft begann in der Schule.", en: "Their ___ began at school.", answer: "friendship" },
+          { de: "Er hat jede Woche Basketballtraining.", en: "He has basketball ___ every week.", answer: "practice" },
+          { de: "Ich hätte fast den Zug verpasst.", en: "I ___ missed the train.", answer: "nearly" },
+          { de: "In der U-Bahn schlafe ich immer ein.", en: "I always ___ on the subway.", answer: "fall asleep", accept: ["fall-asleep"] },
+          { de: "Der Bus kam eine Stunde lang nirgendwohin.", en: "The bus went ___ for an hour.", answer: "nowhere" },
+          { de: "Sie ging immer weiter nach vorn.", en: "She kept moving ___.", answer: "forward" },
+          { de: "Die Skyline leuchtete in der Ferne.", en: "The skyline shone in the ___.", answer: "distance" },
+          { de: "Als die Sonne unterging, gingen die Lichter an.", en: "___ the sun set, the lights came on.", answer: "as" },
+          { de: "Auf dem Gehweg drehte sie sich um.", en: "On the sidewalk, she ___ around.", answer: "turned", accept: ["turn"] },
+          { de: "Beide Wertmarken sahen genau gleich aus.", en: "___ tokens looked exactly the same.", answer: "both" },
+        ],
+      },
+    ],
+  },
+
   /* ============ Shared reference card ============ */
   guide: {
     label: "The Comment Recipe",

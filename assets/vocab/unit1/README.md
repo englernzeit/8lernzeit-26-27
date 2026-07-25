@@ -12,10 +12,12 @@ starting at `01`, in word-list order.
 
 ```
 assets/vocab/unit1/
-  reading/     ← Unit 1 Reading list (done below)
+  reading/     ← Reading list (done)
     gkurs/  01.jpg … 15.jpg
     ekurs/  (awaiting E-Kurs list)
-  writing/     ← later
+  writing/     ← Writing list (done)
+    gkurs/  01.jpg … 15.jpg
+    ekurs/  (awaiting E-Kurs list)
   vocabulary/  ← later
 ```
 
@@ -62,7 +64,30 @@ Unit 1 · Reading word list, in deck order:
 
 ## Reading · E-Kurs — reading/ekurs/NN.jpg  ⏳ awaiting word list
 
-Drop the E-Kurs list here and I'll wire it the same way. Writing and
-Vocabulary decks get their own `writing/` and `vocabulary/` folders later.
+## Writing · G-Kurs — writing/gkurs/NN.jpg  ✅ all 15 in
+
+Unit 1 · Writing word list, in deck order (illustrations are metaphorical):
+
+| file | word | illustration |
+|------|------|--------------|
+| 01 | stoop – (Vor-)Treppe | brownstone front stoop with a glowing porch lamp |
+| 02 | mood – Stimmung | two paper lanterns (warm + cool) over a quiet street |
+| 03 | everything – alles | an overflowing shopping cart on the sidewalk |
+| 04 | step – Schritt | a single glowing footprint on a staircase |
+| 05 | introduction (to) – Einleitung | an open book on a lectern, first page glowing |
+| 06 | friendship – Freundschaft | two coffee cups clinking over a café table |
+| 07 | practice – Training | a basketball hoop with a glowing ball and arcs |
+| 08 | nearly – fast | a runner's hand just short of the finish tape |
+| 09 | fall asleep – einschlafen | a person asleep on a subway seat |
+| 10 | nowhere – nirgends | a blank signpost pointing two opposite ways |
+| 11 | forward – vorwärts | a glowing arrow on the asphalt pointing ahead |
+| 12 | distance – Ferne | a long road to a tiny far-away skyline |
+| 13 | as – als/während | an hourglass + a walker sharing one shadow |
+| 14 | turn – (sich) umdrehen | a person turning to look back |
+| 15 | both – beide | two identical subway tokens side by side |
+
+## Writing · E-Kurs / Vocabulary — ⏳ awaiting word lists
+
+Drop each list here and I'll wire it the same way; each gets its own folder.
 
 The same words drive **Word Master** (the gap-fill drill) — no extra assets needed there.
