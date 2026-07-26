@@ -4561,3 +4561,174 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
   .exo-bridge__walker { font-size: 1.35rem; }
   .exo-bridge__who { font-size: 1.45rem; }
 }
+
+/* ===== Sam is Calling! — phone-call game (Speaking Step-4 star) ===== */
+.exo-call {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+}
+
+/* the phone mock-up */
+.exo-call__phone {
+  width: min(100%, 380px);
+  border-radius: 26px;
+  background: linear-gradient(180deg, #0f1f38, #0b1526);
+  border: 1.5px solid rgba(126, 150, 176, 0.32);
+  box-shadow: 0 18px 44px -20px rgba(7, 14, 26, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  overflow: hidden;
+}
+
+.exo-call__statusbar {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.4rem 1rem 0.2rem;
+  font-family: var(--j-font-body);
+  font-size: 0.66rem;
+  letter-spacing: 0.03em;
+  color: var(--j-secondary);
+}
+
+.exo-call__head {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.5rem 1rem 0.7rem;
+  border-bottom: 1px solid rgba(126, 150, 176, 0.2);
+}
+.exo-call__avatar {
+  width: 2.6rem;
+  height: 2.6rem;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(95, 180, 245, 0.16);
+  border: 1.5px solid rgba(95, 180, 245, 0.4);
+  font-size: 1.5rem;
+}
+.exo-call__who { display: flex; flex-direction: column; line-height: 1.15; flex: 1; }
+.exo-call__name { font-family: var(--j-font-display); font-size: 1.15rem; color: var(--j-ink); }
+.exo-call__sub { font-family: var(--j-font-body); font-size: 0.74rem; color: var(--j-secondary); }
+.exo-call__timer {
+  font-family: var(--j-font-body);
+  font-variant-numeric: tabular-nums;
+  font-size: 0.9rem;
+  color: var(--j-olive);
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  background: rgba(90, 217, 143, 0.12);
+}
+
+/* the chat thread */
+.exo-call__thread {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.9rem 0.8rem;
+  min-height: 8rem;
+  max-height: 17rem;
+  overflow-y: auto;
+}
+.exo-call__bubble {
+  max-width: 82%;
+  padding: 0.5rem 0.8rem;
+  border-radius: 16px;
+  font-family: var(--j-font-body);
+  font-size: 0.95rem;
+  line-height: 1.35;
+  animation: exo-call-pop 0.28s ease-out;
+}
+@keyframes exo-call-pop {
+  from { opacity: 0; transform: translateY(6px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+.exo-call__bubble--in {
+  align-self: flex-start;
+  background: var(--j-panel);
+  border: 1px solid rgba(126, 150, 176, 0.28);
+  color: var(--j-ink);
+  border-bottom-left-radius: 5px;
+}
+.exo-call__bubble--out {
+  align-self: flex-end;
+  background: linear-gradient(180deg, #3f8fe0, #2e86d9);
+  color: #f2f8ff;
+  border-bottom-right-radius: 5px;
+}
+.exo-call__bubble--bye { font-style: italic; opacity: 0.9; }
+
+/* reply panel */
+.exo-call__panel {
+  width: min(100%, 460px);
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.exo-call__cue {
+  margin: 0;
+  align-self: center;
+  font-family: var(--j-font-body);
+  font-weight: 700;
+  font-size: 0.76rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--j-teal);
+}
+.exo-call__opts { display: flex; flex-direction: column; gap: 0.45rem; }
+.exo-call__opt {
+  text-align: left;
+  padding: 0.55rem 0.9rem;
+  border-radius: 14px;
+  border: 1.5px solid rgba(126, 150, 176, 0.4);
+  background: var(--j-panel);
+  color: var(--j-ink);
+  font-family: var(--j-font-body);
+  font-size: 0.96rem;
+  cursor: pointer;
+}
+.exo-call__opt:hover:not(:disabled) { border-color: var(--j-teal); }
+.exo-call__opt--wrong {
+  border-color: rgba(240, 110, 100, 0.6);
+  background: rgba(240, 110, 100, 0.12);
+  color: var(--j-coral);
+  text-decoration: line-through;
+}
+.exo-call__opt:disabled { cursor: default; opacity: 0.85; }
+
+.exo-call__note {
+  margin: 0;
+  padding: 0.5rem 0.8rem;
+  border-radius: 10px;
+  background: rgba(90, 217, 143, 0.1);
+  border-left: 3px solid var(--j-olive);
+  font-family: var(--j-font-body);
+  font-size: 0.9rem;
+  color: var(--j-ink);
+}
+
+.exo-call__report-cap {
+  margin: 0;
+  font-family: var(--j-font-display);
+  font-size: 1.3rem;
+  color: var(--j-ochre);
+}
+.exo-call__report-row { margin: 0; font-family: var(--j-font-body); color: var(--j-ink); }
+.exo-call__report-rank {
+  margin: 0.2rem 0 0;
+  font-family: var(--j-font-display);
+  font-size: 1.4rem;
+  color: var(--j-ink);
+}
+.exo-call__again {
+  margin-top: 0.4rem;
+  align-self: flex-start;
+  padding: 0.45rem 1.1rem;
+  border-radius: 999px;
+  border: 1.5px solid rgba(245, 185, 74, 0.5);
+  background: var(--j-panel);
+  color: var(--j-ochre);
+  font-family: var(--j-font-body);
+  font-weight: 700;
+  cursor: pointer;
+}

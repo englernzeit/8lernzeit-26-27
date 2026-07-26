@@ -4171,6 +4171,153 @@ export function createBridgeGame({ spans, stops, onResult }) {
   return wrap;
 }
 
+/* ============================================================
+ * Sam is Calling! — speaking as gameplay (Speaking Step-4 star)
+ *
+ * A live phone call rendered as a smartphone screen. Sam's lines arrive
+ * as incoming chat bubbles; for each one the learner picks the reply that
+ * uses the right time-zone tense and sounds natural (NOW → present
+ * progressive, ALREADY → present perfect, a finished moment → simple
+ * past, TOMORROW → going to, plus a natural close). A correct reply is
+ * spoken back (an outgoing bubble) and the call runs on; the duration
+ * timer climbs toward the ~1-minute goal. Wrong picks only cost the final
+ * "call quality" rank.
+ *
+ * @param {{
+ *   contact?: { name?: string, sub?: string, avatar?: string },
+ *   turns: Array<{ sam: string, prompt?: string, options: string[], correct: number, note?: string }>,
+ *   onResult: (summary: string) => void,
+ * }} opts
+ */
+export function createCallGame({ contact = {}, turns, onResult }) {
+  const name = contact.name ?? "Sam";
+  const sub = contact.sub ?? "New York City";
+  const avatar = contact.avatar ?? "🗽";
+  const SECS_PER_TURN = 12; // 5 turns ≈ one minute on the phone
+  const fmt = (s) => `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
+
+  const wrap = document.createElement("div");
+  wrap.className = "exo exo-call";
+
+  // --- The phone ---
+  const phone = document.createElement("div");
+  phone.className = "exo-call__phone";
+
+  const bar = document.createElement("div");
+  bar.className = "exo-call__statusbar";
+  bar.innerHTML = `<span>●●●● NYC-Mobile</span><span>📶 🔋</span>`;
+
+  const head = document.createElement("div");
+  head.className = "exo-call__head";
+  const av = document.createElement("span");
+  av.className = "exo-call__avatar";
+  av.textContent = avatar;
+  const who = document.createElement("div");
+  who.className = "exo-call__who";
+  who.innerHTML = `<span class="exo-call__name">${name}</span><span class="exo-call__sub">${sub}</span>`;
+  const timer = document.createElement("span");
+  timer.className = "exo-call__timer";
+  timer.textContent = "00:00";
+  head.append(av, who, timer);
+
+  const thread = document.createElement("div");
+  thread.className = "exo-call__thread";
+
+  phone.append(bar, head, thread);
+
+  // --- Reply panel (below the phone) ---
+  const panel = document.createElement("div");
+  panel.className = "exo-call__panel";
+
+  const state = { i: 0, wrong: 0 };
+
+  const bubble = (side, text, cls = "") => {
+    const b = document.createElement("div");
+    b.className = `exo-call__bubble exo-call__bubble--${side}${cls ? " " + cls : ""}`;
+    b.textContent = text;
+    thread.appendChild(b);
+    thread.scrollTop = thread.scrollHeight;
+    return b;
+  };
+
+  const setTimer = () => (timer.textContent = fmt(state.i * SECS_PER_TURN));
+
+  const showTurn = () => {
+    const t = turns[state.i];
+    bubble("in", t.sam);
+    panel.innerHTML = "";
+    if (t.prompt) {
+      const tag = document.createElement("p");
+      tag.className = "exo-call__cue";
+      tag.textContent = t.prompt;
+      panel.appendChild(tag);
+    }
+    const opts = document.createElement("div");
+    opts.className = "exo-call__opts";
+    let locked = false;
+    shuffledCopy(t.options.map((label, oi) => ({ label, oi }))).forEach(({ label, oi }) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "exo-call__opt";
+      b.textContent = label;
+      b.addEventListener("click", () => {
+        if (locked || b.disabled) return;
+        if (oi === t.correct) {
+          locked = true;
+          opts.querySelectorAll("button").forEach((x) => (x.disabled = true));
+          bubble("out", label);
+          if (t.note) {
+            const note = document.createElement("p");
+            note.className = "exo-call__note";
+            note.textContent = t.note;
+            panel.appendChild(note);
+          }
+          advance();
+        } else {
+          state.wrong += 1;
+          b.classList.add("exo-call__opt--wrong");
+          b.disabled = true;
+        }
+      });
+      opts.appendChild(b);
+    });
+    panel.appendChild(opts);
+  };
+
+  const advance = () => {
+    state.i += 1;
+    setTimer();
+    if (state.i < turns.length) setTimeout(showTurn, 950);
+    else setTimeout(report, 1050);
+  };
+
+  const report = () => {
+    const rank = state.wrong === 0 ? "Fluent New Yorker ☎️" : state.wrong <= 2 ? "Great call 📞" : "A bit choppy 📵";
+    const dur = fmt(turns.length * SECS_PER_TURN);
+    onResult?.(`Called ${name} · talked ${dur} · ${state.wrong} slip${state.wrong === 1 ? "" : "s"} · rank: ${rank}`);
+    bubble("in", "Talk to you soon — bye! 👋", "exo-call__bubble--bye");
+    panel.innerHTML =
+      `<p class="exo-call__report-cap">📞 Call ended — you talked for ${dur}!</p>` +
+      `<p class="exo-call__report-row">Slips: <b>${state.wrong}</b></p>` +
+      `<p class="exo-call__report-rank">Call quality: <b>${rank}</b></p>`;
+    const again = document.createElement("button");
+    again.type = "button";
+    again.className = "exo-call__again";
+    again.textContent = "🔄 Call again";
+    again.addEventListener("click", () => {
+      state.i = 0; state.wrong = 0;
+      thread.innerHTML = "";
+      setTimer();
+      showTurn();
+    });
+    panel.appendChild(again);
+  };
+
+  wrap.append(phone, panel);
+  showTurn();
+  return wrap;
+}
+
 /**
  * Read-only thread of model comments, rendered exactly like the Comment
  * Lab thread — so the models look like the real thing the learner will

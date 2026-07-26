@@ -53,6 +53,7 @@ import {
   createDispatchGame,
   createSubwayGame,
   createBridgeGame,
+  createCallGame,
 } from "../components/exercises.js";
 import {
   getName,
@@ -399,8 +400,13 @@ function downloadAnswerSheet(view, unit, section, content, name) {
             ? [{ label: `${card.title} — Beweis-Zeilen`, answer: refs.join(" · ") }]
             : [];
         }
-        if (card.type === "dispatch-game" || card.type === "subway-game" || card.type === "bridge-game") {
-          // The finished result (deliveries/arrival/crossing + rank), if played.
+        if (
+          card.type === "dispatch-game" ||
+          card.type === "subway-game" ||
+          card.type === "bridge-game" ||
+          card.type === "call-game"
+        ) {
+          // The finished result (deliveries/arrival/crossing/call + rank), if played.
           const r = answers[`${base}-game`];
           return r ? [{ label: card.title, answer: r }] : [];
         }
@@ -1101,6 +1107,17 @@ function buildCard(step, data, index, taskNo, ctx) {
         createBridgeGame({
           spans: data.spans,
           stops: data.stops,
+          onResult: (summary) => ctx && setAnswer(ctx.unitId, ctx.sectionId, key, summary),
+        }),
+      );
+      break;
+    }
+    case "call-game": {
+      const key = `step${step.step}-task${index + 1}-game`;
+      body.appendChild(
+        createCallGame({
+          contact: data.contact,
+          turns: data.turns,
           onResult: (summary) => ctx && setAnswer(ctx.unitId, ctx.sectionId, key, summary),
         }),
       );

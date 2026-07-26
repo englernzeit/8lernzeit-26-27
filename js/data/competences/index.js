@@ -18,6 +18,7 @@ import nycWriting from "./new-york-city-writing.js";
 import nycReading from "./new-york-city-reading.js";
 import nycListening from "./new-york-city-listening.js";
 import nycVocabulary from "./new-york-city-vocabulary.js";
+import nycSpeaking from "./new-york-city-speaking.js";
 
 const CONTENT = {
   "new-york-city/grammar": nycGrammar,
@@ -25,6 +26,7 @@ const CONTENT = {
   "new-york-city/reading": nycReading,
   "new-york-city/listening": nycListening,
   "new-york-city/vocabulary": nycVocabulary,
+  "new-york-city/speaking": nycSpeaking,
 };
 
 /**
