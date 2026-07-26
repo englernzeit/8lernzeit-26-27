@@ -14,7 +14,7 @@ starting at `01`, in word-list order.
 assets/vocab/unit1/
   reading/     ← Reading list (done)
     gkurs/  01.jpg … 15.jpg
-    ekurs/  (awaiting E-Kurs list)
+    ekurs/  01.jpg … 15.jpg
   writing/     ← Writing list (done)
     gkurs/  01.jpg … 15.jpg
     ekurs/  (awaiting E-Kurs list)
@@ -64,7 +64,28 @@ Unit 1 · Reading word list, in deck order:
 | 14 | star – Stern | glowing five-pointed star over the rooftops |
 | 15 | immigrant – Einwanderer | vintage suitcase on a pier, Statue of Liberty in the distance |
 
-## Reading · E-Kurs — reading/ekurs/NN.jpg  ⏳ awaiting word list
+## Reading · E-Kurs — reading/ekurs/NN.jpg  ✅ all 15 in
+
+Statue-of-Liberty / immigration / city vocabulary. 04 (a piece of), 12 (star)
+and 13 (awesome) reuse existing G-Kurs / Vocabulary card images.
+
+| file | word | illustration |
+|------|------|--------------|
+| 01 | crown | the spiked crown of the Statue of Liberty |
+| 02 | gateway (to) | a glowing archway over the harbour |
+| 03 | immigration | a ferry arriving at the harbour |
+| 04 | a piece of … | *(reused pizza slice)* |
+| 05 | connect (with/to) | two hands uniting over the skyline |
+| 06 | suspension bridge | a bridge over dark water |
+| 07 | slave | broken shackles on stone |
+| 08 | borough | five glowing NYC districts |
+| 09 | populate | an apartment tower full of lit windows |
+| 10 | war | a war-memorial obelisk with a flame |
+| 11 | independence (from) | a hanging bell (Liberty Bell) |
+| 12 | star | *(reused five-pointed star)* |
+| 13 | awesome | *(reused fireworks)* |
+| 14 | skyscraper | an Art-Deco tower over the skyline |
+| 15 | soccer | a glowing soccer ball on a night pitch |
 
 ## Writing · G-Kurs — writing/gkurs/NN.jpg  ✅ all 15 in
 

@@ -37,8 +37,9 @@ export default {
    * The Unit 1 · Reading word list. Wordless neon 2:3 illustrations live
    * at assets/vocab/unit1/reading/gkurs/NN.jpg (01…15, in list order); the
    * word, German translation and example are drawn as a CSS layer on top.
-   * Word Master (below) drills the same words. Each competence gets its
-   * own folder (reading/ · writing/ · vocabulary/); E-Kurs to follow. */
+   * Word Master (below) drills the same words. G-Kurs + E-Kurs; three of
+   * the E-Kurs cards reuse an existing G-Kurs image (star, awesome) and a
+   * Vocabulary image (a piece of), copied into reading/ekurs. */
   pictureVocab: {
     title: "Picture Vocabulary",
     base: "assets/vocab/unit1/reading",
@@ -64,6 +65,29 @@ export default {
           { word: "build", de: "(er)bauen — build, built, built", example: "They built the Brooklyn Bridge long ago." },
           { word: "star", de: "der Stern", example: "You can see one bright star in the sky." },
           { word: "immigrant", de: "der Einwanderer", example: "The immigrant arrived in New York by ship." },
+        ],
+      },
+      {
+        key: "ek",
+        dir: "ekurs",
+        name: "E-Kurs",
+        tag: "Statue of Liberty & the city",
+        cards: [
+          { word: "crown", de: "die Krone", example: "The Statue of Liberty wears a crown with seven spikes." },
+          { word: "gateway (to)", de: "das Tor (zu)", example: "New York was the gateway to America for millions." },
+          { word: "immigration", de: "die Einwanderung", example: "Ellis Island was the centre of immigration." },
+          { word: "a piece of …", de: "ein Stück (von) …", example: "I ate a piece of real New York pizza." },
+          { word: "connect (with/to)", de: "verbinden (mit)", example: "The bridge connects Manhattan with Brooklyn." },
+          { word: "suspension bridge", de: "die Hängebrücke", example: "The Brooklyn Bridge is a famous suspension bridge." },
+          { word: "slave", de: "der Sklave, die Sklavin", example: "Long ago, slaves had no freedom." },
+          { word: "borough", de: "der (Stadt-)Bezirk (AE)", example: "Brooklyn is one of New York's five boroughs." },
+          { word: "populate", de: "bevölkern, besiedeln", example: "Immigrants from many countries populate the city." },
+          { word: "war", de: "der Krieg", example: "Many people came to New York after the war." },
+          { word: "independence (from)", de: "die Unabhängigkeit (von)", example: "The statue celebrates independence and freedom." },
+          { word: "star", de: "der Stern", example: "You can see one bright star above the city." },
+          { word: "awesome", de: "klasse, stark, großartig", example: "The view from the top is awesome!" },
+          { word: "skyscraper", de: "der Wolkenkratzer", example: "The Empire State Building is a famous skyscraper." },
+          { word: "soccer", de: "der Fußball", example: "In America, they call football “soccer”." },
         ],
       },
     ],
@@ -96,6 +120,29 @@ export default {
           { de: "Sie bauten die Brooklyn Bridge vor langer Zeit.", en: "They ___ the Brooklyn Bridge long ago.", answer: "built", accept: ["build"] },
           { de: "Am Himmel sieht man einen hellen Stern.", en: "You can see one bright ___ in the sky.", answer: "star" },
           { de: "Der Einwanderer kam mit dem Schiff in New York an.", en: "The ___ arrived in New York by ship.", answer: "immigrant" },
+        ],
+      },
+      {
+        key: "ek",
+        name: "E-Kurs",
+        tag: "Statue of Liberty & the city",
+        subtitle: "Read the German sentence, then complete the English one.",
+        items: [
+          { de: "Die Freiheitsstatue trägt eine Krone mit sieben Zacken.", en: "The Statue of Liberty wears a ___ with seven spikes.", answer: "crown" },
+          { de: "New York war für Millionen das Tor nach Amerika.", en: "New York was the ___ to America for millions.", answer: "gateway" },
+          { de: "Ellis Island war das Zentrum der Einwanderung.", en: "Ellis Island was the centre of ___.", answer: "immigration" },
+          { de: "Ich habe ein Stück echte New Yorker Pizza gegessen.", en: "I ate a ___ of real New York pizza.", answer: "piece" },
+          { de: "Die Brücke verbindet Manhattan mit Brooklyn.", en: "The bridge ___ Manhattan with Brooklyn.", answer: "connects", accept: ["connect"] },
+          { de: "Die Brooklyn Bridge ist eine berühmte Hängebrücke.", en: "The Brooklyn Bridge is a famous ___.", answer: "suspension bridge", accept: ["suspension-bridge"] },
+          { de: "Vor langer Zeit hatten Sklaven keine Freiheit.", en: "Long ago, ___ had no freedom.", answer: "slaves", accept: ["slave"] },
+          { de: "Brooklyn ist einer der fünf (Stadt-)Bezirke von New York.", en: "Brooklyn is one of New York's five ___.", answer: "boroughs", accept: ["borough"] },
+          { de: "Einwanderer aus vielen Ländern bevölkern die Stadt.", en: "Immigrants from many countries ___ the city.", answer: "populate" },
+          { de: "Viele Menschen kamen nach dem Krieg nach New York.", en: "Many people came to New York after the ___.", answer: "war" },
+          { de: "Die Statue feiert Unabhängigkeit und Freiheit.", en: "The statue celebrates ___ and freedom.", answer: "independence" },
+          { de: "Über der Stadt sieht man einen hellen Stern.", en: "You can see one bright ___ above the city.", answer: "star" },
+          { de: "Die Aussicht von oben ist großartig!", en: "The view from the top is ___!", answer: "awesome" },
+          { de: "Das Empire State Building ist ein berühmter Wolkenkratzer.", en: "The Empire State Building is a famous ___.", answer: "skyscraper" },
+          { de: "In Amerika nennt man Fußball „soccer“.", en: "In America, they call football “___”.", answer: "soccer" },
         ],
       },
     ],
