@@ -17,10 +17,10 @@ assets/vocab/unit1/
     ekurs/  01.jpg … 15.jpg
   writing/     ← Writing list (done)
     gkurs/  01.jpg … 15.jpg
-    ekurs/  (awaiting E-Kurs list)
+    ekurs/  01.jpg … 15.jpg
   vocabulary/  ← Vocabulary list (done)
     gkurs/  01.jpg … 15.jpg
-    ekurs/  (awaiting E-Kurs list)
+    ekurs/  01.jpg … 15.jpg
 ```
 
 ## Image format
@@ -109,6 +109,29 @@ Unit 1 · Writing word list, in deck order (illustrations are metaphorical):
 | 14 | turn – (sich) umdrehen | a person turning to look back |
 | 15 | both – beide | two identical subway tokens side by side |
 
+## Writing · E-Kurs — writing/ekurs/NN.jpg  ✅ all 15 in
+
+The story words (a night in NYC). 01/05/08/14/15 reuse Writing G-Kurs
+images; 12 (helicopter) and 13 (homeless) reuse Vocabulary G-Kurs images.
+
+| file | word | illustration |
+|------|------|--------------|
+| 01 | introduction (to) | *(reused open book on a lectern)* |
+| 02 | crime | police car with crime-scene tape in a dark alley |
+| 03 | violence | a shattered shop window, a hole in the glass |
+| 04 | suspicious (of) | an apartment door opened on its security chain |
+| 05 | friendship | *(reused two coffee cups clinking)* |
+| 06 | pull in | a yellow taxi at the kerb, indicator lit |
+| 07 | subway | subway entrance stairs going down to warm light |
+| 08 | turn (around) | *(reused person turning to look back)* |
+| 09 | each other | two people talking on a bench, facing each other |
+| 10 | spelling | a chrome mic on a school stage (spelling bee) |
+| 11 | cruise | a cruise ship gliding through the night harbour |
+| 12 | helicopter | *(reused helicopter over the rooftops)* |
+| 13 | homeless | *(reused cardboard shelter under a bridge arch)* |
+| 14 | stoop | *(reused brownstone front stoop)* |
+| 15 | fall asleep | *(reused person asleep on the subway)* |
+
 ## Vocabulary · G-Kurs — vocabulary/gkurs/NN.jpg  ✅ all 15 in
 
 | file | word | illustration |
@@ -129,8 +152,31 @@ Unit 1 · Writing word list, in deck order (illustrations are metaphorical):
 | 14 | invite – einladen | a warmly-lit café table for two |
 | 15 | save – sparen | a jar of glowing coins |
 
-## E-Kurs lists (Reading · Writing · Vocabulary) — ⏳ awaiting
+## Vocabulary · E-Kurs — vocabulary/ekurs/NN.jpg  ✅ all 15 in
 
-Drop each list here and I'll wire it the same way; each gets its own folder.
+The diner-scene words (illustrations are metaphorical). 11 (polite) reuses
+the Vocabulary G-Kurs image.
+
+| file | word | illustration |
+|------|------|--------------|
+| 01 | boredom | a bored figure slumped in a diner booth |
+| 02 | booth | an empty red diner booth |
+| 03 | close (to) | two street lamps sharing overlapping light |
+| 04 | fight | boxing gloves hanging on a gym wall |
+| 05 | floor | a tower with one glowing mid-floor |
+| 06 | give up | worn-out running shoes left on a park path |
+| 07 | I guess | a hooded figure shrugging, palms up |
+| 08 | lean | a bicycle leaning against a brick wall |
+| 09 | manners | an elegant table setting with folded napkin |
+| 10 | order | a waiter's notepad, pencil and service bell |
+| 11 | polite | *(reused doorman holding a brass door)* |
+| 12 | stare (at) | a cat staring from a windowsill |
+| 13 | surprise | a gift box bursting open with light |
+| 14 | the gist | a cracked walnut showing its kernel (the core) |
+| 15 | whatever | a walker with their back turned, waving it off |
 
 The same words drive **Word Master** (the gap-fill drill) — no extra assets needed there.
+
+## E-Kurs — all three lists wired ✅
+
+Reading, Writing and Vocabulary each ship a G-Kurs and an E-Kurs deck.
