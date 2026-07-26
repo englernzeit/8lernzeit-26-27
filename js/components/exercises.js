@@ -4384,3 +4384,191 @@ export function createCommentFill({ user, when, segments, values, keyFor, onChan
   wrap.appendChild(thread);
   return wrap;
 }
+
+/**
+ * ★ Revision star game — "The Big Apple Quiz Show".
+ *
+ * A neon TV quiz show that pulls the whole unit together for the class
+ * test: USA / New York facts, Simple Past vs Present Perfect, British ↔
+ * American words and Conditional 2. Each correct answer scores points and
+ * builds a 🔥 streak (streak = bonus points); a wrong tap breaks the
+ * streak. The show ends with a report card and a German-style grade, so
+ * the learner sees at a glance how test-ready they are.
+ *
+ * @param {{
+ *   host?: { name?: string, avatar?: string, sub?: string },
+ *   rounds: Array<{ name: string, icon?: string, questions: Array<{
+ *     q: string, options: string[], correct: number, note?: string }> }>,
+ *   onResult?: (summary: string) => void,
+ * }} opts
+ */
+export function createQuizShowGame({ host = {}, rounds, onResult }) {
+  const hostName = host.name ?? "Liberty Lou";
+  const hostAvatar = host.avatar ?? "🎤";
+  const hostSub = host.sub ?? "your quiz host";
+
+  // Flatten the rounds into one running list, tagging each question with
+  // its round index so the card can show the category banner.
+  const flat = [];
+  rounds.forEach((r, ri) => (r.questions ?? []).forEach((q) => flat.push({ ...q, ri })));
+  const total = flat.length || 1;
+
+  const wrap = document.createElement("div");
+  wrap.className = "exo exo-quiz";
+
+  const marquee = document.createElement("div");
+  marquee.className = "exo-quiz__marquee";
+  marquee.innerHTML =
+    `<span class="exo-quiz__bulbs">💡💡💡</span>` +
+    `<span class="exo-quiz__show">THE BIG APPLE QUIZ SHOW</span>` +
+    `<span class="exo-quiz__bulbs">💡💡💡</span>`;
+
+  const stage = document.createElement("div");
+  stage.className = "exo-quiz__stage";
+  const hostEl = document.createElement("div");
+  hostEl.className = "exo-quiz__host";
+  hostEl.innerHTML =
+    `<span class="exo-quiz__avatar">${hostAvatar}</span>` +
+    `<span class="exo-quiz__hostwho"><b>${hostName}</b><span>${hostSub}</span></span>`;
+  const board = document.createElement("div");
+  board.className = "exo-quiz__board";
+  board.innerHTML =
+    `<span class="exo-quiz__stat"><b data-score>0</b><span>score</span></span>` +
+    `<span class="exo-quiz__stat"><b data-streak>0</b><span>🔥 streak</span></span>` +
+    `<span class="exo-quiz__stat"><b data-qnum>1/${total}</b><span>question</span></span>`;
+  stage.append(hostEl, board);
+
+  const prog = document.createElement("div");
+  prog.className = "exo-quiz__prog";
+  const progFill = document.createElement("span");
+  progFill.className = "exo-quiz__progfill";
+  prog.appendChild(progFill);
+
+  const card = document.createElement("div");
+  card.className = "exo-quiz__card";
+  const panel = document.createElement("div");
+  panel.className = "exo-quiz__panel";
+
+  wrap.append(marquee, stage, prog, card, panel);
+
+  const scoreEl = board.querySelector("[data-score]");
+  const streakEl = board.querySelector("[data-streak]");
+  const qnumEl = board.querySelector("[data-qnum]");
+
+  const state = { i: 0, score: 0, streak: 0, best: 0, firstTry: 0 };
+
+  const setBoard = () => {
+    scoreEl.textContent = state.score;
+    streakEl.textContent = state.streak;
+    qnumEl.textContent = `${Math.min(state.i + 1, total)}/${total}`;
+    progFill.style.width = `${(state.i / total) * 100}%`;
+  };
+
+  const showQ = () => {
+    const item = flat[state.i];
+    const round = rounds[item.ri] ?? {};
+    card.innerHTML = "";
+    panel.innerHTML = "";
+    let missed = false;
+
+    const chip = document.createElement("div");
+    chip.className = "exo-quiz__roundchip";
+    chip.innerHTML = `<span>${round.icon ?? "⭐"}</span> ${round.name ?? "Round"}`;
+    const q = document.createElement("p");
+    q.className = "exo-quiz__q";
+    q.textContent = item.q;
+    const opts = document.createElement("div");
+    opts.className = "exo-quiz__opts";
+    card.append(chip, q, opts);
+
+    let locked = false;
+    shuffledCopy(item.options.map((label, oi) => ({ label, oi }))).forEach(({ label, oi }) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "exo-quiz__opt";
+      b.textContent = label;
+      b.addEventListener("click", () => {
+        if (locked || b.disabled) return;
+        if (oi === item.correct) {
+          locked = true;
+          b.classList.add("exo-quiz__opt--right");
+          opts.querySelectorAll("button").forEach((x) => (x.disabled = true));
+          state.score += 10 + state.streak * 2; // streak bonus rewards a run
+          state.streak += 1;
+          state.best = Math.max(state.best, state.streak);
+          if (!missed) state.firstTry += 1;
+          setBoard();
+          feedback(item.note);
+        } else {
+          missed = true;
+          state.streak = 0;
+          b.classList.add("exo-quiz__opt--wrong");
+          b.disabled = true;
+          setBoard();
+        }
+      });
+      opts.appendChild(b);
+    });
+    setBoard();
+  };
+
+  const feedback = (note) => {
+    panel.innerHTML = "";
+    const fb = document.createElement("p");
+    fb.className = "exo-quiz__fb";
+    fb.innerHTML = `<b>✅ Correct!</b>${note ? " " + note : ""}`;
+    const next = document.createElement("button");
+    next.type = "button";
+    next.className = "exo-quiz__next";
+    next.textContent = state.i + 1 < total ? "Next question →" : "See my report card ⭐";
+    next.addEventListener("click", () => {
+      state.i += 1;
+      if (state.i < total) showQ();
+      else report();
+    });
+    panel.append(fb, next);
+  };
+
+  const gradeFor = (pct) => {
+    if (pct >= 92) return { note: "Note 1", tag: "Test-Ready!", stars: 3 };
+    if (pct >= 78) return { note: "Note 2", tag: "almost there", stars: 3 };
+    if (pct >= 62) return { note: "Note 3", tag: "good progress", stars: 2 };
+    if (pct >= 46) return { note: "Note 4", tag: "keep revising", stars: 2 };
+    if (pct >= 30) return { note: "Note 5", tag: "more practice", stars: 1 };
+    return { note: "Note 6", tag: "let's revise again", stars: 1 };
+  };
+
+  const report = () => {
+    state.i = total;
+    setBoard();
+    progFill.style.width = "100%";
+    card.innerHTML = "";
+    panel.innerHTML = "";
+    const pct = Math.round((state.firstTry / total) * 100);
+    const g = gradeFor(pct);
+    const stars = "⭐".repeat(g.stars) + "☆".repeat(3 - g.stars);
+    onResult?.(
+      `Quiz Show · score ${state.score} · ${state.firstTry}/${total} first try (${pct}%) · ` +
+        `best streak ${state.best} · grade: ${g.note} (${g.tag})`,
+    );
+    card.innerHTML =
+      `<div class="exo-quiz__report">` +
+      `<p class="exo-quiz__report-stars">${stars}</p>` +
+      `<p class="exo-quiz__report-grade">${g.note} — <span>${g.tag}</span></p>` +
+      `<p class="exo-quiz__report-rows">` +
+      `Score <b>${state.score}</b> · First try <b>${state.firstTry}/${total}</b> (${pct}%) · Best streak <b>${state.best} 🔥</b>` +
+      `</p></div>`;
+    const again = document.createElement("button");
+    again.type = "button";
+    again.className = "exo-quiz__next";
+    again.textContent = "🔄 Play the show again";
+    again.addEventListener("click", () => {
+      state.i = 0; state.score = 0; state.streak = 0; state.best = 0; state.firstTry = 0;
+      showQ();
+    });
+    panel.appendChild(again);
+  };
+
+  showQ();
+  return wrap;
+}

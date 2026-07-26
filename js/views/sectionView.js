@@ -54,6 +54,7 @@ import {
   createSubwayGame,
   createBridgeGame,
   createCallGame,
+  createQuizShowGame,
 } from "../components/exercises.js";
 import {
   getName,
@@ -404,9 +405,10 @@ function downloadAnswerSheet(view, unit, section, content, name) {
           card.type === "dispatch-game" ||
           card.type === "subway-game" ||
           card.type === "bridge-game" ||
-          card.type === "call-game"
+          card.type === "call-game" ||
+          card.type === "quizshow-game"
         ) {
-          // The finished result (deliveries/arrival/crossing/call + rank), if played.
+          // The finished result (deliveries/arrival/crossing/call/quiz + rank), if played.
           const r = answers[`${base}-game`];
           return r ? [{ label: card.title, answer: r }] : [];
         }
@@ -1118,6 +1120,17 @@ function buildCard(step, data, index, taskNo, ctx) {
         createCallGame({
           contact: data.contact,
           turns: data.turns,
+          onResult: (summary) => ctx && setAnswer(ctx.unitId, ctx.sectionId, key, summary),
+        }),
+      );
+      break;
+    }
+    case "quizshow-game": {
+      const key = `step${step.step}-task${index + 1}-game`;
+      body.appendChild(
+        createQuizShowGame({
+          host: data.host,
+          rounds: data.rounds,
           onResult: (summary) => ctx && setAnswer(ctx.unitId, ctx.sectionId, key, summary),
         }),
       );
