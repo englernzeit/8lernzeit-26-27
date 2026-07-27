@@ -640,28 +640,71 @@
 .taskcard__frame-field:focus-visible { outline: none; }
 .taskcard__frame-field::placeholder { color: rgba(205, 222, 245, 0.5); }
 
+/* The "sent" surface holds the same text once Send / Post is pressed,
+   rendered in the handwriting font. It shares the compose box exactly. */
+.taskcard__frame-sent {
+  position: absolute;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: #f2f7ff;
+  font-family: var(--font-script);
+}
+.taskcard__frame.is-sent .taskcard__frame-field { display: none; }
+.taskcard__frame:not(.is-sent) .taskcard__frame-sent { display: none; }
+
+/* Send / Post ↔ Edit button */
+.taskcard__frame-action {
+  position: absolute;
+  z-index: 2;
+  padding: 0.26rem 0.85rem;
+  border-radius: 999px;
+  border: none;
+  background: linear-gradient(180deg, #f6b545, #e6982f);
+  color: #241503;
+  font-family: var(--j-font-body);
+  font-weight: 700;
+  font-size: clamp(0.72rem, 2.2vw, 0.9rem);
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  box-shadow: 0 4px 14px -4px rgba(246, 181, 69, 0.65);
+}
+.taskcard__frame-action:hover { filter: brightness(1.07); }
+.taskcard__frame-action--edit {
+  background: rgba(18, 30, 52, 0.85);
+  color: #eaf2ff;
+  border: 1px solid rgba(126, 150, 176, 0.5);
+  box-shadow: none;
+}
+
 /* Messenger: type inside the empty chat area */
-.taskcard__frame--messenger .taskcard__frame-field {
+.taskcard__frame--messenger .taskcard__frame-field,
+.taskcard__frame--messenger .taskcard__frame-sent {
   top: 13.5%;
   left: 11%;
   width: 78%;
   height: 63%;
-  padding: 0.55rem 0.65rem;
-  font-size: clamp(0.8rem, 2.6vw, 1rem);
+  padding: 0.55rem 0.7rem;
   border-radius: 14px;
   background: rgba(52, 122, 202, 0.14);
 }
+.taskcard__frame--messenger .taskcard__frame-field { font-size: clamp(0.8rem, 2.6vw, 1rem); }
+.taskcard__frame--messenger .taskcard__frame-sent { font-size: clamp(1.05rem, 3.6vw, 1.5rem); line-height: 1.25; }
+.taskcard__frame--messenger .taskcard__frame-action { top: 77%; right: 12%; }
 
 /* Blog: write in the big empty body panel; the fixed post title sits on
    the empty title bar above it. */
-.taskcard__frame--blog .taskcard__frame-field {
+.taskcard__frame--blog .taskcard__frame-field,
+.taskcard__frame--blog .taskcard__frame-sent {
   top: 52%;
   left: 10.5%;
   width: 79%;
   height: 39%;
-  padding: 0.4rem 0.55rem;
-  font-size: clamp(0.72rem, 2.3vw, 0.92rem);
+  padding: 0.4rem 0.6rem;
 }
+.taskcard__frame--blog .taskcard__frame-field { font-size: clamp(0.72rem, 2.3vw, 0.92rem); }
+.taskcard__frame--blog .taskcard__frame-sent { font-size: clamp(1rem, 3.2vw, 1.35rem); line-height: 1.3; }
+.taskcard__frame--blog .taskcard__frame-action { top: 92.5%; right: 13%; }
 .taskcard__frame--blog .taskcard__frame-title {
   position: absolute;
   top: 37%;

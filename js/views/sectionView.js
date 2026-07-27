@@ -1417,13 +1417,48 @@ function appendWrittenBody(body, step, data, index, ctx) {
         t.textContent = data.backdrop.postTitle;
         frame.appendChild(t);
       }
+      // Compose surface (typing) and the "sent" surface (the same text
+      // rendered in the handwriting font once Send / Post is pressed).
       const field = document.createElement("textarea");
       field.className = "taskcard__frame-field";
       field.placeholder = data.backdrop.placeholder ?? "";
       field.dataset.answerKey = key;
       if (saved) field.value = saved;
       field.addEventListener("input", () => setAnswer(ctx.unitId, ctx.sectionId, key, field.value));
-      frame.appendChild(field);
+
+      const sent = document.createElement("div");
+      sent.className = "taskcard__frame-sent";
+
+      const action = document.createElement("button");
+      action.type = "button";
+      action.className = "taskcard__frame-action";
+      const sendLabel = data.backdrop.mode === "messenger" ? "Send ➤" : "Post ➤";
+      const paint = () => {
+        const isSent = frame.classList.contains("is-sent");
+        action.textContent = isSent ? "✎ Edit" : sendLabel;
+        action.classList.toggle("taskcard__frame-action--edit", isSent);
+      };
+      action.addEventListener("click", () => {
+        if (frame.classList.contains("is-sent")) {
+          frame.classList.remove("is-sent");
+          paint();
+          field.focus();
+        } else {
+          if (!field.value.trim()) { field.focus(); return; }
+          sent.textContent = field.value;
+          frame.classList.add("is-sent");
+          paint();
+        }
+      });
+
+      // Already-written work opens as a finished message / post.
+      if (saved && saved.trim()) {
+        sent.textContent = saved;
+        frame.classList.add("is-sent");
+      }
+      paint();
+
+      frame.append(field, sent, action);
       body.appendChild(frame);
       return;
     }
