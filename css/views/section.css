@@ -690,7 +690,36 @@
 }
 .taskcard__frame--messenger .taskcard__frame-field { font-size: clamp(0.8rem, 2.6vw, 1rem); }
 .taskcard__frame--messenger .taskcard__frame-sent { font-size: clamp(1.05rem, 3.6vw, 1.5rem); line-height: 1.25; }
-.taskcard__frame--messenger .taskcard__frame-action { top: 77%; right: 12%; }
+/* The send button IS the template's own glowing arrow, cropped from the
+   image and laid back exactly over its baked position — now clickable. */
+.taskcard__frame--messenger .taskcard__frame-action {
+  top: 78.58%;
+  left: 69.04%;
+  width: 25.1%;
+  height: 9.38%;
+  padding: 0;
+  border-radius: 999px;
+  background: url("../../assets/images/unit1/grammar/send-arrow.png") center / 100% 100% no-repeat;
+  color: transparent;
+  font-size: 0;
+  box-shadow: none;
+  transition: filter 0.15s ease;
+}
+.taskcard__frame--messenger .taskcard__frame-action:hover {
+  filter: brightness(1.15) drop-shadow(0 0 8px rgba(246, 150, 40, 0.75));
+}
+.taskcard__frame--messenger .taskcard__frame-action:active { filter: brightness(0.9); }
+/* Once sent, the same footprint becomes a dark "Edit" pill over the arrow. */
+.taskcard__frame--messenger .taskcard__frame-action--edit {
+  background: rgba(18, 30, 52, 0.92);
+  color: #eaf2ff;
+  font-size: clamp(0.68rem, 2vw, 0.85rem);
+  border: 1px solid rgba(126, 150, 176, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  filter: none;
+}
 
 /* Blog: write in the big empty body panel; the fixed post title sits on
    the empty title bar above it. */
