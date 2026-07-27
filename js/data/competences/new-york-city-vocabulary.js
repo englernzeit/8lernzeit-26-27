@@ -180,7 +180,7 @@ export default {
     /* ================= STEP 1 — LE ================= */
     {
       step: 1,
-      subtitle: "Mit Hilfe auf Deutsch",
+      subtitle: "LE",
       accent: "coral",
       layout: "slide",
       cards: [
@@ -286,6 +286,30 @@ export default {
             "3:",
             "On my city tour I want to see:",
             "The American word I like best is:",
+          ],
+        },
+        {
+          type: "game",
+          game: "monster-hangman",
+          kind: "Spiel",
+          title: "Monster's Lunch",
+          intro:
+            "Guess the Unit 1 word letter by letter and save the hero from the monster — every wrong letter feeds it!",
+          words: [
+            { word: "POLITE", hint: "höflich" },
+            { word: "WONDER", hint: "sich fragen" },
+            { word: "MOVIE", hint: "der Film" },
+            { word: "WING", hint: "der Flügel" },
+            { word: "PIECE", hint: "das Stück" },
+            { word: "EXPLAIN", hint: "erklären" },
+            { word: "PREFER", hint: "etwas lieber tun" },
+            { word: "CHOOSE", hint: "(aus)wählen" },
+            { word: "HELICOPTER", hint: "der Hubschrauber" },
+            { word: "RESULT", hint: "das Ergebnis" },
+            { word: "MOSTLY", hint: "meistens, hauptsächlich" },
+            { word: "HOMELESS", hint: "obdachlos" },
+            { word: "INVITE", hint: "einladen" },
+            { word: "SAVE", hint: "sparen" },
           ],
         },
       ],

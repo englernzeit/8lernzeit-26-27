@@ -205,7 +205,7 @@ export default {
     /* ================= STEP 1 — LE ================= */
     {
       step: 1,
-      subtitle: "Mit Hilfe auf Deutsch",
+      subtitle: "LE",
       accent: "coral",
       layout: "slide",
       cards: [
@@ -340,6 +340,30 @@ export default {
             "He has …",
             "He lives …",
             "He delivers …",
+          ],
+        },
+        {
+          type: "game",
+          game: "monster-hangman",
+          kind: "Spiel",
+          title: "Monster's Lunch",
+          intro:
+            "Guess the Unit 1 word letter by letter and save the hero from the monster — every wrong letter feeds it!",
+          words: [
+            { word: "STATE", hint: "der (Bundes-)Staat" },
+            { word: "AGE", hint: "das Alter" },
+            { word: "LIBERTY", hint: "die Freiheit" },
+            { word: "ISLAND", hint: "die Insel" },
+            { word: "SIGHT", hint: "die Sehenswürdigkeit" },
+            { word: "AWESOME", hint: "klasse, großartig" },
+            { word: "DESTROY", hint: "zerstören" },
+            { word: "VIEW", hint: "die (Aus-)Sicht, der Blick" },
+            { word: "WALKWAY", hint: "der Fußweg" },
+            { word: "ABOVE", hint: "oben, über, oberhalb" },
+            { word: "TRAFFIC", hint: "der (Straßen-)Verkehr" },
+            { word: "BUILD", hint: "(er)bauen" },
+            { word: "STAR", hint: "der Stern" },
+            { word: "IMMIGRANT", hint: "der/die Einwanderer·in" },
           ],
         },
       ],

@@ -132,7 +132,7 @@ function comingSoonContent() {
   return {
     newWords: null,
     steps: [
-      { step: 1, subtitle: "Mit Bildern und Hilfe auf Deutsch", accent: "coral", layout: "slide", cards: [card("Lesen · Text")] },
+      { step: 1, subtitle: "LE", accent: "coral", layout: "slide", cards: [card("Lesen · Text")] },
       { step: 2, subtitle: "G-Kurs", accent: "olive", layout: "spread", cards: [card("Aufgabe")] },
       { step: 3, subtitle: "E-Kurs", accent: "slate", layout: "spread", cards: [card("Aufgabe")] },
       { step: 4, subtitle: "Check-out", accent: "ochre", layout: "single", cards: [{ ...card("Check-out · Selbstcheck"), checklist: true }] },

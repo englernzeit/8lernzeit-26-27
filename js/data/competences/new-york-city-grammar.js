@@ -70,7 +70,7 @@ export default {
     /* ================= STEP 1 — LE ================= */
     {
       step: 1,
-      subtitle: "Mit Farben und Hilfe auf Deutsch",
+      subtitle: "LE",
       accent: "coral",
       layout: "slide",
       cards: [
@@ -130,9 +130,9 @@ export default {
           title: "When does it happen?",
           intro: "Tap a verb, then tap the right box. Sort all nine, then press Check.",
           groups: [
-            { label: "🟢 every day (jeden Tag)", items: ["lives", "walks", "likes", "plays"] },
-            { label: "🔵 NOW! (jetzt)", items: ["is eating", "are waiting", "is running"] },
-            { label: "🟠 yesterday (gestern)", items: ["visited", "saw"] },
+            { label: "🟢 every day (jeden Tag)", items: ["lives", "walks", "likes", "plays", "loves", "eats"] },
+            { label: "🔵 NOW! (jetzt)", items: ["is eating", "are waiting", "is running", "are laughing"] },
+            { label: "🟠 yesterday (gestern)", items: ["visited", "saw", "made", "was"] },
           ],
         },
         {
@@ -197,6 +197,36 @@ export default {
           starters: ["Every day I …", "Right now I am … (am + -ing!)", "Yesterday I …"],
           help: "Hilfe: every day → Simple Present · right now → am + -ing · yesterday → Simple Past.",
         },
+        {
+          type: "game",
+          game: "monster-hangman",
+          kind: "Spiel",
+          title: "Monster's Lunch",
+          intro:
+            "Guess the New York word letter by letter and save the hero from the monster — every wrong letter feeds it!",
+          words: [
+            { word: "SUBWAY", hint: "die U-Bahn (AE)" },
+            { word: "TAXI", hint: "das gelbe Taxi" },
+            { word: "FERRY", hint: "die Fähre" },
+            { word: "BRIDGE", hint: "die Brücke" },
+            { word: "SKYLINE", hint: "die Hochhaus-Silhouette" },
+            { word: "PIZZA", hint: "isst man in Little Italy" },
+            { word: "PARK", hint: "Central …" },
+            { word: "STATUE", hint: "the … of Liberty" },
+            { word: "WEATHER", hint: "das Wetter" },
+            { word: "STREET", hint: "die Straße" },
+            { word: "MUSEUM", hint: "das Museum" },
+            { word: "PHOTO", hint: "das Foto" },
+            { word: "TOURIST", hint: "der/die Reisende" },
+            { word: "COFFEE", hint: "der Kaffee" },
+            { word: "YESTERDAY", hint: "Signalwort für Simple Past" },
+            { word: "ALWAYS", hint: "immer (Simple Present)" },
+            { word: "HOTDOG", hint: "kostet sechs Dollar" },
+            { word: "BASKETBALL", hint: "spielt Ben im Central Park" },
+            { word: "MORNING", hint: "der Morgen" },
+            { word: "CITY", hint: "die (Groß-)Stadt" },
+          ],
+        },
       ],
     },
 
@@ -260,9 +290,9 @@ export default {
           title: "Sort the verbs by tense",
           intro: "Drop each verb in the right column, then press Check.",
           groups: [
-            { label: "Simple Present · regularly", items: ["lives", "works", "knows", "sleeps"] },
-            { label: "Present Progressive · right now", items: ["is sitting", "is shining", "are jogging"] },
-            { label: "Simple Past · finished", items: ["visited", "took", "ate"] },
+            { label: "Simple Present · regularly", items: ["lives", "works", "knows", "sleeps", "plan", "drives", "loves"] },
+            { label: "Present Progressive · right now", items: ["is sitting", "is shining", "are jogging", "is selling", "are dancing", "is raining"] },
+            { label: "Simple Past · finished", items: ["visited", "took", "ate", "made", "was"] },
           ],
         },
         {

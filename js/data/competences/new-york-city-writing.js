@@ -227,7 +227,7 @@ export default {
     /* ================= STEP 1 — LE ================= */
     {
       step: 1,
-      subtitle: "Mit Video und Hilfe auf Deutsch",
+      subtitle: "LE",
       accent: "coral",
       layout: "slide",
       cards: [
@@ -379,6 +379,29 @@ export default {
               },
             ],
           },
+        },
+        {
+          type: "game",
+          game: "monster-hangman",
+          kind: "Spiel",
+          title: "Monster's Lunch",
+          intro:
+            "Guess the Unit 1 word letter by letter and save the hero from the monster — every wrong letter feeds it!",
+          words: [
+            { word: "STOOP", hint: "die Treppe vor dem Haus" },
+            { word: "MOOD", hint: "die Stimmung, die Laune" },
+            { word: "EVERYTHING", hint: "alles" },
+            { word: "STEP", hint: "der Schritt" },
+            { word: "INTRODUCTION", hint: "die Einleitung" },
+            { word: "FRIENDSHIP", hint: "die Freundschaft" },
+            { word: "PRACTICE", hint: "das Training, die Übung" },
+            { word: "NEARLY", hint: "fast, beinahe" },
+            { word: "NOWHERE", hint: "nirgends, nirgendwo(hin)" },
+            { word: "FORWARD", hint: "vorwärts, nach vorn" },
+            { word: "DISTANCE", hint: "die Entfernung, die Ferne" },
+            { word: "TURN", hint: "sich umdrehen" },
+            { word: "BOTH", hint: "beide" },
+          ],
         },
       ],
     },
