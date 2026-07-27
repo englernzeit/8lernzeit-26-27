@@ -22,6 +22,9 @@
 /** Painted night scenes for the Step-4 Story Machine (one per tense). */
 const STORY_ART = "assets/images/unit1/story";
 
+/** Template backdrops for framed writing (messenger / blog). */
+const GRAMMAR_IMG = "assets/images/unit1/grammar";
+
 /** The tense-colour pens, shared by every reading task on the page. */
 const TENSE_PENS = [
   { key: "present", label: "Simple Present" },
@@ -362,13 +365,18 @@ export default {
           kind: "Kreativ",
           title: "Your message from New York",
           intro:
-            "Imagine YOU are in New York today. Write a message to a friend (6–8 sentences). Use all three tenses.",
+            "Imagine YOU are in New York today. Text a friend (6–8 sentences) right in the chat below. Use all three tenses.",
           lines: [
             "2 sentences: what you do there every day (Simple Present)",
             "2 sentences: what is happening around you right now (Present Progressive)",
             "2 sentences: what you did yesterday (Simple Past)",
           ],
           answer: true,
+          backdrop: {
+            mode: "messenger",
+            src: `${GRAMMAR_IMG}/messenger.jpg`,
+            placeholder: "Hi! I'm in New York… 🗽",
+          },
           help: "Starter: Every morning I … · Right now I am sitting … · Yesterday I … · It was …",
         },
       ],
@@ -489,13 +497,19 @@ export default {
           kind: "Kreativ · Challenge",
           title: "Your blog post: “A day I will never forget”",
           intro:
-            "Imagine you live in New York. Write a blog post (about 100 words) in three tense steps.",
+            "Imagine you live in New York. Write your blog post (about 100 words) straight onto the page below, in three tense steps.",
           lines: [
             "Simple Present (2–3 sentences): what your normal day looks like.",
             "Present Progressive (2–3 sentences): what is happening around you right now.",
             "Simple Past (3–4 sentences): the special thing that happened yesterday.",
           ],
           answer: true,
+          backdrop: {
+            mode: "blog",
+            src: `${GRAMMAR_IMG}/blog.jpg`,
+            postTitle: "A day I will never forget",
+            placeholder: "Every day I …",
+          },
           help: "Starter: Every day I … · Right now I am sitting in … · Around me, people are … · But yesterday something special happened: … · Suddenly … · In the end …",
         },
       ],

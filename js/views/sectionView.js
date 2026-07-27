@@ -1397,12 +1397,42 @@ function appendWrittenBody(body, step, data, index, ctx) {
 
   if (data.answer && ctx) {
     const key = `step${step.step}-task${index + 1}`;
+    const saved = getAnswers(ctx.unitId, ctx.sectionId)[key];
+
+    // Framed writing: the answer sits inside a template image (a phone
+    // messenger, a blog page …), positioned over its empty area by CSS.
+    // Persistence key is unchanged, so the PDF still collects it.
+    if (data.backdrop) {
+      const frame = document.createElement("div");
+      frame.className = `taskcard__frame taskcard__frame--${data.backdrop.mode}`;
+      const img = document.createElement("img");
+      img.className = "taskcard__frame-img";
+      img.src = data.backdrop.src;
+      img.alt = "";
+      img.loading = "lazy";
+      frame.appendChild(img);
+      if (data.backdrop.postTitle) {
+        const t = document.createElement("div");
+        t.className = "taskcard__frame-title";
+        t.textContent = data.backdrop.postTitle;
+        frame.appendChild(t);
+      }
+      const field = document.createElement("textarea");
+      field.className = "taskcard__frame-field";
+      field.placeholder = data.backdrop.placeholder ?? "";
+      field.dataset.answerKey = key;
+      if (saved) field.value = saved;
+      field.addEventListener("input", () => setAnswer(ctx.unitId, ctx.sectionId, key, field.value));
+      frame.appendChild(field);
+      body.appendChild(frame);
+      return;
+    }
+
     const area = document.createElement("textarea");
     area.className = "taskcard__answer";
     area.rows = data.lines?.length ? 4 : 3;
     area.placeholder = "Write your answer…";
     area.dataset.answerKey = key;
-    const saved = getAnswers(ctx.unitId, ctx.sectionId)[key];
     if (saved) area.value = saved;
     area.addEventListener("input", () => {
       setAnswer(ctx.unitId, ctx.sectionId, key, area.value);

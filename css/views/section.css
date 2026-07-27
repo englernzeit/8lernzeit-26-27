@@ -613,6 +613,72 @@
   box-shadow: 0 0 0 2px rgba(164, 108, 245, 0.4);
 }
 
+/* Framed writing — the answer field laid over a template image (a phone
+   messenger, a blog webpage). The image scales; the field is positioned
+   over the template's empty region in %, so it tracks at every width. */
+.taskcard__frame {
+  position: relative;
+  width: min(100%, 440px);
+  margin: 0.9rem auto 0.2rem;
+}
+.taskcard__frame-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 14px;
+}
+.taskcard__frame-field {
+  position: absolute;
+  resize: none;
+  border: none;
+  background: transparent;
+  color: #eef4ff;
+  font-family: var(--j-font-body);
+  line-height: 1.4;
+  overflow-y: auto;
+}
+.taskcard__frame-field:focus-visible { outline: none; }
+.taskcard__frame-field::placeholder { color: rgba(205, 222, 245, 0.5); }
+
+/* Messenger: type inside the empty chat area */
+.taskcard__frame--messenger .taskcard__frame-field {
+  top: 13.5%;
+  left: 11%;
+  width: 78%;
+  height: 63%;
+  padding: 0.55rem 0.65rem;
+  font-size: clamp(0.8rem, 2.6vw, 1rem);
+  border-radius: 14px;
+  background: rgba(52, 122, 202, 0.14);
+}
+
+/* Blog: write in the big empty body panel; the fixed post title sits on
+   the empty title bar above it. */
+.taskcard__frame--blog .taskcard__frame-field {
+  top: 52%;
+  left: 10.5%;
+  width: 79%;
+  height: 39%;
+  padding: 0.4rem 0.55rem;
+  font-size: clamp(0.72rem, 2.3vw, 0.92rem);
+}
+.taskcard__frame--blog .taskcard__frame-title {
+  position: absolute;
+  top: 37%;
+  left: 12%;
+  width: 74%;
+  height: 4.5%;
+  display: flex;
+  align-items: center;
+  font-family: var(--j-font-display);
+  font-size: clamp(0.7rem, 2.4vw, 1rem);
+  color: #ffdca0;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+  white-space: nowrap;
+  overflow: hidden;
+  pointer-events: none;
+}
+
 /* Teaching video inside a task card (Writing "Email Survival Guide") */
 .taskcard__video {
   margin: 0.3rem 0 0.4rem;
