@@ -681,10 +681,9 @@ export default {
           kind: "Finale",
           title: "Dream job or death trap?",
           intro: "The magazine wants your answer. Keep it short and sharp — about 20 words: your opinion plus ONE reason from the text.",
-          image: `${MAGAZINE}/poll.jpg`,
-          imageAlt:
+          bgImage: `${MAGAZINE}/poll.jpg`,
+          bgAlt:
             "An online magazine article asking: Bike messenger in NYC — dream job or death trap?",
-          imageSize: "small",
           // A Reading page: the writing stays deliberately tiny, one
           // opinion + one reason, straight under the magazine's question.
           min: 15,

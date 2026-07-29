@@ -366,6 +366,34 @@
   transition: transform 0.25s ease;
 }
 
+/* Faded full-card background image: a picture that fills the whole card,
+   dimmed so the task content stays readable on top and costs no space. */
+.taskcard--bg {
+  overflow: hidden; /* clip the image to the card's rounded corners */
+}
+.taskcard__bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0.17;
+  z-index: 0;
+  pointer-events: none;
+}
+/* A soft dark scrim over the image keeps the light text high-contrast. */
+.taskcard--bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(20, 36, 60, 0.35), rgba(20, 36, 60, 0.6));
+  z-index: 0;
+  pointer-events: none;
+}
+.taskcard--bg .taskcard__body {
+  position: relative;
+  z-index: 1;
+}
+
 /* Game card: minimal padding so the embedded game fills the width and
    triggers its wide layout. */
 .taskcard--game .taskcard__body {

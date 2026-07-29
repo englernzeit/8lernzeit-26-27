@@ -1006,6 +1006,20 @@ function buildCard(step, data, index, taskNo, ctx) {
   card.className = `taskcard taskcard--sheet taskcard--${step.accent}`;
   if (data.type === "game") card.classList.add("taskcard--game");
 
+  // Optional faded full-card background image (a picture behind the task, so
+  // the picture costs no vertical space — the content sits on top).
+  if (data.bgImage) {
+    card.classList.add("taskcard--bg");
+    const bg = document.createElement("div");
+    bg.className = "taskcard__bg";
+    bg.style.backgroundImage = `url("${data.bgImage}")`;
+    if (data.bgAlt) {
+      bg.setAttribute("role", "img");
+      bg.setAttribute("aria-label", data.bgAlt);
+    }
+    card.appendChild(bg);
+  }
+
   const body = document.createElement("div");
   body.className = "taskcard__body";
   card.appendChild(body);
