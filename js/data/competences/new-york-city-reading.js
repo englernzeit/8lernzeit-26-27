@@ -507,11 +507,6 @@ export default {
             "Tomorrow I will …",
             "See you soon, …",
           ],
-          checklist: [
-            "5–6 sentences?",
-            "Dear … and a closing line?",
-            "Past forms for your day (delivered, was, were)?",
-          ],
         },
       ],
     },

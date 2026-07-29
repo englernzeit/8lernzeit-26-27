@@ -1486,9 +1486,11 @@ export function createEssayEditor({ min = 120, max = 150, placeholder, checklist
   const wrap = document.createElement("div");
   wrap.className = "exo exo-essay";
 
-  // Optional requirement chips (numbered "must include" points).
+  // Optional requirement chips (numbered "must include" points). Built here;
+  // placed below (a row on top, or — with a postcard — a column on the left).
+  let chipRow = null;
   if (chips?.length) {
-    const chipRow = document.createElement("div");
+    chipRow = document.createElement("div");
     chipRow.className = "exo-essay__chips";
     chips.forEach((chip, i) => {
       const c = document.createElement("span");
@@ -1498,7 +1500,9 @@ export function createEssayEditor({ min = 120, max = 150, placeholder, checklist
       c.innerHTML = `<span class="exo-essay__chip-n">${n}</span>${label}`;
       chipRow.appendChild(c);
     });
-    wrap.appendChild(chipRow);
+    // Without a postcard the chips sit as a row on top (default). With a
+    // postcard they move into a left column (assembled in the postcard block).
+    if (!postcard) wrap.appendChild(chipRow);
   }
 
   const area = document.createElement("textarea");
@@ -1522,7 +1526,7 @@ export function createEssayEditor({ min = 120, max = 150, placeholder, checklist
     pc.appendChild(cap);
 
     area.classList.add("exo-essay__area--postcard");
-    area.rows = 9;
+    area.rows = 11;
     pc.appendChild(area);
 
     const divider = document.createElement("span");
@@ -1563,7 +1567,18 @@ export function createEssayEditor({ min = 120, max = 150, placeholder, checklist
     }
     right.appendChild(addr);
     pc.appendChild(right);
-    wrap.appendChild(pc);
+
+    // Helping words as a column on the LEFT, postcard on the right — this frees
+    // the width the chips used to take on top, so the postcard can be bigger.
+    if (chipRow) {
+      chipRow.classList.add("exo-essay__chips--side");
+      const pcwrap = document.createElement("div");
+      pcwrap.className = "exo-essay__pcwrap";
+      pcwrap.append(chipRow, pc);
+      wrap.appendChild(pcwrap);
+    } else {
+      wrap.appendChild(pc);
+    }
   }
 
   // Optional comment-box chrome: the essay becomes a real "add a public

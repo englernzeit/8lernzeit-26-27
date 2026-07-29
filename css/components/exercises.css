@@ -1274,6 +1274,44 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
   gap: 0.5rem;
   margin-bottom: 0.9rem;
 }
+
+/* Postcard variant: helping words as a column on the left, postcard on the
+   right (the postcard grows into the freed width). */
+.exo-essay__pcwrap {
+  display: flex;
+  gap: 1rem;
+  align-items: stretch;
+}
+.exo-essay__pcwrap .exo-essay__pc {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.exo-essay__chips--side {
+  flex: 0 0 13rem;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  gap: 0.55rem;
+  margin-bottom: 0;
+  justify-content: center;
+}
+.exo-essay__chips--side .exo-essay__chip {
+  width: 100%;
+  font-size: 0.95rem;
+}
+@media (orientation: portrait) {
+  /* Stack again on a narrow screen: chips row on top, postcard below. */
+  .exo-essay__pcwrap {
+    flex-direction: column;
+  }
+  .exo-essay__chips--side {
+    flex: 0 0 auto;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  .exo-essay__chips--side .exo-essay__chip {
+    width: auto;
+  }
+}
 .exo-essay__chip {
   display: inline-flex;
   align-items: center;
