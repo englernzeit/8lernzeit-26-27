@@ -159,6 +159,7 @@ export function renderSectionView(root, unitId, sectionId) {
 
   const view = document.createElement("div");
   view.className = "view journal";
+  view.dataset.section = sectionId; // lets CSS target one competence page
 
   // --- Header ---------------------------------------------------
   const header = document.createElement("header");
