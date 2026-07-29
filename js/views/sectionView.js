@@ -210,6 +210,10 @@ export function renderSectionView(root, unitId, sectionId) {
   }
 
   root.appendChild(view);
+
+  // Uniform-size cards: shrink any over-full card to fit its fixed box so
+  // nothing scrolls inside a card (currently Reading only).
+  if (sectionId === "reading") fitUniformCards(view);
 }
 
 /* ================= reading passage ============================= */
@@ -1249,7 +1253,55 @@ function buildCard(step, data, index, taskNo, ctx) {
     body.appendChild(help);
   }
 
+  // Uniform-size cards (currently Reading): every card is exactly --card-w ×
+  // --card-h and nothing scrolls inside it. We wrap the body content in a
+  // "fit" layer so a later pass (fitUniformCards) can shrink it just enough
+  // to fit the fixed height — text stretches to the edges first, then scales.
+  if (ctx && ctx.sectionId === "reading" && !card.classList.contains("taskcard--game")) {
+    const fit = document.createElement("div");
+    fit.className = "taskcard__fit";
+    while (body.firstChild) fit.appendChild(body.firstChild);
+    body.appendChild(fit);
+  }
+
   return card;
+}
+
+/**
+ * Shrink-to-fit pass for the uniform-size cards. Each card is a fixed box
+ * (--card-w × --card-h); if its content is taller than the box we scale the
+ * `.taskcard__fit` layer down (never below a floor, so it stays readable —
+ * anything that still won't fit gets its copy rewritten by hand). Content
+ * that already fits is left at 1:1. Runs after layout and on resize.
+ * @param {HTMLElement} view
+ */
+function fitUniformCards(view) {
+  const MIN_SCALE = 0.6; // hard floor — never clip content; heavy cards get their copy tightened later
+  const run = () => {
+    view.querySelectorAll(".taskcard--sheet > .taskcard__body > .taskcard__fit").forEach((fit) => {
+      fit.style.transform = "none";
+      const body = fit.parentElement;
+      const cs = getComputedStyle(body);
+      const avail =
+        body.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
+      const need = fit.scrollHeight;
+      if (avail > 0 && need > avail) {
+        const k = Math.max(MIN_SCALE, avail / need);
+        fit.style.transform = `scale(${k})`;
+        fit.dataset.fit = k.toFixed(3);
+      } else {
+        delete fit.dataset.fit;
+      }
+    });
+  };
+  const kick = () => requestAnimationFrame(() => requestAnimationFrame(run));
+  kick();
+  // Re-fit once images/fonts settle and whenever the viewport changes.
+  setTimeout(run, 350);
+  if (typeof window !== "undefined") {
+    window.addEventListener("resize", () => requestAnimationFrame(run));
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(run);
+  }
 }
 
 /**

@@ -337,8 +337,9 @@
 }
 
 /* Uniform card size: Steps 1–3 carousel cards are all exactly --card-w ×
-   --card-h. Content taller than the card scrolls inside it; the header +
-   body scroll together for now. (Step 4 star games are excluded.)
+   --card-h and NOTHING scrolls inside them. Content is laid out to fill the
+   box (sparse cards stretch to the edges); JS (fitUniformCards) scales any
+   over-full card down just enough to fit. (Step 4 star games are excluded.)
    SCOPED TO READING while we perfect the format, before rolling it out. */
 [data-section="reading"] .jcar--slide .taskcard--sheet,
 [data-section="reading"] .jcar--spread .taskcard--sheet {
@@ -348,19 +349,17 @@
 [data-section="reading"] .jcar--spread .taskcard--sheet .taskcard__body {
   flex: 1 1 auto;
   min-height: 0;
-  overflow-y: auto;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(126, 150, 176, 0.5) transparent;
-  overscroll-behavior: contain;
+  overflow: hidden;
 }
-[data-section="reading"] .jcar--slide .taskcard--sheet .taskcard__body::-webkit-scrollbar,
-[data-section="reading"] .jcar--spread .taskcard--sheet .taskcard__body::-webkit-scrollbar {
-  width: 8px;
-}
-[data-section="reading"] .jcar--slide .taskcard--sheet .taskcard__body::-webkit-scrollbar-thumb,
-[data-section="reading"] .jcar--spread .taskcard--sheet .taskcard__body::-webkit-scrollbar-thumb {
-  background: rgba(126, 150, 176, 0.5);
-  border-radius: 999px;
+/* The fit layer holds all the card's content and fills the body; when it is
+   taller than the box, JS scales it from the top so it fits without a scroll. */
+[data-section="reading"] .taskcard--sheet .taskcard__fit {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  transform-origin: top center;
+  transition: transform 0.25s ease;
 }
 
 /* Game card: minimal padding so the embedded game fills the width and
