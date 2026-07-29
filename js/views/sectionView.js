@@ -216,7 +216,8 @@ export function renderSectionView(root, unitId, sectionId) {
   // screen so a single swipe up lands cleanly on the next full-screen step.
   if (sectionId === "reading") {
     buildReadingCover(view);
-    fitUniformCards(view);
+    const pager = buildReadingPager(view);
+    fitUniformCards(view, pager);
   }
 }
 
@@ -241,6 +242,144 @@ function buildReadingCover(view) {
     fit.appendChild(el); // moves header/vocab/guide out of the view into the cover
   }
   view.insertBefore(cover, firstStep);
+}
+
+/**
+ * The vertical page navigator — the *same* mechanic as the card carousel, but
+ * up/down. Each screen (cover + one per Step) is a page; a single vertical
+ * swipe animates exactly one page into place with a CSS transform (no native
+ * scroll-snap, which felt loose). Horizontal swipes still reach the card
+ * carousel (we only act on a clearly vertical gesture); a page taller than the
+ * screen — the Step-4 game — is allowed to scroll natively, and you flip off it
+ * once it's scrolled to the edge. Returns a handle with { sync } for the fitter.
+ * @param {HTMLElement} view
+ */
+function buildReadingPager(view) {
+  const pages = [...view.children].filter(
+    (el) => el.classList.contains("journal__cover") || el.classList.contains("journal__section"),
+  );
+  if (pages.length < 2) return null;
+
+  const pager = document.createElement("div");
+  pager.className = "rpager";
+  const track = document.createElement("div");
+  track.className = "rpager__track";
+  pages.forEach((p) => {
+    p.classList.add("rpager__page");
+    track.appendChild(p);
+  });
+  pager.appendChild(track);
+
+  const rail = document.createElement("div");
+  rail.className = "rpager__rail";
+  const dots = pages.map((_, i) => {
+    const d = document.createElement("button");
+    d.className = "rpager__dot";
+    d.setAttribute("aria-label", `Screen ${i + 1} of ${pages.length}`);
+    d.addEventListener("click", () => go(i));
+    rail.appendChild(d);
+    return d;
+  });
+  pager.appendChild(rail);
+  view.appendChild(pager);
+
+  const n = pages.length;
+  let active = 0;
+  track.style.transition = "transform 620ms cubic-bezier(.22,.85,.25,1)";
+
+  function render() {
+    track.style.transform = `translateY(-${active * 100}svh)`;
+    dots.forEach((d, i) => d.classList.toggle("rpager__dot--on", i === active));
+    pages.forEach((p, i) => (p.style.visibility = Math.abs(i - active) > 1 ? "hidden" : "visible"));
+  }
+  function go(i) {
+    const next = Math.max(0, Math.min(n - 1, i));
+    if (next === active) return;
+    active = next;
+    render();
+    // reveal a freshly-entered scrollable page from its top
+    pages[active].scrollTop = 0;
+  }
+
+  // A page taller than the screen (the game) scrolls natively; the fit pages
+  // don't, so every vertical swipe over them flips the page. Keep touch-action
+  // in sync so the browser only ever pans the pages that can actually scroll.
+  function sync() {
+    pages.forEach((p) => {
+      // A page truly scrolls only if its own overflow allows it AND its
+      // content is taller than the screen. (Fit-scaled pages keep their tall
+      // layout height under a transform, so scrollHeight alone would lie.)
+      const oy = getComputedStyle(p).overflowY;
+      const scrollable = oy !== "hidden" && oy !== "visible" && p.scrollHeight - p.clientHeight > 4;
+      p.style.touchAction = scrollable ? "pan-y pinch-zoom" : "pinch-zoom";
+      p.classList.toggle("rpager__page--scroll", scrollable);
+    });
+  }
+
+  let sx = null;
+  let sy = null;
+  let sp = null;
+  pager.addEventListener("pointerdown", (e) => {
+    if (!e.isPrimary) {
+      sx = sy = null;
+      return;
+    }
+    sx = e.clientX;
+    sy = e.clientY;
+    sp = pages[active];
+  });
+  pager.addEventListener("pointerup", (e) => {
+    if (!e.isPrimary || sy === null) return;
+    const dx = e.clientX - sx;
+    const dy = e.clientY - sy;
+    sx = sy = null;
+    if (Math.abs(dy) < 50 || Math.abs(dy) <= Math.abs(dx)) return; // not a vertical swipe
+    const scrollable = sp.classList.contains("rpager__page--scroll");
+    if (dy < 0) {
+      if (!scrollable || sp.scrollTop + sp.clientHeight >= sp.scrollHeight - 4) go(active + 1);
+    } else if (!scrollable || sp.scrollTop <= 4) {
+      go(active - 1);
+    }
+  });
+  pager.addEventListener("pointercancel", () => {
+    sx = sy = null;
+  });
+
+  // Wheel (desktop / trackpad): flip one page, unless the active page still has
+  // room to scroll in that direction.
+  let wheelLock = 0;
+  pager.addEventListener(
+    "wheel",
+    (e) => {
+      const p = pages[active];
+      if (p.classList.contains("rpager__page--scroll")) {
+        if (e.deltaY > 0 && p.scrollTop + p.clientHeight < p.scrollHeight - 4) return;
+        if (e.deltaY < 0 && p.scrollTop > 4) return;
+      }
+      e.preventDefault();
+      const now = Date.now();
+      if (now < wheelLock) return;
+      wheelLock = now + 650;
+      go(active + (e.deltaY > 0 ? 1 : -1));
+    },
+    { passive: false },
+  );
+
+  // Keyboard
+  view.tabIndex = 0;
+  view.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowDown" || e.key === "PageDown") {
+      e.preventDefault();
+      go(active + 1);
+    } else if (e.key === "ArrowUp" || e.key === "PageUp") {
+      e.preventDefault();
+      go(active - 1);
+    }
+  });
+
+  render();
+  if (typeof window !== "undefined") window.addEventListener("resize", sync);
+  return { sync, go };
 }
 
 /* ================= reading passage ============================= */
@@ -1302,7 +1441,7 @@ function buildCard(step, data, index, taskNo, ctx) {
  * that already fits is left at 1:1. Runs after layout and on resize.
  * @param {HTMLElement} view
  */
-function fitUniformCards(view) {
+function fitUniformCards(view, pager) {
   const MIN_SCALE = 0.6; // hard floor — never clip content; heavy cards get their copy tightened later
   // Scale `fit` down (never below the floor) so its content fits `avail` px.
   const fitInto = (fit, avail) => {
@@ -1330,6 +1469,8 @@ function fitUniformCards(view) {
       const cs = getComputedStyle(cover);
       if (cfit) fitInto(cfit, cover.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom));
     }
+    // Now that heights are settled, tell the pager which pages can scroll.
+    if (pager && pager.sync) pager.sync();
   };
   const kick = () => requestAnimationFrame(() => requestAnimationFrame(run));
   kick();

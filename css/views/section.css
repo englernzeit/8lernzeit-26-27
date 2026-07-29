@@ -201,14 +201,40 @@
   margin-top: 0.5rem;
 }
 
-/* --- Full-screen vertical pager (Reading, experimental) ----------
-   The page reads like a stack of full-screen cards: screen 0 is the
+/* --- Full-screen vertical pager (Reading) ------------------------
+   The page is a stack of full-screen cards driven the SAME way as the
+   card carousel: a JS transform, not native scroll. Screen 0 is the
    "cover" (title, name, PDF, vocabulary hub, theory); every Step is one
-   full screen after it. One swipe up = one clean jump to the next
-   screen (snap-stop: always). Proximity, not mandatory, so the tall
-   Step-4 game can still be scrolled without trapping. Scoped to Reading. */
+   full screen after it. One vertical swipe animates exactly one page in.
+   Scoped to Reading. See buildReadingPager() in sectionView.js. */
 [data-section="reading"] {
-  scroll-snap-type: y proximity;
+  overflow: hidden; /* the pager owns motion; no native page scroll */
+}
+
+.rpager {
+  position: relative;
+  height: 100svh;
+  overflow: hidden;
+}
+.rpager__track {
+  will-change: transform;
+}
+.rpager__page {
+  position: relative;
+  height: 100svh;
+  overflow: hidden; /* fit pages don't scroll; a step that spills a few px is
+                       centred, so the spill is a symmetric ≤10px, invisible */
+  touch-action: pinch-zoom; /* JS handles single-finger pans; set per-page in sync() */
+  scrollbar-width: none;
+}
+/* The one page that is deliberately taller than the screen — the Step-4 game —
+   is allowed to scroll natively; the pager flips off it at the edges. */
+.rpager__page:has(.jcar--single) {
+  overflow-y: auto;
+}
+.rpager__page::-webkit-scrollbar {
+  width: 0;
+  height: 0;
 }
 
 /* Screen 0 — the cover: the whole intro on one screen, scaled to fit
@@ -219,29 +245,18 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
 }
 [data-section="reading"] .journal__cover-fit {
   transform-origin: top center;
   transition: transform 0.25s ease;
 }
-/* Sections nested inside the cover (the theory/guide) are not their own
-   snap targets and shouldn't force their own full height. */
+/* Sections nested inside the cover (the theory/guide) don't force full height. */
 [data-section="reading"] .journal__cover .journal__section {
-  scroll-snap-align: none;
   min-height: 0;
   margin-top: 1.25rem;
 }
 
-/* Each Step is a snap target; one swipe lands on it. */
-[data-section="reading"] .journal__section {
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
-  scroll-margin-top: 0;
-}
-/* Step sections (those with a carousel) become one full screen with the
-   card group centred. */
+/* Step sections become one full screen with the card group centred. */
 [data-section="reading"] .journal__section:has(.jcar) {
   min-height: 100svh;
   display: flex;
@@ -249,10 +264,39 @@
   justify-content: center;
   margin-top: 0;
 }
-/* The section is the snap target now, not the carousel stage. */
-[data-section="reading"] .jcar__stage {
-  scroll-snap-align: none;
-  scroll-margin-top: 0;
+/* Over a fit card, single-finger pans go to JS (H = card flip, V = page flip);
+   two fingers still pinch-zoom natively. The single (game) stage keeps the
+   default pan-y so the one scrollable page can be dragged to scroll. */
+[data-section="reading"] .jcar--slide .jcar__stage,
+[data-section="reading"] .jcar--spread .jcar__stage {
+  touch-action: pinch-zoom;
+}
+
+/* Right-edge page dots (which screen you're on). */
+.rpager__rail {
+  position: absolute;
+  right: 0.7rem;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  z-index: 50;
+}
+.rpager__dot {
+  width: 0.72rem;
+  height: 0.72rem;
+  border-radius: 50%;
+  background: rgba(126, 150, 176, 0.38);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: background 0.3s, box-shadow 0.3s, transform 0.3s;
+}
+.rpager__dot--on {
+  background: var(--j-ochre);
+  box-shadow: 0 0 8px rgba(245, 185, 74, 0.6);
+  transform: scale(1.15);
 }
 
 .journal__section-head {

@@ -81,6 +81,9 @@ export function createJournalCarousel({ mode, accent, cards }) {
   // switching cards never leaves you scrolled onto the wrong place.
   function centerActive() {
     if (typeof window === "undefined" || !stage.scrollIntoView) return;
+    // When the page itself is a JS transform pager (Reading), the card is
+    // already centred in its screen — don't fight the pager with a scroll.
+    if (stage.closest && stage.closest(".rpager")) return;
     requestAnimationFrame(() => {
       const vh = window.innerHeight || 800;
       const block = stage.offsetHeight > vh * 0.92 ? "start" : "center";

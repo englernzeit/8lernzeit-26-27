@@ -13,9 +13,11 @@
      sits perfectly on an iPad. Long content scrolls inside the card; short
      content leaves room we fill with extras. Tune here in one place. */
   --card-w: min(63.75rem, 92vw);
-  /* Leave ~8rem of the screen for the step heading + dots so the whole step
-     section fits exactly one viewport (full-screen pager). */
-  --card-h: min(37rem, calc(100svh - 8rem));
+  /* Leave room on screen for the step heading + dots + card motion so the
+     whole step section fits exactly one viewport (full-screen pager) with a
+     little headroom — the tallest step (slide) must not spill a few px and
+     look "scrollable". */
+  --card-h: min(37rem, calc(100svh - 10rem));
 }
 
 .jcar__stage {
