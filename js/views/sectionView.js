@@ -211,9 +211,36 @@ export function renderSectionView(root, unitId, sectionId) {
 
   root.appendChild(view);
 
-  // Uniform-size cards: shrink any over-full card to fit its fixed box so
-  // nothing scrolls inside a card (currently Reading only).
-  if (sectionId === "reading") fitUniformCards(view);
+  // Reading: full-screen vertical pager. Group the intro (header + vocab hub
+  // + theory) into one "cover" page, then shrink any over-full page to fit its
+  // screen so a single swipe up lands cleanly on the next full-screen step.
+  if (sectionId === "reading") {
+    buildReadingCover(view);
+    fitUniformCards(view);
+  }
+}
+
+/**
+ * Fold the page intro into one full-screen cover: the header (title, name,
+ * PDF), the vocabulary hub and the theory/guide all sit on screen 0, so a
+ * swipe up moves to Step 1. Everything before the first carousel becomes the
+ * cover; the fit layer lets it be scaled to fit one screen (see fitUniformCards).
+ * @param {HTMLElement} view
+ */
+function buildReadingCover(view) {
+  const kids = [...view.children];
+  const firstStep = kids.find((el) => el.querySelector && el.querySelector(".jcar"));
+  if (!firstStep) return;
+  const cover = document.createElement("section");
+  cover.className = "journal__cover";
+  const fit = document.createElement("div");
+  fit.className = "journal__cover-fit";
+  cover.appendChild(fit);
+  for (const el of kids) {
+    if (el === firstStep) break;
+    fit.appendChild(el); // moves header/vocab/guide out of the view into the cover
+  }
+  view.insertBefore(cover, firstStep);
 }
 
 /* ================= reading passage ============================= */
@@ -1277,22 +1304,32 @@ function buildCard(step, data, index, taskNo, ctx) {
  */
 function fitUniformCards(view) {
   const MIN_SCALE = 0.6; // hard floor — never clip content; heavy cards get their copy tightened later
+  // Scale `fit` down (never below the floor) so its content fits `avail` px.
+  const fitInto = (fit, avail) => {
+    fit.style.transform = "none";
+    const need = fit.scrollHeight;
+    if (avail > 0 && need > avail) {
+      const k = Math.max(MIN_SCALE, avail / need);
+      fit.style.transform = `scale(${k})`;
+      fit.dataset.fit = k.toFixed(3);
+    } else {
+      delete fit.dataset.fit;
+    }
+  };
   const run = () => {
+    // Cards: fit each into its fixed body box.
     view.querySelectorAll(".taskcard--sheet > .taskcard__body > .taskcard__fit").forEach((fit) => {
-      fit.style.transform = "none";
       const body = fit.parentElement;
       const cs = getComputedStyle(body);
-      const avail =
-        body.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
-      const need = fit.scrollHeight;
-      if (avail > 0 && need > avail) {
-        const k = Math.max(MIN_SCALE, avail / need);
-        fit.style.transform = `scale(${k})`;
-        fit.dataset.fit = k.toFixed(3);
-      } else {
-        delete fit.dataset.fit;
-      }
+      fitInto(fit, body.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom));
     });
+    // Cover: fit the whole intro (header + vocab + theory) into one screen.
+    const cover = view.querySelector(".journal__cover");
+    if (cover) {
+      const cfit = cover.querySelector(":scope > .journal__cover-fit");
+      const cs = getComputedStyle(cover);
+      if (cfit) fitInto(cfit, cover.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom));
+    }
   };
   const kick = () => requestAnimationFrame(() => requestAnimationFrame(run));
   kick();

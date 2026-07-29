@@ -201,21 +201,47 @@
   margin-top: 0.5rem;
 }
 
-/* --- Vertical snap pager (Reading, experimental) -----------------
-   The whole page reads like a stack of full-screen "cards": each
-   section fills the viewport and vertical scrolling settles onto the
-   next one, mirroring the sideways card flip. Proximity (not mandatory)
-   so a long section — e.g. the reading passage — can still scroll
-   freely without trapping the scroll. Scoped to Reading for now. */
+/* --- Full-screen vertical pager (Reading, experimental) ----------
+   The page reads like a stack of full-screen cards: screen 0 is the
+   "cover" (title, name, PDF, vocabulary hub, theory); every Step is one
+   full screen after it. One swipe up = one clean jump to the next
+   screen (snap-stop: always). Proximity, not mandatory, so the tall
+   Step-4 game can still be scrolled without trapping. Scoped to Reading. */
 [data-section="reading"] {
   scroll-snap-type: y proximity;
 }
+
+/* Screen 0 — the cover: the whole intro on one screen, scaled to fit
+   (JS sets a transform on .journal__cover-fit; nothing scrolls inside). */
+[data-section="reading"] .journal__cover {
+  height: 100svh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+[data-section="reading"] .journal__cover-fit {
+  transform-origin: top center;
+  transition: transform 0.25s ease;
+}
+/* Sections nested inside the cover (the theory/guide) are not their own
+   snap targets and shouldn't force their own full height. */
+[data-section="reading"] .journal__cover .journal__section {
+  scroll-snap-align: none;
+  min-height: 0;
+  margin-top: 1.25rem;
+}
+
+/* Each Step is a snap target; one swipe lands on it. */
 [data-section="reading"] .journal__section {
   scroll-snap-align: start;
-  scroll-margin-top: 0.75rem;
+  scroll-snap-stop: always;
+  scroll-margin-top: 0;
 }
 /* Step sections (those with a carousel) become one full screen with the
-   card group centred; the passage keeps its natural height. */
+   card group centred. */
 [data-section="reading"] .journal__section:has(.jcar) {
   min-height: 100svh;
   display: flex;
