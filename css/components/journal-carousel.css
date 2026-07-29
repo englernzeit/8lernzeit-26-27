@@ -9,11 +9,14 @@
 .jcar {
   position: relative;
   margin-top: 1rem;
+  /* One width for every card (Steps 1–4), matching the Writing Step-3
+     video card that sits perfectly on an iPad. Tune here in one place. */
+  --card-w: min(63.75rem, 92vw);
 }
 
 .jcar__stage {
   position: relative;
-  touch-action: pan-y;
+  touch-action: pan-y pinch-zoom; /* allow native pinch-to-zoom on a card */
   /* Slide/spread heights are set from JS to the active card's height,
      so a card is never taller (scroll) or shorter (empty gap) than it
      needs. This animates the change between cards. */
@@ -51,20 +54,20 @@
 }
 
 .jcar--slide .jcar__holder {
-  width: min(46rem, 90vw);
-  margin-left: calc(-1 * min(46rem, 90vw) / 2);
+  width: var(--card-w);
+  margin-left: calc(-0.5 * var(--card-w));
   top: 0;
 }
 
 .jcar--spread .jcar__holder {
-  width: min(63.75rem, 92vw); /* 1020px */
-  margin-left: calc(-1 * min(63.75rem, 92vw) / 2);
+  width: var(--card-w);
+  margin-left: calc(-0.5 * var(--card-w));
   top: 0;
 }
 
 /* Step 4 single card — no absolute stage */
 .jcar--single .jcar__stage > .taskcard {
-  width: min(63.75rem, 92vw);
+  width: var(--card-w);
   margin: 0 auto;
   transform: rotate(-0.4deg);
 }
