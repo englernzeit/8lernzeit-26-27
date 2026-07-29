@@ -15,3 +15,6 @@ node_modules/
 *.log
 *.tmp
 assets/_original/
+
+# Local conversation backups — never publish
+_chat-logs/

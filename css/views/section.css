@@ -777,6 +777,12 @@
 .taskcard__figure {
   margin: 0.2rem 0 1rem;
 }
+/* A deliberately smaller header picture (e.g. the Reading magazine poll),
+   so an illustrative image never dominates a short writing task. */
+.taskcard__figure--small {
+  max-width: 240px;
+  margin-inline: auto;
+}
 .taskcard__figure-frame {
   position: relative;
   border-radius: 12px;

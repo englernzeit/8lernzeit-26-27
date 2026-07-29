@@ -25,6 +25,21 @@
 .jcar--spread .jcar__stage { min-height: 12rem; }
 .jcar--single .jcar__stage { height: auto; padding: 0.4rem 0 1rem; }
 
+/* Each card is a vertical snap point, centred in the viewport — so a
+   card stops in the middle of the screen and changing cards re-centres
+   it (JS smooth-scrolls; the margin leaves room for the sticky header). */
+.jcar__stage {
+  scroll-snap-align: center;
+  scroll-margin-top: 5rem;
+  scroll-margin-bottom: 1.5rem;
+}
+@media (orientation: portrait) {
+  html,
+  body {
+    scroll-snap-type: y proximity;
+  }
+}
+
 /* Card holder: centered, width per mode */
 .jcar__holder {
   position: absolute;

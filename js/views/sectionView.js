@@ -863,7 +863,7 @@ function buildCard(step, data, index, taskNo, ctx) {
 
   // Optional picture above the task body (e.g. Speaking picture-description).
   if (data.image) {
-    body.appendChild(buildTaskFigure(data.image, data.imageAlt, data.imageCaption));
+    body.appendChild(buildTaskFigure(data.image, data.imageAlt, data.imageCaption, data.imageSize));
   }
 
   // Optional teaching video (e.g. Writing "Email Survival Guide" cards).
@@ -1297,9 +1297,9 @@ function buildReceivedEmail(email) {
  * artwork hasn't been added yet), it degrades to a labelled placeholder so
  * the slot is still visible and the page never shows a broken image.
  */
-function buildTaskFigure(src, alt, caption) {
+function buildTaskFigure(src, alt, caption, size) {
   const figure = document.createElement("figure");
-  figure.className = "taskcard__figure";
+  figure.className = "taskcard__figure" + (size === "small" ? " taskcard__figure--small" : "");
 
   const frame = document.createElement("div");
   frame.className = "taskcard__figure-frame";

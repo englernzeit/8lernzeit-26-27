@@ -330,19 +330,6 @@ export default {
           ],
         },
         {
-          type: "written",
-          kind: "Kreativ",
-          title: "YOUR bike messenger",
-          intro: "Invent your own bike messenger! Complete the five sentences.",
-          starters: [
-            "My messenger's name is …",
-            "He is …",
-            "He has …",
-            "He lives …",
-            "He delivers …",
-          ],
-        },
-        {
           type: "game",
           game: "monster-hangman",
           kind: "Spiel",
@@ -702,6 +689,7 @@ export default {
           image: `${MAGAZINE}/poll.jpg`,
           imageAlt:
             "An online magazine article asking: Bike messenger in NYC — dream job or death trap?",
+          imageSize: "small",
           // A Reading page: the writing stays deliberately tiny, one
           // opinion + one reason, straight under the magazine's question.
           min: 15,
@@ -709,7 +697,6 @@ export default {
           placeholder: "In my opinion …",
           comment: { replyTo: "Bike messenger in NYC — dream job or death trap?" },
           chips: ["In my opinion …", "… because the text says …"],
-          checklist: ["Your opinion?", "ONE reason from the text?", "About 20 words?"],
         },
       ],
     },

@@ -53,8 +53,10 @@ export function createJournalCarousel({ mode, accent, cards }) {
   }
 
   const go = (index) => {
+    resetZoom(false); // drop any pinch-zoom on the card we are leaving
     active = wraps ? (index + n) % n : Math.max(0, Math.min(n - 1, index));
     render();
+    centerActive(); // keep the new card centred so the page never "jumps"
   };
 
   // Blob arrows on the stage sides
@@ -76,18 +78,125 @@ export function createJournalCarousel({ mode, accent, cards }) {
   });
   root.appendChild(dotsRow);
 
-  // Swipe
-  let startX = null;
+  // --- Gestures: swipe between cards + pinch-zoom (and pan) the active card ---
+  const pointers = new Map(); // pointerId -> {x, y}
+  let startX = null; // single-pointer swipe origin
+  let pinchStart = null; // { dist, scale, x, y, mid }
+  let gestured = false; // a pinch/pan happened → don't also fire a swipe
+  const zoom = { scale: 1, x: 0, y: 0 };
+
+  const cardEl = () => holders[active] && holders[active].firstElementChild;
+  const dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
+  const mid = (a, b) => ({ x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 });
+
+  function applyZoom(animate) {
+    const el = cardEl();
+    if (!el) return;
+    el.style.transition = animate ? "transform 200ms ease" : "none";
+    el.style.transformOrigin = "center center";
+    el.style.transform =
+      zoom.scale === 1 ? "" : `translate(${zoom.x}px, ${zoom.y}px) scale(${zoom.scale})`;
+    el.style.zIndex = zoom.scale > 1 ? "30" : "";
+    el.style.cursor = zoom.scale > 1 ? "grab" : "";
+  }
+  function resetZoom(animate = true) {
+    zoom.scale = 1;
+    zoom.x = 0;
+    zoom.y = 0;
+    applyZoom(animate);
+  }
+  function clampPan() {
+    const el = cardEl();
+    if (!el) return;
+    const mx = (el.offsetWidth * (zoom.scale - 1)) / 2;
+    const my = (el.offsetHeight * (zoom.scale - 1)) / 2;
+    zoom.x = Math.max(-mx, Math.min(mx, zoom.x));
+    zoom.y = Math.max(-my, Math.min(my, zoom.y));
+  }
+
+  // Re-centre the active card in the viewport after a card change, so
+  // switching cards never leaves you scrolled onto the wrong place.
+  function centerActive() {
+    if (typeof window === "undefined" || !stage.scrollIntoView) return;
+    requestAnimationFrame(() => {
+      const vh = window.innerHeight || 800;
+      const block = stage.offsetHeight > vh * 0.92 ? "start" : "center";
+      try {
+        stage.scrollIntoView({ behavior: "smooth", block, inline: "nearest" });
+      } catch {
+        stage.scrollIntoView();
+      }
+    });
+  }
+
   stage.addEventListener("pointerdown", (e) => {
-    startX = e.clientX;
+    pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (pointers.size === 1) {
+      startX = e.clientX;
+    } else if (pointers.size === 2) {
+      const [a, b] = [...pointers.values()];
+      pinchStart = { dist: dist(a, b) || 1, scale: zoom.scale, x: zoom.x, y: zoom.y, mid: mid(a, b) };
+      startX = null; // a second finger cancels any swipe
+      gestured = true;
+    }
   });
-  stage.addEventListener("pointerup", (e) => {
-    if (startX === null) return;
-    const dx = e.clientX - startX;
+
+  stage.addEventListener("pointermove", (e) => {
+    const prev = pointers.get(e.pointerId);
+    if (!prev) return;
+    const cur = { x: e.clientX, y: e.clientY };
+    if (pinchStart && pointers.size >= 2) {
+      pointers.set(e.pointerId, cur);
+      const [a, b] = [...pointers.values()];
+      zoom.scale = Math.max(1, Math.min(3.2, pinchStart.scale * (dist(a, b) / pinchStart.dist)));
+      const m = mid(a, b);
+      zoom.x = pinchStart.x + (m.x - pinchStart.mid.x);
+      zoom.y = pinchStart.y + (m.y - pinchStart.mid.y);
+      clampPan();
+      applyZoom(false);
+      e.preventDefault();
+      return;
+    }
+    if (pointers.size === 1 && zoom.scale > 1) {
+      zoom.x += cur.x - prev.x;
+      zoom.y += cur.y - prev.y;
+      clampPan();
+      applyZoom(false);
+      startX = null; // panning a zoomed card, not swiping
+      gestured = true;
+    }
+    pointers.set(e.pointerId, cur);
+  });
+
+  let lastTap = 0;
+  function endPointer(e) {
+    // double-tap while zoomed → reset
+    const now = Date.now();
+    if (now - lastTap < 300 && zoom.scale > 1) resetZoom(true);
+    lastTap = now;
+
+    // clean single-finger horizontal flick → change card
+    if (startX !== null && !gestured && zoom.scale === 1) {
+      const dx = e.clientX - startX;
+      if (Math.abs(dx) >= 40) {
+        startX = null;
+        pointers.delete(e.pointerId);
+        go(active + (dx < 0 ? 1 : -1));
+        return;
+      }
+    }
     startX = null;
-    if (Math.abs(dx) < 40) return;
-    go(active + (dx < 0 ? 1 : -1));
-  });
+    pointers.delete(e.pointerId);
+    if (pointers.size < 2) pinchStart = null;
+    if (pointers.size === 0) {
+      if (zoom.scale <= 1.05) resetZoom(true);
+      window.setTimeout(() => {
+        gestured = false;
+      }, 60);
+    }
+  }
+  stage.addEventListener("pointerup", endPointer);
+  stage.addEventListener("pointercancel", endPointer);
 
   function render() {
     holders.forEach((holder, i) => {
