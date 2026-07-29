@@ -222,6 +222,9 @@
 .rpager__page {
   position: relative;
   height: 100svh;
+  /* Clear the iPad status bar / safe area so the top of each screen (back tab,
+     "Step N" heading) isn't cut off; a base gap gives breathing room too. */
+  padding-top: calc(env(safe-area-inset-top, 0px) + 1.1rem);
   overflow: hidden; /* fit pages don't scroll; a step that spills a few px is
                        centred, so the spill is a symmetric ≤10px, invisible */
   touch-action: pinch-zoom; /* JS handles single-finger pans; set per-page in sync() */
@@ -231,6 +234,7 @@
    is allowed to scroll natively; the pager flips off it at the edges. */
 .rpager__page:has(.jcar--single) {
   overflow-y: auto;
+  overscroll-behavior: contain; /* no rubber-band chaining that steals the swipe */
 }
 .rpager__page::-webkit-scrollbar {
   width: 0;
@@ -244,7 +248,10 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  /* Top-align: the fit layer is scaled from its top edge, so centering by its
+     (unscaled) height would push the top off-screen. Top-align keeps the top at
+     the padding line and the scale shrinks downward from there. */
+  justify-content: flex-start;
 }
 [data-section="reading"] .journal__cover-fit {
   transform-origin: top center;

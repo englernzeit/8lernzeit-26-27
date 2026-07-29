@@ -316,32 +316,58 @@ function buildReadingPager(view) {
     });
   }
 
+  // A vertical swipe flips one page — but only if a scrollable page (the game)
+  // is at the relevant edge; otherwise the drag scrolls it. Returns true if it
+  // flipped. Kept in one place so pointermove/up/cancel all agree.
+  function tryFlip(dx, dy, sp) {
+    if (!sp || Math.abs(dy) < 50 || Math.abs(dy) <= Math.abs(dx)) return false;
+    const scrollable = sp.classList.contains("rpager__page--scroll");
+    if (dy < 0) {
+      if (!scrollable || sp.scrollTop + sp.clientHeight >= sp.scrollHeight - 4) {
+        go(active + 1);
+        return true;
+      }
+    } else if (!scrollable || sp.scrollTop <= 4) {
+      go(active - 1);
+      return true;
+    }
+    return false;
+  }
+
   let sx = null;
   let sy = null;
+  let lastX = null;
+  let lastY = null;
   let sp = null;
+  let decided = false;
   pager.addEventListener("pointerdown", (e) => {
     if (!e.isPrimary) {
       sx = sy = null;
       return;
     }
-    sx = e.clientX;
-    sy = e.clientY;
+    sx = lastX = e.clientX;
+    sy = lastY = e.clientY;
     sp = pages[active];
+    decided = false;
+  });
+  // Flip as soon as the gesture is clearly a vertical swipe — this fires before
+  // a scrollable page's overscroll can cancel the pointer, so Step-4 → Step-3
+  // (drag down at the top of the game) works reliably.
+  pager.addEventListener("pointermove", (e) => {
+    if (!e.isPrimary || sy === null || decided) return;
+    lastX = e.clientX;
+    lastY = e.clientY;
+    decided = tryFlip(e.clientX - sx, e.clientY - sy, sp);
   });
   pager.addEventListener("pointerup", (e) => {
     if (!e.isPrimary || sy === null) return;
-    const dx = e.clientX - sx;
-    const dy = e.clientY - sy;
+    if (!decided) tryFlip(e.clientX - sx, e.clientY - sy, sp);
     sx = sy = null;
-    if (Math.abs(dy) < 50 || Math.abs(dy) <= Math.abs(dx)) return; // not a vertical swipe
-    const scrollable = sp.classList.contains("rpager__page--scroll");
-    if (dy < 0) {
-      if (!scrollable || sp.scrollTop + sp.clientHeight >= sp.scrollHeight - 4) go(active + 1);
-    } else if (!scrollable || sp.scrollTop <= 4) {
-      go(active - 1);
-    }
   });
+  // Overscroll on a scrollable page cancels the pointer — salvage the gesture
+  // from the last position we saw so a page still flips.
   pager.addEventListener("pointercancel", () => {
+    if (sy !== null && !decided) tryFlip(lastX - sx, lastY - sy, sp);
     sx = sy = null;
   });
 
