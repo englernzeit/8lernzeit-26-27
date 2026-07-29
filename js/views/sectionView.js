@@ -211,12 +211,12 @@ export function renderSectionView(root, unitId, sectionId) {
 
   root.appendChild(view);
 
-  // Reading: full-screen vertical pager. Group the intro (header + vocab hub
-  // + theory) into one "cover" page, then shrink any over-full page to fit its
-  // screen so a single swipe up lands cleanly on the next full-screen step.
-  if (sectionId === "reading") {
-    buildReadingCover(view);
-    const pager = buildReadingPager(view);
+  // Full-screen vertical pager on every competence page: group the intro
+  // (header + vocab hub + theory) into one "cover" page, then shrink any
+  // over-full page so a single swipe up lands cleanly on the next full screen.
+  if (content.steps && content.steps.length) {
+    buildCoverPage(view);
+    const pager = buildVerticalPager(view);
     fitUniformCards(view, pager);
   }
 }
@@ -228,7 +228,7 @@ export function renderSectionView(root, unitId, sectionId) {
  * cover; the fit layer lets it be scaled to fit one screen (see fitUniformCards).
  * @param {HTMLElement} view
  */
-function buildReadingCover(view) {
+function buildCoverPage(view) {
   const kids = [...view.children];
   const firstStep = kids.find((el) => el.querySelector && el.querySelector(".jcar"));
   if (!firstStep) return;
@@ -254,7 +254,7 @@ function buildReadingCover(view) {
  * once it's scrolled to the edge. Returns a handle with { sync } for the fitter.
  * @param {HTMLElement} view
  */
-function buildReadingPager(view) {
+function buildVerticalPager(view) {
   const pages = [...view.children].filter(
     (el) => el.classList.contains("journal__cover") || el.classList.contains("journal__section"),
   );
@@ -1459,11 +1459,11 @@ function buildCard(step, data, index, taskNo, ctx) {
     body.appendChild(help);
   }
 
-  // Uniform-size cards (currently Reading): every card is exactly --card-w ×
-  // --card-h and nothing scrolls inside it. We wrap the body content in a
-  // "fit" layer so a later pass (fitUniformCards) can shrink it just enough
-  // to fit the fixed height — text stretches to the edges first, then scales.
-  if (ctx && ctx.sectionId === "reading" && !card.classList.contains("taskcard--game")) {
+  // Uniform-size cards: every card is exactly --card-w × --card-h and nothing
+  // scrolls inside it. We wrap the body content in a "fit" layer so a later
+  // pass (fitUniformCards) can shrink it just enough to fit the fixed height —
+  // text stretches to the edges first, then scales.
+  if (ctx && !card.classList.contains("taskcard--game")) {
     const fit = document.createElement("div");
     fit.className = "taskcard__fit";
     while (body.firstChild) fit.appendChild(body.firstChild);
@@ -1482,8 +1482,12 @@ function buildCard(step, data, index, taskNo, ctx) {
  * @param {HTMLElement} view
  */
 function fitUniformCards(view, pager) {
-  const MIN_SCALE = 0.6; // hard floor — never clip content; heavy cards get their copy tightened later
-  // Scale `fit` down (never below the floor) so its content fits `avail` px.
+  // Low floor: the point is to NEVER clip content. A handful of genuinely tall
+  // cards render small until their copy is tightened by hand (as on Reading).
+  const MIN_SCALE = 0.35;
+  const observed = [];
+  // Scale `fit` down (as far as needed, never below the floor) so its content
+  // fits `avail` px. Returns the fit element so we can observe it for reflow.
   const fitInto = (fit, avail) => {
     fit.style.transform = "none";
     const need = fit.scrollHeight;
@@ -1494,6 +1498,7 @@ function fitUniformCards(view, pager) {
     } else {
       delete fit.dataset.fit;
     }
+    return fit;
   };
   const run = () => {
     // Cards: fit each into its fixed body box.
@@ -1519,6 +1524,29 @@ function fitUniformCards(view, pager) {
   if (typeof window !== "undefined") {
     window.addEventListener("resize", () => requestAnimationFrame(run));
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(run);
+    // Content can reflow after the first passes (late images, a guide table,
+    // a video poster). A ResizeObserver re-fits when any fit layer's own
+    // height changes — transforms don't change layout height, so this can't
+    // loop. This is what keeps a dense cover (e.g. Grammar) correctly fitted.
+    if (typeof ResizeObserver !== "undefined") {
+      let raf = 0;
+      const ro = new ResizeObserver(() => {
+        cancelAnimationFrame(raf);
+        raf = requestAnimationFrame(run);
+      });
+      const observeAll = () => {
+        view
+          .querySelectorAll(".taskcard__fit, .journal__cover-fit")
+          .forEach((el) => {
+            if (!observed.includes(el)) {
+              observed.push(el);
+              ro.observe(el);
+            }
+          });
+      };
+      observeAll();
+      setTimeout(observeAll, 400);
+    }
   }
 }
 

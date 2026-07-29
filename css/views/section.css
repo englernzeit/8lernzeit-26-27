@@ -201,13 +201,13 @@
   margin-top: 0.5rem;
 }
 
-/* --- Full-screen vertical pager (Reading) ------------------------
+/* --- Full-screen vertical pager (all competence pages) -----------
    The page is a stack of full-screen cards driven the SAME way as the
    card carousel: a JS transform, not native scroll. Screen 0 is the
    "cover" (title, name, PDF, vocabulary hub, theory); every Step is one
    full screen after it. One vertical swipe animates exactly one page in.
-   Scoped to Reading. See buildReadingPager() in sectionView.js. */
-[data-section="reading"] {
+   See buildVerticalPager() / buildCoverPage() in sectionView.js. */
+.journal {
   overflow: hidden; /* the pager owns motion; no native page scroll */
 }
 
@@ -243,7 +243,7 @@
 
 /* Screen 0 — the cover: the whole intro on one screen, scaled to fit
    (JS sets a transform on .journal__cover-fit; nothing scrolls inside). */
-[data-section="reading"] .journal__cover {
+.journal .journal__cover {
   height: 100svh;
   overflow: hidden;
   display: flex;
@@ -253,18 +253,18 @@
      the padding line and the scale shrinks downward from there. */
   justify-content: flex-start;
 }
-[data-section="reading"] .journal__cover-fit {
+.journal .journal__cover-fit {
   transform-origin: top center;
   transition: transform 0.25s ease;
 }
 /* Sections nested inside the cover (the theory/guide) don't force full height. */
-[data-section="reading"] .journal__cover .journal__section {
+.journal .journal__cover .journal__section {
   min-height: 0;
   margin-top: 1.25rem;
 }
 
 /* Step sections become one full screen with the card group centred. */
-[data-section="reading"] .journal__section:has(.jcar) {
+.journal .journal__section:has(.jcar) {
   min-height: 100svh;
   display: flex;
   flex-direction: column;
@@ -274,32 +274,32 @@
 /* Over a fit card, single-finger pans go to JS (H = card flip, V = page flip);
    two fingers still pinch-zoom natively. The single (game) stage keeps the
    default pan-y so the one scrollable page can be dragged to scroll. */
-[data-section="reading"] .jcar--slide .jcar__stage,
-[data-section="reading"] .jcar--spread .jcar__stage {
+.journal .jcar--slide .jcar__stage,
+.journal .jcar--spread .jcar__stage {
   touch-action: pinch-zoom;
 }
 
 /* Reading passages: tighten so the text fits its card at full scale and fills
    the whole width — no shrink-to-fit that leaves the text small and narrow. */
-[data-section="reading"] .exo-glossary__para--line {
+.journal .exo-glossary__para--line {
   line-height: 1.36;
 }
-[data-section="reading"] .exo-glossary__para--pstart {
+.journal .exo-glossary__para--pstart {
   margin-top: 0.3rem;
 }
-[data-section="reading"] .exo-glossary__hint {
+.journal .exo-glossary__hint {
   display: none;
 }
 /* The reading text is the card's whole point — give it the room, trim the
    heading's own gaps so the passage fills the card at full scale. */
-[data-section="reading"] .taskcard--sheet:has(.exo-glossary__lines) .taskcard__body {
+.journal .taskcard--sheet:has(.exo-glossary__lines) .taskcard__body {
   padding-top: 0.85rem;
   padding-bottom: 0.75rem;
 }
-[data-section="reading"] .taskcard--sheet:has(.exo-glossary__lines) .taskcard__title {
+.journal .taskcard--sheet:has(.exo-glossary__lines) .taskcard__title {
   font-size: 1.5rem;
 }
-[data-section="reading"] .taskcard--sheet:has(.exo-glossary__lines) .taskcard__intro {
+.journal .taskcard--sheet:has(.exo-glossary__lines) .taskcard__intro {
   font-size: 1.05rem;
   margin-top: 0.15rem;
 }

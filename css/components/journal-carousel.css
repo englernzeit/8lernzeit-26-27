@@ -345,19 +345,19 @@
    box (sparse cards stretch to the edges); JS (fitUniformCards) scales any
    over-full card down just enough to fit. (Step 4 star games are excluded.)
    SCOPED TO READING while we perfect the format, before rolling it out. */
-[data-section="reading"] .jcar--slide .taskcard--sheet,
-[data-section="reading"] .jcar--spread .taskcard--sheet {
+.journal .jcar--slide .taskcard--sheet,
+.journal .jcar--spread .taskcard--sheet {
   height: var(--card-h);
 }
-[data-section="reading"] .jcar--slide .taskcard--sheet .taskcard__body,
-[data-section="reading"] .jcar--spread .taskcard--sheet .taskcard__body {
+.journal .jcar--slide .taskcard--sheet .taskcard__body,
+.journal .jcar--spread .taskcard--sheet .taskcard__body {
   flex: 1 1 auto;
   min-height: 0;
   overflow: hidden;
 }
 /* The fit layer holds all the card's content and fills the body; when it is
    taller than the box, JS scales it from the top so it fits without a scroll. */
-[data-section="reading"] .taskcard--sheet .taskcard__fit {
+.journal .taskcard--sheet .taskcard__fit {
   display: flex;
   flex-direction: column;
   flex: 1 1 auto;
