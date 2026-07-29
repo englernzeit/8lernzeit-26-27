@@ -529,7 +529,7 @@ export default {
           type: "text",
           kind: "Lesen",
           title: "Faster than Traffic — New York's Bike Messengers",
-          intro: "A longer read. The small numbers on the left are line numbers — use them to prove your answers. Tap the underlined words for help in simple English.",
+          intro: "Line numbers on the left help you prove your answers. Tap the underlined words.",
           lineNumbers: true,
           // Running prose with a number on every visual line — see the
           // Step-2 text above. Full-width, author-fixed line breaks.

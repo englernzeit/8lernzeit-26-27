@@ -279,6 +279,31 @@
   touch-action: pinch-zoom;
 }
 
+/* Reading passages: tighten so the text fits its card at full scale and fills
+   the whole width — no shrink-to-fit that leaves the text small and narrow. */
+[data-section="reading"] .exo-glossary__para--line {
+  line-height: 1.36;
+}
+[data-section="reading"] .exo-glossary__para--pstart {
+  margin-top: 0.3rem;
+}
+[data-section="reading"] .exo-glossary__hint {
+  display: none;
+}
+/* The reading text is the card's whole point — give it the room, trim the
+   heading's own gaps so the passage fills the card at full scale. */
+[data-section="reading"] .taskcard--sheet:has(.exo-glossary__lines) .taskcard__body {
+  padding-top: 0.85rem;
+  padding-bottom: 0.75rem;
+}
+[data-section="reading"] .taskcard--sheet:has(.exo-glossary__lines) .taskcard__title {
+  font-size: 1.5rem;
+}
+[data-section="reading"] .taskcard--sheet:has(.exo-glossary__lines) .taskcard__intro {
+  font-size: 1.05rem;
+  margin-top: 0.15rem;
+}
+
 /* Right-edge page dots (which screen you're on). */
 .rpager__rail {
   position: absolute;
