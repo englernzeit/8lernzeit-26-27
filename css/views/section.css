@@ -751,6 +751,59 @@
   width: min(100%, 440px);
   margin: 0.9rem auto 0.2rem;
 }
+
+/* --- Split card: directions left, framed image + writing field right ---- */
+.taskcard--split .taskcard__fit .taskcard__cols {
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
+  gap: 1.6rem;
+  align-items: stretch;
+}
+.taskcard__col--left {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.taskcard__col--right {
+  flex: 0 1 auto;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+/* The image fills the card height on the right (its overlays are % of the
+   image, so they follow); width keeps the aspect ratio. */
+.taskcard__col--right .taskcard__frame {
+  width: auto;
+  height: 100%;
+  max-width: 100%;
+  margin: 0;
+  display: flex;
+}
+.taskcard__col--right .taskcard__frame-img {
+  height: 100%;
+  width: auto;
+  max-width: 100%;
+}
+
+@media (orientation: portrait) {
+  /* Narrow screen: stack again — directions on top, image below. */
+  .taskcard--split .taskcard__fit .taskcard__cols {
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+  .taskcard__col--right .taskcard__frame {
+    width: min(100%, 440px);
+    height: auto;
+  }
+  .taskcard__col--right .taskcard__frame-img {
+    width: 100%;
+    height: auto;
+  }
+}
 .taskcard__frame-img {
   display: block;
   width: 100%;

@@ -372,6 +372,7 @@ export default {
             "2 sentences: what you did yesterday (Simple Past)",
           ],
           answer: true,
+          split: true, // directions on the left, phone + writing field on the right
           backdrop: {
             mode: "messenger",
             src: `${GRAMMAR_IMG}/messenger.jpg`,

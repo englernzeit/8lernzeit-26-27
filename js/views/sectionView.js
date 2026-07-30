@@ -1466,7 +1466,32 @@ function buildCard(step, data, index, taskNo, ctx) {
   if (ctx && !card.classList.contains("taskcard--game")) {
     const fit = document.createElement("div");
     fit.className = "taskcard__fit";
-    while (body.firstChild) fit.appendChild(body.firstChild);
+    if (data.split) {
+      // Two imaginary columns: task directions on the left, the framed image
+      // (messenger / blog / postcard) with its writing field on the right —
+      // which lets the image grow to the full card height.
+      card.classList.add("taskcard--split");
+      const cols = document.createElement("div");
+      cols.className = "taskcard__cols";
+      const left = document.createElement("div");
+      left.className = "taskcard__col taskcard__col--left";
+      const right = document.createElement("div");
+      right.className = "taskcard__col taskcard__col--right";
+      const isVisual = (el) =>
+        el.classList &&
+        (el.classList.contains("taskcard__frame") ||
+          el.classList.contains("exo-essay__pc") ||
+          el.classList.contains("taskcard__figure") ||
+          el.classList.contains("taskcard__figure-frame"));
+      while (body.firstChild) {
+        const el = body.firstChild;
+        (isVisual(el) ? right : left).appendChild(el);
+      }
+      cols.append(left, right);
+      fit.appendChild(cols);
+    } else {
+      while (body.firstChild) fit.appendChild(body.firstChild);
+    }
     body.appendChild(fit);
   }
 
