@@ -751,7 +751,7 @@ function buildGuideSection(guide) {
 
   const types = document.createElement("div");
   types.className = "grammar-guide__types";
-  for (const t of guide.types) {
+  for (const t of guide.types ?? []) {
     const card = document.createElement("div");
     card.className = `grammar-guide__type grammar-guide__type--${t.accent}`;
 
@@ -793,6 +793,10 @@ function buildGuideSection(guide) {
   }
   grid.appendChild(types);
 
+  // If the guide is a video-only guide (no reference cards, no infographic),
+  // skip the empty grid so only the video shows.
+  const hasGrid = (guide.types?.length ?? 0) > 0 || Boolean(guide.infographic);
+
   if (guide.infographic) {
     const figure = document.createElement("figure");
     figure.className = "grammar-guide__figure";
@@ -811,7 +815,7 @@ function buildGuideSection(guide) {
     grid.appendChild(figure);
   }
 
-  article.appendChild(grid);
+  if (hasGrid) article.appendChild(grid);
 
   // Optional 4-tenses revision table (tense · use · signal words), shown
   // below the reference cards.

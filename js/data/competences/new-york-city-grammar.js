@@ -37,36 +37,15 @@ const PEN_HINT =
 export default {
   title: "Tense Revision",
 
-  /* ============ Shared reference card ============ */
+  /* ============ Shared reference — the tenses, as a video ============ */
   guide: {
     label: "The 3 Tenses",
     numbered: false,
-    types: [
-      {
-        name: "Simple Present",
-        tag: "every day · always · often · never",
-        accent: "olive",
-        formula: "verb ( + -s for he / she / it )",
-        de: "Was immer wieder passiert – Gewohnheit oder Fakt.",
-        example: "Ben walks to school every day.",
-      },
-      {
-        name: "Present Progressive",
-        tag: "now · Look! · Listen! · at the moment",
-        accent: "slate",
-        formula: "am / is / are + verb + -ing",
-        de: "Was genau JETZT gerade passiert.",
-        example: "Look! Ben is eating a hot dog now.",
-      },
-      {
-        name: "Simple Past",
-        tag: "yesterday · last week · ago · in 2019",
-        accent: "ochre",
-        formula: "verb + -ed  ·  or 2nd form (see → saw)",
-        de: "Was vorbei ist – abgeschlossen.",
-        example: "Yesterday Ben visited the Empire State Building.",
-      },
-    ],
+    video: {
+      src: "assets/video/unit1/the-three-friends.mp4",
+      poster: "assets/video/unit1/the-three-friends.jpg",
+      caption: "The Three Friends — meet Simple Present, Present Progressive and Simple Past.",
+    },
   },
 
   steps: [
