@@ -505,6 +505,7 @@ export default {
             "Simple Past (3–4 sentences): the special thing that happened yesterday.",
           ],
           answer: true,
+          split: true, // directions on the left, blog page + writing field on the right
           backdrop: {
             mode: "blog",
             src: `${GRAMMAR_IMG}/blog.jpg`,
