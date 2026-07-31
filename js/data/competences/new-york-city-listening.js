@@ -521,11 +521,10 @@ export default {
           type: "subway-game",
           title: "Mind the Gap — ride to Times Square",
           intro:
-            "Listen to all six real station announcements once (press Help me if you need the words). Then ride the line: at every station a situation comes up, and the right choice depends on what you heard. Choose well and your train rolls on to Times Square. Ready? Mind the gap!",
+            "Listen to all six real station announcements once. Then ride the line: at every station a situation comes up, and the right choice depends on what you heard. Choose well and your train rolls on to Times Square. Ready? Mind the gap!",
           audio: {
             src: A1,
             label: "🎧 The six announcements — listen, then ride!",
-            transcript: ANNOUNCEMENTS,
           },
           stations: ["Union Square", "14 St", "23 St", "28 St", "34 St", "42 St", "Times Square"],
           stops: [
