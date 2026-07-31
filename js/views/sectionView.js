@@ -752,6 +752,9 @@ function buildGuideSection(guide) {
 
   const types = document.createElement("div");
   types.className = "grammar-guide__types";
+  // Tag the card count so an odd grid (e.g. 5 → 3+2) can be balanced in CSS.
+  const typeCount = guide.types?.length ?? 0;
+  if (typeCount) types.classList.add(`grammar-guide__types--n${typeCount}`);
   for (const t of guide.types ?? []) {
     const card = document.createElement("div");
     card.className = `grammar-guide__type grammar-guide__type--${t.accent}`;
@@ -1182,6 +1185,7 @@ function buildCard(step, data, index, taskNo, ctx) {
           subject: data.subject,
           comment: data.comment,
           postcard: data.postcard,
+          fillCard: data.fill,
           value: saved[key] ?? "",
           answerKey: key,
           onChange: (v) => ctx && setAnswer(ctx.unitId, ctx.sectionId, key, v),

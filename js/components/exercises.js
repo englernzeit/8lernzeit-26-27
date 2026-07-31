@@ -1427,6 +1427,12 @@ export function createParagraphBuilder({ paragraph, values, keyFor, onChange }) 
   goal.textContent = `Goal: ${paragraph.goal}`;
   wrap.appendChild(goal);
 
+  // Rows flow into two columns (CSS) so the short lines use the card width
+  // instead of leaving a tall, half-empty single column.
+  const rows = document.createElement("div");
+  rows.className = "exo-para__rows";
+  wrap.appendChild(rows);
+
   paragraph.sentences.forEach((s, i) => {
     const row = document.createElement("div");
     row.className = "exo-para__row";
@@ -1478,7 +1484,7 @@ export function createParagraphBuilder({ paragraph, values, keyFor, onChange }) 
       hint.textContent = `🇩🇪 ${s.hint}`;
       row.appendChild(hint);
     }
-    wrap.appendChild(row);
+    rows.appendChild(row);
   });
 
   return wrap;
@@ -1495,9 +1501,12 @@ export function createParagraphBuilder({ paragraph, values, keyFor, onChange }) 
  *   value: string, answerKey: string, onChange: (v:string)=>void,
  * }} opts
  */
-export function createEssayEditor({ min = 120, max = 150, placeholder, checklist, chips, subject, comment, postcard, value, answerKey, onChange }) {
+export function createEssayEditor({ min = 120, max = 150, placeholder, checklist, chips, subject, comment, postcard, fillCard, value, answerKey, onChange }) {
   const wrap = document.createElement("div");
   wrap.className = "exo exo-essay";
+  // fillCard: grow the writing area to fill the card height (no empty margins,
+  // no downscaling) — for the fixed-height comment cards.
+  if (fillCard) wrap.classList.add("exo-essay--fill");
 
   // Optional requirement chips (numbered "must include" points). Built here;
   // placed below (a row on top, or — with a postcard — a column on the left).

@@ -535,6 +535,20 @@
   grid-template-columns: repeat(auto-fit, minmax(15.5rem, 1fr));
   align-content: start;
 }
+/* Five reference cards would tile as a ragged 3 + 2 (bottom row left-aligned).
+   Lay them out as centered, uniform-width cards so the bottom row is centered
+   under the top row instead of leaving a hole on the right. */
+.grammar-guide__grid--full .grammar-guide__types--n5 {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  align-items: stretch;
+  gap: 0.8rem;
+}
+.grammar-guide__grid--full .grammar-guide__types--n5 .grammar-guide__type {
+  flex: 1 1 14rem;
+  max-width: 17rem;
+}
 
 .grammar-guide__type {
   background: var(--j-paper-2);

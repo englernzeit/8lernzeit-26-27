@@ -30,6 +30,15 @@ const B3 = "3 · Opinion";
 const B4 = "4 · Answer";
 const B5 = "5 · Close";
 
+/** G-Kurs block labels carry German help right in the label — the bare block
+ * names are too abstract at this level. Used in the Step-2 matching + sorting
+ * tasks (the guide already gives German on its DE line). */
+const GB1 = "1 · React — begrüßen & danken";
+const GB2 = "2 · Refer — ein Detail nennen";
+const GB3 = "3 · Opinion — Meinung + weil (because)";
+const GB4 = "4 · Answer — die Frage beantworten";
+const GB5 = "5 · Close — netter Schluss";
+
 export default {
   title: "The Perfect Comment",
 
@@ -238,6 +247,7 @@ export default {
           intro: "Watch first: the five steps of a good comment — explained in German.",
           video: {
             src: `${VIDEO}/perfekte-blog-kommentare.mp4`,
+            poster: `${VIDEO}/perfekte-blog-kommentare.jpg`,
             caption: "Das Video erklärt die 5 Schritte — perfekt zum Starten.",
           },
         },
@@ -461,13 +471,13 @@ export default {
           kind: "Analysieren",
           title: "Find the 5 blocks in Lisa's comment",
           intro: "Which building block is each quote from Lisa's comment?",
-          options: [B1, B2, B3, B4, B5],
+          options: [GB1, GB2, GB3, GB4, GB5],
           items: [
-            { left: "“Thanks for your interesting post!”", answer: B1 },
-            { left: "“I liked the part about the cheesecake — now I'm hungry!”", answer: B2 },
-            { left: "“In my opinion, New York is perfect for a holiday because …”", answer: B3 },
-            { left: "“But I could never live there because I need quiet places …”", answer: B4 },
-            { left: "“Keep writing — I can't wait for your next post!”", answer: B5 },
+            { left: "“Thanks for your interesting post!”", answer: GB1 },
+            { left: "“I liked the part about the cheesecake — now I'm hungry!”", answer: GB2 },
+            { left: "“In my opinion, New York is perfect for a holiday because …”", answer: GB3 },
+            { left: "“But I could never live there because I need quiet places …”", answer: GB4 },
+            { left: "“Keep writing — I can't wait for your next post!”", answer: GB5 },
           ],
         },
         {
@@ -476,23 +486,23 @@ export default {
           title: "Sort the phrases into the blocks",
           intro: "Tap a phrase, then tap its block. Sort all eight, then press Check.",
           groups: [
-            { label: B1, items: ["Thanks for your cool post!"] },
+            { label: GB1, items: ["Thanks for your cool post!"] },
             {
-              label: B2,
+              label: GB2,
               items: [
                 "I liked the part about the six-dollar hot dog.",
                 "It's funny that you wrote about the loud streets.",
               ],
             },
             {
-              label: B3,
+              label: GB3,
               items: [
                 "I don't agree with you because big cities are exciting.",
                 "In my opinion, New York is too stressful because it never sleeps.",
               ],
             },
-            { label: B4, items: ["I could live there because I love busy streets."] },
-            { label: B5, items: ["Greetings from Munich!", "Can't wait for your next post!"] },
+            { label: GB4, items: ["I could live there because I love busy streets."] },
+            { label: GB5, items: ["Greetings from Munich!", "Can't wait for your next post!"] },
           ],
         },
         {
@@ -537,15 +547,9 @@ export default {
           min: 60,
           max: 80,
           placeholder: "Your comment…",
+          fill: true,
           comment: { replyTo: "One week in New York — my honest opinion" },
-          chips: ["React", "Refer", "Opinion + because", "Answer", "Close"],
-          checklist: [
-            "All 5 blocks in the right order?",
-            "At least one because?",
-            "Answer to Alex's question?",
-            "Polite — netiquette OK?",
-            "60–80 words?",
-          ],
+          chips: ["React · begrüßen", "Refer · ein Detail", "Opinion + weil", "Answer · die Frage", "Close · Gruß"],
         },
       ],
     },
@@ -564,6 +568,7 @@ export default {
           intro: "Watch first: what separates a strong comment from a weak one — in English.",
           video: {
             src: `${VIDEO}/anatomy-of-a-perfect-comment.mp4`,
+            poster: `${VIDEO}/anatomy-of-a-perfect-comment.jpg`,
             caption: "The anatomy of a strong comment, block by block.",
           },
         },
@@ -709,6 +714,7 @@ export default {
           min: 100,
           max: 120,
           placeholder: "Your comment…",
+          fill: true,
           comment: { replyTo: "New York — overrated or the greatest city on earth?" },
           chips: [
             "React to the post",
@@ -716,13 +722,6 @@ export default {
             "Opinion with TWO reasons",
             "Own experience or question back",
             "Friendly closing line",
-          ],
-          checklist: [
-            "A reaction to the post?",
-            "ONE specific detail quoted (“You wrote that …”)?",
-            "Your opinion with at least TWO reasons?",
-            "An own experience, example or question back to Alex?",
-            "A friendly close — and polite everywhere, even where you disagree?",
           ],
         },
       ],
