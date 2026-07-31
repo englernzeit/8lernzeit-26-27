@@ -37,6 +37,7 @@ import {
   createArgumentPick,
   createParagraphBuilder,
   createEssayEditor,
+  createDialogueWrite,
   createEmailBuilder,
   createEmailFixer,
   createSpotFix,
@@ -1188,6 +1189,20 @@ function buildCard(step, data, index, taskNo, ctx) {
       );
       break;
     }
+    case "dialogue-write": {
+      const base = `step${step.step}-task${index + 1}`;
+      const saved = ctx ? getAnswers(ctx.unitId, ctx.sectionId) : {};
+      const keyFor = (i) => `${base}-line${i}`;
+      body.appendChild(
+        createDialogueWrite({
+          lines: data.lines,
+          values: saved,
+          keyFor,
+          onChange: (i, v) => ctx && setAnswer(ctx.unitId, ctx.sectionId, keyFor(i), v),
+        }),
+      );
+      break;
+    }
     case "game":
       body.appendChild(createGame(data));
       break;
@@ -1471,10 +1486,14 @@ function buildCard(step, data, index, taskNo, ctx) {
     const fit = document.createElement("div");
     fit.className = "taskcard__fit";
     if (data.split) {
-      // Two imaginary columns: task directions on the left, the framed image
-      // (messenger / blog / postcard) with its writing field on the right —
-      // which lets the image grow to the full card height.
+      // Two imaginary columns. Two flavours:
+      //   split: true       → task directions left, framed image / postcard
+      //                       right (the image grows to the full card height).
+      //   split: "dialogue" → task + audio player left, the dialogue widget
+      //                       (inline-choice / gap-fill) right.
+      const dialogueSplit = data.split === "dialogue";
       card.classList.add("taskcard--split");
+      if (dialogueSplit) card.classList.add("taskcard--split-dialogue");
       const cols = document.createElement("div");
       cols.className = "taskcard__cols";
       const left = document.createElement("div");
@@ -1486,7 +1505,9 @@ function buildCard(step, data, index, taskNo, ctx) {
         (el.classList.contains("taskcard__frame") ||
           el.classList.contains("exo-essay__pc") ||
           el.classList.contains("taskcard__figure") ||
-          el.classList.contains("taskcard__figure-frame"));
+          el.classList.contains("taskcard__figure-frame") ||
+          el.classList.contains("exo-inline") ||
+          el.classList.contains("exo-gap"));
       while (body.firstChild) {
         const el = body.firstChild;
         (isVisual(el) ? right : left).appendChild(el);

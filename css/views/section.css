@@ -789,6 +789,22 @@
   max-width: 100%;
 }
 
+/* --- Dialogue split: compact directions + audio left, dialogue right ---- */
+.taskcard--split-dialogue .taskcard__col--left {
+  flex: 0 0 38%;
+  justify-content: flex-start;
+}
+.taskcard--split-dialogue .taskcard__col--right {
+  flex: 1 1 0;
+  min-width: 0;
+  align-items: stretch;
+  justify-content: center;
+}
+.taskcard--split-dialogue .taskcard__col--right > .exo {
+  width: 100%;
+  margin: 0;
+}
+
 @media (orientation: portrait) {
   /* Narrow screen: stack again — directions on top, image below. */
   .taskcard--split .taskcard__fit .taskcard__cols {
@@ -802,6 +818,10 @@
   .taskcard__col--right .taskcard__frame-img {
     width: 100%;
     height: auto;
+  }
+  /* Dialogue: directions + audio on top, dialogue below (full width). */
+  .taskcard--split-dialogue .taskcard__col--left {
+    flex: 0 0 auto;
   }
 }
 .taskcard__frame-img {

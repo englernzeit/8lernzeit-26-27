@@ -1689,6 +1689,76 @@ export function createEssayEditor({ min = 120, max = 150, placeholder, checklist
   return wrap;
 }
 
+/* ---------- Dialogue writer (fill a script) -------------------- */
+
+/**
+ * A dialogue laid out as a script. Each line is either GIVEN (printed,
+ * read-only) or an EMPTY field the learner writes into — so we can hand
+ * out a half-written dialogue (only one speaker's turns are blank) or a
+ * fully empty template (every turn blank). No word meter, no self-check:
+ * the structure itself is the scaffold.
+ *
+ * A line is:
+ *   { speaker, text }            → printed, read-only
+ *   { speaker, hint?, rows? }    → a writing field (hint = placeholder)
+ *
+ * Input lines are numbered in order (0,1,2…) for the answer store.
+ *
+ * @param {{
+ *   lines: Array<{ speaker: string, text?: string, hint?: string, rows?: number }>,
+ *   values: Record<string,string>,
+ *   keyFor: (i:number)=>string,
+ *   onChange: (i:number, v:string)=>void,
+ * }} data
+ */
+export function createDialogueWrite({ lines, values, keyFor, onChange }) {
+  const wrap = document.createElement("div");
+  wrap.className = "exo exo-dwrite";
+
+  let inputIdx = 0;
+  lines.forEach((ln) => {
+    const isInput = ln.text == null;
+    const row = document.createElement("div");
+    row.className = `exo-dwrite__row exo-dwrite__row--${isInput ? "you" : "given"}`;
+
+    const who = document.createElement("span");
+    who.className = "exo-dwrite__who";
+    who.textContent = ln.speaker;
+    row.appendChild(who);
+
+    if (!isInput) {
+      const said = document.createElement("p");
+      said.className = "exo-dwrite__said";
+      said.textContent = ln.text;
+      row.appendChild(said);
+    } else {
+      const i = inputIdx++;
+      const key = keyFor(i);
+      const field = document.createElement("textarea");
+      field.className = "exo-dwrite__field";
+      field.rows = ln.rows ?? 1;
+      field.placeholder = ln.hint ?? "Write your line…";
+      field.dataset.answerKey = key;
+      field.value = values?.[key] ?? "";
+      // Grow with the text so the field is never taller than it needs — keeps
+      // the script tight (no big empty boxes).
+      const grow = () => {
+        field.style.height = "auto";
+        field.style.height = `${field.scrollHeight}px`;
+      };
+      field.addEventListener("input", () => {
+        onChange(i, field.value);
+        grow();
+      });
+      requestAnimationFrame(grow);
+      row.appendChild(field);
+    }
+    wrap.appendChild(row);
+  });
+
+  return wrap;
+}
+
 /* ---------- Checklist (tick + count) --------------------------- */
 
 /**

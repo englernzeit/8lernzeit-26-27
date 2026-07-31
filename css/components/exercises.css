@@ -1222,6 +1222,65 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
   box-shadow: 0 0 0 3px rgba(164, 108, 245, 0.2);
 }
 
+/* ---------- Dialogue writer (fill a script) -------------------- */
+.exo-dwrite {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+.exo-dwrite__row {
+  display: grid;
+  grid-template-columns: 4.4rem 1fr;
+  gap: 0.7rem;
+  align-items: start;
+}
+.exo-dwrite__who {
+  font-family: var(--j-font-body);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--j-slate);
+  padding-top: 0.42rem;
+  text-align: right;
+  white-space: nowrap;
+}
+.exo-dwrite__row--you .exo-dwrite__who { color: var(--j-teal); }
+.exo-dwrite__said {
+  margin: 0;
+  font-family: var(--j-font-body);
+  font-size: 1.02rem;
+  line-height: 1.5;
+  color: var(--j-ink);
+  padding: 0.28rem 0.2rem;
+}
+.exo-dwrite__field {
+  width: 100%;
+  box-sizing: border-box;
+  resize: none;
+  overflow: hidden;
+  min-height: 2.2rem;
+  font-family: var(--j-font-display);
+  font-size: 1.24rem;
+  line-height: 1.45;
+  color: var(--j-teal);
+  background: var(--j-field);
+  border: 1.5px solid rgba(126, 150, 176, 0.3);
+  border-radius: 10px;
+  padding: 0.32rem 0.7rem;
+}
+.exo-dwrite__field::placeholder {
+  font-family: var(--j-font-body);
+  font-size: 0.86rem;
+  line-height: 1.35;
+  color: rgba(156, 205, 247, 0.6);
+}
+.exo-dwrite__field:focus-visible {
+  outline: none;
+  border-color: var(--j-teal);
+  box-shadow: 0 0 0 3px rgba(95, 180, 245, 0.18);
+}
+
 .exo-essay__meter { margin-top: 0.7rem; }
 
 .exo-essay__meter-label {
