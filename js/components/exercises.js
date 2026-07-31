@@ -435,7 +435,13 @@ export function createGroupSort({ groups }) {
       chip.textContent = typeof it === "string" ? it : it.text;
     }
     chip.dataset.group = String(entry.group);
-    chip.addEventListener("click", () => {
+    chip.addEventListener("click", (e) => {
+      // A placed chip lives inside a bin drop zone. Without this, the click
+      // bubbles to the bin and its handler instantly re-drops the chip in the
+      // same column — so a chip in the wrong column could never be re-selected
+      // and therefore never moved. Stopping propagation lets the user pick a
+      // placed chip up again and move it to another column (or the tray).
+      e.stopPropagation();
       if (chip.classList.contains("exo-sort__chip--locked")) return;
       const isSel = chip === selected;
       wrap.querySelectorAll(".exo-sort__chip--sel").forEach((c) =>
@@ -446,6 +452,13 @@ export function createGroupSort({ groups }) {
     });
     tray.appendChild(chip);
     return chip;
+  });
+  // Tap the tray (empty area) to pull a selected chip back out of a column.
+  tray.addEventListener("click", () => {
+    if (!selected || selected.classList.contains("exo-sort__chip--locked")) return;
+    tray.appendChild(selected);
+    selected.classList.remove("exo-sort__chip--sel");
+    selected = null;
   });
   wrap.appendChild(tray);
 
