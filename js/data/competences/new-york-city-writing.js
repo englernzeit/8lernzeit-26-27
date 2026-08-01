@@ -31,21 +31,26 @@ const GB3 = "3 · Opinion — Meinung + weil (because)";
 const GB4 = "4 · Answer — die Frage beantworten";
 const GB5 = "5 · Close — netter Schluss";
 
+const BLOG_IMG = "assets/blog/unit1";
+
 /** Blog "furniture" shared by Alex's three posts: the author byline plus the
- * sidebar widgets (About / Categories / Popular posts). Each reading card
- * spreads this and overrides only its own `date`; the headline is the card's
- * own `title`. Rendered by buildBlogPost() in the night-journal palette. */
+ * sidebar widgets (About / Categories / Popular posts) and the cover photo.
+ * Each reading card spreads this and overrides only its own `date`; the
+ * headline is the card's own `title`. Rendered by buildBlogPost() in the
+ * night-journal palette. */
 const BLOG = {
   author: "Alex from Hamburg",
+  photo: `${BLOG_IMG}/alex.jpg`,
+  hero: { src: `${BLOG_IMG}/hero-newyork.jpg`, alt: "The New York City skyline at dusk" },
   about: {
     title: "About Alex",
     bio: "Hi! I'm Alex, 14, from Hamburg. I love travelling and writing about the cities I visit.",
   },
   categories: ["All posts", { name: "Travel", active: true }, "City life", "Food", "Tips"],
   popular: [
-    { icon: "🌉", title: "A weekend in San Francisco", date: "Apr 28, 2024" },
-    { icon: "🏰", title: "10 things to do in London", date: "Mar 5, 2024" },
-    { icon: "🍕", title: "The best pizza in Italy", date: "Feb 12, 2024" },
+    { img: `${BLOG_IMG}/pop-sanfrancisco.jpg`, title: "A weekend in San Francisco", date: "Apr 28, 2024" },
+    { img: `${BLOG_IMG}/pop-london.jpg`, title: "10 things to do in London", date: "Mar 5, 2024" },
+    { img: `${BLOG_IMG}/pop-italy.jpg`, title: "The best pizza in Italy", date: "Feb 12, 2024" },
   ],
 };
 

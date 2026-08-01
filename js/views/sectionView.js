@@ -1636,7 +1636,16 @@ function buildBlogPost(data) {
   byline.className = "blogpost__byline";
   const av = document.createElement("span");
   av.className = "blogpost__avatar";
-  av.textContent = blog.avatar ?? (blog.author ?? "A").trim().charAt(0).toUpperCase();
+  if (blog.photo) {
+    av.classList.add("blogpost__avatar--img");
+    const img = document.createElement("img");
+    img.src = blog.photo;
+    img.alt = blog.author ?? "";
+    img.loading = "lazy";
+    av.appendChild(img);
+  } else {
+    av.textContent = blog.avatar ?? (blog.author ?? "A").trim().charAt(0).toUpperCase();
+  }
   byline.appendChild(av);
   const who = document.createElement("span");
   who.className = "blogpost__author";
@@ -1666,6 +1675,25 @@ function buildBlogPost(data) {
     main.appendChild(hint);
   }
 
+  // Optional cover photo (a slim lead banner) under the byline/hint.
+  if (blog.hero) {
+    const h = typeof blog.hero === "string" ? { src: blog.hero } : blog.hero;
+    const fig = document.createElement("figure");
+    fig.className = "blogpost__hero";
+    const img = document.createElement("img");
+    img.src = h.src;
+    img.alt = h.alt ?? "";
+    img.loading = "lazy";
+    fig.appendChild(img);
+    if (h.caption) {
+      const cap = document.createElement("figcaption");
+      cap.className = "blogpost__hero-cap";
+      cap.textContent = h.caption;
+      fig.appendChild(cap);
+    }
+    main.appendChild(fig);
+  }
+
   // The article text keeps the tappable glossary words; its own tap hint is
   // suppressed because the callout above already gives the instruction.
   const article = createGlossaryText({
@@ -1689,8 +1717,18 @@ function buildBlogPost(data) {
     h.textContent = blog.about.title ?? "About the author";
     const portrait = document.createElement("div");
     portrait.className = "blogpost__portrait";
-    portrait.textContent =
-      blog.about.avatar ?? blog.avatar ?? (blog.author ?? "A").trim().charAt(0).toUpperCase();
+    const portraitSrc = blog.about.photo ?? blog.photo;
+    if (portraitSrc) {
+      portrait.classList.add("blogpost__portrait--img");
+      const img = document.createElement("img");
+      img.src = portraitSrc;
+      img.alt = blog.author ?? "";
+      img.loading = "lazy";
+      portrait.appendChild(img);
+    } else {
+      portrait.textContent =
+        blog.about.avatar ?? blog.avatar ?? (blog.author ?? "A").trim().charAt(0).toUpperCase();
+    }
     const bio = document.createElement("p");
     bio.className = "blogpost__bio";
     bio.textContent = blog.about.bio;
@@ -1731,8 +1769,17 @@ function buildBlogPost(data) {
       li.className = "blogpost__post";
       const thumb = document.createElement("span");
       thumb.className = "blogpost__thumb";
-      thumb.textContent = p.icon ?? "🗽";
-      thumb.setAttribute("aria-hidden", "true");
+      if (p.img) {
+        thumb.classList.add("blogpost__thumb--img");
+        const img = document.createElement("img");
+        img.src = p.img;
+        img.alt = "";
+        img.loading = "lazy";
+        thumb.appendChild(img);
+      } else {
+        thumb.textContent = p.icon ?? "🗽";
+        thumb.setAttribute("aria-hidden", "true");
+      }
       const meta = document.createElement("span");
       meta.className = "blogpost__post-meta";
       const t = document.createElement("span");

@@ -70,6 +70,19 @@
   flex: 0 0 auto;
 }
 
+/* photo avatar (replaces the monogram) */
+.blogpost__avatar--img {
+  background: none;
+  overflow: hidden;
+  box-shadow: 0 0 0 1px rgba(164, 108, 245, 0.4);
+}
+.blogpost__avatar--img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
 .blogpost__author {
   font-weight: 600;
   color: var(--j-secondary);
@@ -99,6 +112,31 @@
   font-size: 1.05rem;
   line-height: 1.2;
   flex: 0 0 auto;
+}
+
+/* cover photo — a slim lead banner. flex:none so the <img> is not squashed
+   by the flex column (a replaced element can shrink below its height). */
+.blogpost__hero {
+  flex: 0 0 auto;
+  margin: 0.9rem 0 0;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(126, 150, 176, 0.18);
+  box-shadow: var(--j-shadow-card);
+}
+.blogpost__hero img {
+  display: block;
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  object-position: center 58%;
+}
+.blogpost__hero-cap {
+  padding: 0.3rem 0.6rem;
+  font-family: var(--j-font-body);
+  font-size: 0.8rem;
+  color: var(--j-khaki);
+  text-align: center;
 }
 
 /* the glossed article text */
@@ -162,6 +200,18 @@
   font-size: 1.6rem;
 }
 
+.blogpost__portrait--img {
+  background: none;
+  overflow: hidden;
+  box-shadow: 0 0 0 1px rgba(164, 108, 245, 0.4);
+}
+.blogpost__portrait--img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
 .blogpost__bio {
   margin: 0;
   font-family: var(--j-font-body);
@@ -216,6 +266,17 @@
   border: 1px solid rgba(126, 150, 176, 0.2);
   font-size: 1.25rem;
   flex: 0 0 auto;
+  overflow: hidden;
+}
+.blogpost__thumb--img {
+  padding: 0;
+  background: none;
+}
+.blogpost__thumb--img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .blogpost__post-meta {
