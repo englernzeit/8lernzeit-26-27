@@ -6,29 +6,21 @@
  * E-Kurs) supplied for this lesson, rebuilt as one interactive page in
  * the night-map design and mapped onto our four Steps:
  *
- *   Step 1 (LE)      — Alex's blog + the 5-step recipe, video in German
+ *   Step 1 (LE)      — Alex's blog + the 5-step recipe
  *   Step 2 (G-Kurs)  — Lisa's model comment, block work
  *   Step 3 (E-Kurs)  — strong vs weak comment, video in English
  *   Step 4 (★)       — the Comment Lab: get your comment pinned by Alex
  *
  * One running fiction carries the page: Alex's blog "ALEX IN AMERICA".
  * Every level reads a version of the same post and ends by writing a
- * real comment under it. The shared reference card is the 5-block
- * comment recipe; the netiquette rules ride below it as the "rules of
- * the comment section".
+ * real comment under it.
  *
- * The two explanation videos are placed by level: the German one opens
- * Step 1 (LE), the English one opens Step 3 (E-Kurs).
+ * The cover carries the German "5 steps" explainer video as its shared
+ * reference (it replaces the old comment-recipe theory panel). The second,
+ * English explanation video opens Step 3 (E-Kurs).
  */
 
 const VIDEO = "assets/video/unit1";
-
-/** The five block names, reused wherever blocks are matched or sorted. */
-const B1 = "1 · React";
-const B2 = "2 · Refer";
-const B3 = "3 · Opinion";
-const B4 = "4 · Answer";
-const B5 = "5 · Close";
 
 /** G-Kurs block labels carry German help right in the label — the bare block
  * names are too abstract at this level. Used in the Step-2 matching + sorting
@@ -155,81 +147,19 @@ export default {
     ],
   },
 
-  /* ============ Shared reference card ============ */
+  /* ============ Shared reference — the recipe, as a video ============
+   * The cover carries the German "5 steps" explainer video instead of a
+   * theory panel. It opens the whole page for every level and replaces the
+   * old comment-recipe cards + netiquette table. (The recipe still lives in
+   * the tasks; the video card is no longer repeated inside Step 1.) */
   guide: {
     label: "The Comment Recipe",
     numbered: false,
-    types: [
-      {
-        name: B1,
-        tag: "say hello",
-        accent: "olive",
-        formula: "Hi Alex! Thanks for your post!",
-        de: "Begrüße den Blogger und bedanke dich für den Post.",
-        example: "I really enjoyed reading your post.",
-      },
-      {
-        name: B2,
-        tag: "pick ONE detail",
-        accent: "teal",
-        formula: "I liked the part about …",
-        de: "Geh auf EIN Detail aus dem Post ein.",
-        example: "It's funny that you wrote about the loud streets.",
-      },
-      {
-        name: B3,
-        tag: "always with because",
-        accent: "ochre",
-        formula: "In my opinion, … because …",
-        de: "Deine Meinung — immer mit Begründung.",
-        example: "I think New York is exciting because there is so much to see.",
-      },
-      {
-        name: B4,
-        tag: "the blogger's question",
-        accent: "coral",
-        formula: "I could / couldn't live there because …",
-        de: "Beantworte die Frage aus dem Post.",
-        example: "I could never live there because I need quiet places.",
-      },
-      {
-        name: B5,
-        tag: "end friendly",
-        accent: "slate",
-        formula: "Keep writing! Greetings from …",
-        de: "Ein netter Schluss — Wunsch, Frage oder Gruß.",
-        example: "Can't wait for your next post!",
-      },
-    ],
-    // The netiquette table rides in the guide's revision-table slot.
-    tensesLabel: "Netiquette — the rules of the comment section",
-    tenses: [
-      {
-        tense: "✔ Do",
-        accent: "olive",
-        use: "Be friendly and polite — even when you disagree. Criticise ideas, never the person.",
-        signals: "freundlich & höflich",
-      },
-      {
-        tense: "✔ Do",
-        accent: "olive",
-        use: "Be specific: write about the post and give reasons for your opinion.",
-        signals: "konkret + Gründe",
-      },
-      {
-        tense: "✖ Don't",
-        accent: "ochre",
-        use: "No insults, no one-word comments — always say WHY.",
-        example: "cool",
-        signals: "keine Beleidigungen",
-      },
-      {
-        tense: "✖ Don't",
-        accent: "ochre",
-        use: "Don't write in CAPITAL LETTERS — it looks like shouting.",
-        signals: "GROSS = schreien",
-      },
-    ],
+    video: {
+      src: `${VIDEO}/perfekte-blog-kommentare.mp4`,
+      poster: `${VIDEO}/perfekte-blog-kommentare.jpg`,
+      caption: "Perfekte Blog-Kommentare — die 5 Schritte, perfekt zum Starten.",
+    },
   },
 
   steps: [
@@ -240,17 +170,6 @@ export default {
       accent: "coral",
       layout: "slide",
       cards: [
-        {
-          type: "video",
-          kind: "Erklärvideo · Deutsch",
-          title: "Perfekte Blog-Kommentare",
-          intro: "Watch first: the five steps of a good comment — explained in German.",
-          video: {
-            src: `${VIDEO}/perfekte-blog-kommentare.mp4`,
-            poster: `${VIDEO}/perfekte-blog-kommentare.jpg`,
-            caption: "Das Video erklärt die 5 Schritte — perfekt zum Starten.",
-          },
-        },
         {
           type: "text",
           kind: "Blog lesen",
