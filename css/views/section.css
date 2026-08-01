@@ -213,7 +213,7 @@
 
 .rpager {
   position: relative;
-  height: 100svh;
+  height: var(--app-vh, 100svh);
   overflow: hidden;
 }
 .rpager__track {
@@ -221,7 +221,7 @@
 }
 .rpager__page {
   position: relative;
-  height: 100svh;
+  height: var(--app-vh, 100svh);
   /* Clear the iPad status bar / safe area so the top of each screen (back tab,
      "Step N" heading) isn't cut off; a base gap gives breathing room too. */
   padding-top: calc(env(safe-area-inset-top, 0px) + 1.1rem);
@@ -240,11 +240,74 @@
   width: 0;
   height: 0;
 }
+/* The one deliberately-scrollable page (the Step-4 game) shows a real
+   scrollbar: on a computer that is the only cue that there is more below —
+   and it can be dragged with the mouse (on iPad the finger scrolls it). */
+.rpager__page--scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(126, 150, 176, 0.6) transparent;
+}
+.rpager__page--scroll::-webkit-scrollbar {
+  width: 11px;
+  height: 11px;
+}
+.rpager__page--scroll::-webkit-scrollbar-thumb {
+  background: rgba(126, 150, 176, 0.55);
+  border-radius: 7px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+.rpager__page--scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(126, 150, 176, 0.85);
+  background-clip: padding-box;
+}
+
+/* "Scroll for more" cue, shown only while the active page can still scroll
+   down (see updateMore() in the pager). */
+.rpager__more {
+  position: absolute;
+  left: 50%;
+  bottom: 1rem;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.05rem;
+  padding: 0.3rem 0.8rem 0.25rem;
+  border-radius: 999px;
+  background: rgba(20, 36, 60, 0.9);
+  border: 1px solid rgba(126, 150, 176, 0.3);
+  color: var(--j-secondary, #b9c9da);
+  font-family: var(--j-font-body);
+  font-size: 0.85rem;
+  line-height: 1;
+  box-shadow: 0 6px 16px -8px rgba(0, 0, 0, 0.6);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 5;
+}
+.rpager__more span {
+  font-size: 0.6rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.rpager__more--on {
+  opacity: 1;
+  animation: rpager-more-bounce 1.6s ease-in-out infinite;
+}
+@keyframes rpager-more-bounce {
+  0%, 100% { transform: translate(-50%, 0); }
+  50% { transform: translate(-50%, 4px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rpager__more--on { animation: none; }
+}
 
 /* Screen 0 — the cover: the whole intro on one screen, scaled to fit
    (JS sets a transform on .journal__cover-fit; nothing scrolls inside). */
 .journal .journal__cover {
-  height: 100svh;
+  height: var(--app-vh, 100svh);
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -265,7 +328,7 @@
 
 /* Step sections become one full screen with the card group centred. */
 .journal .journal__section:has(.jcar) {
-  min-height: 100svh;
+  min-height: var(--app-vh, 100svh);
   display: flex;
   flex-direction: column;
   justify-content: center;

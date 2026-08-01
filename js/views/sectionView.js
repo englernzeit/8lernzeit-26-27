@@ -255,11 +255,26 @@ function buildCoverPage(view) {
  * once it's scrolled to the edge. Returns a handle with { sync } for the fitter.
  * @param {HTMLElement} view
  */
+/**
+ * Publish the real viewport height as `--app-vh` (px). The whole pager is
+ * built on full-screen pages; relying on the CSS `svh` unit alone is not
+ * robust on iPad Safari (heights come out wrong, so cards don't scale and
+ * overflow). A measured px value keeps clientHeight — and therefore the
+ * shrink-to-fit pass — correct everywhere. Uses the layout viewport
+ * (window.innerHeight), which is stable under pinch-zoom.
+ */
+function updateAppVh() {
+  if (typeof window === "undefined") return;
+  const h = window.innerHeight || 800;
+  document.documentElement.style.setProperty("--app-vh", `${h}px`);
+}
+
 function buildVerticalPager(view) {
   const pages = [...view.children].filter(
     (el) => el.classList.contains("journal__cover") || el.classList.contains("journal__section"),
   );
   if (pages.length < 2) return null;
+  updateAppVh();
 
   const pager = document.createElement("div");
   pager.className = "rpager";
@@ -282,16 +297,38 @@ function buildVerticalPager(view) {
     return d;
   });
   pager.appendChild(rail);
+
+  // "Scroll for more" cue for the one scrollable page (the Step-4 game). On a
+  // computer the hidden scrollbar gave no hint that the card continued below;
+  // this chevron shows while there is more to scroll and fades at the bottom.
+  const moreHint = document.createElement("div");
+  moreHint.className = "rpager__more";
+  moreHint.setAttribute("aria-hidden", "true");
+  moreHint.innerHTML = "<span>more</span>⌄";
+  pager.appendChild(moreHint);
+
   view.appendChild(pager);
 
   const n = pages.length;
   let active = 0;
   track.style.transition = "transform 620ms cubic-bezier(.22,.85,.25,1)";
 
+  function updateMore() {
+    const p = pages[active];
+    const scrollable = p.classList.contains("rpager__page--scroll");
+    const atBottom = p.scrollTop + p.clientHeight >= p.scrollHeight - 8;
+    moreHint.classList.toggle("rpager__more--on", scrollable && !atBottom);
+  }
+
   function render() {
-    track.style.transform = `translateY(-${active * 100}svh)`;
+    // Translate by an exact pixel multiple of the measured viewport height —
+    // the pages are sized by --app-vh (= innerHeight), so this lines each page
+    // up precisely. (A CSS calc() on the var proved unreliable across engines.)
+    const vh = window.innerHeight || 800;
+    track.style.transform = `translateY(-${active * vh}px)`;
     dots.forEach((d, i) => d.classList.toggle("rpager__dot--on", i === active));
     pages.forEach((p, i) => (p.style.visibility = Math.abs(i - active) > 1 ? "hidden" : "visible"));
+    updateMore();
   }
   function go(i) {
     const next = Math.max(0, Math.min(n - 1, i));
@@ -301,6 +338,19 @@ function buildVerticalPager(view) {
     // reveal a freshly-entered scrollable page from its top
     pages[active].scrollTop = 0;
   }
+
+  // Keep the "more" cue in step with scrolling on the scrollable page.
+  pages.forEach((p) => {
+    let raf = 0;
+    p.addEventListener(
+      "scroll",
+      () => {
+        cancelAnimationFrame(raf);
+        raf = requestAnimationFrame(updateMore);
+      },
+      { passive: true },
+    );
+  });
 
   // A page taller than the screen (the game) scrolls natively; the fit pages
   // don't, so every vertical swipe over them flips the page. Keep touch-action
@@ -315,6 +365,7 @@ function buildVerticalPager(view) {
       p.style.touchAction = scrollable ? "pan-y pinch-zoom" : "pinch-zoom";
       p.classList.toggle("rpager__page--scroll", scrollable);
     });
+    updateMore();
   }
 
   // A vertical swipe flips one page — but only if a scrollable page (the game)
@@ -405,7 +456,18 @@ function buildVerticalPager(view) {
   });
 
   render();
-  if (typeof window !== "undefined") window.addEventListener("resize", sync);
+  if (typeof window !== "undefined") {
+    // Keep --app-vh (and the page geometry that depends on it) in step with the
+    // real viewport — orientation flips and the iPad toolbar showing/hiding.
+    const onViewport = () => {
+      updateAppVh();
+      render();
+      sync();
+    };
+    window.addEventListener("resize", onViewport);
+    window.addEventListener("orientationchange", onViewport);
+    if (window.visualViewport) window.visualViewport.addEventListener("resize", onViewport);
+  }
   return { sync, go };
 }
 
