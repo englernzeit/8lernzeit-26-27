@@ -1634,6 +1634,10 @@ function fitUniformCards(view, pager) {
     if (pager && pager.sync) pager.sync();
   };
   const kick = () => requestAnimationFrame(() => requestAnimationFrame(run));
+  // Fit once synchronously, before the first paint, so the cover/cards never
+  // flash at full size and then visibly shrink. rAF + a late pass refine it
+  // once fonts/images settle.
+  run();
   kick();
   // Re-fit once images/fonts settle and whenever the viewport changes.
   setTimeout(run, 350);
