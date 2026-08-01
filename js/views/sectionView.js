@@ -460,6 +460,11 @@ function buildVerticalPager(view) {
     // Keep --app-vh (and the page geometry that depends on it) in step with the
     // real viewport — orientation flips and the iPad toolbar showing/hiding.
     const onViewport = () => {
+      // iPad Safari fires visualViewport "resize" continuously during a
+      // pinch-zoom; re-laying-out mid-gesture fights the native zoom and makes
+      // it jitter. Only react to real viewport changes (orientation flip,
+      // toolbar show/hide), which happen at scale 1.
+      if (window.visualViewport && window.visualViewport.scale > 1.01) return;
       updateAppVh();
       render();
       sync();
