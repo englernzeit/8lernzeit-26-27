@@ -977,6 +977,14 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
 }
 
 /* --- Tap match (two-column instant matcher) -------------------- */
+/* Fill the whole card: the grid + chips grow to use the height, so the words
+   read big and the pairs cover the card (matches the design). */
+.exo-tap {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
 .exo-tap__head {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -994,7 +1002,9 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 0.6rem 3.2rem; /* wide column gap = the patch-cable lane */
-  align-items: start;
+  align-items: stretch; /* columns fill the grid height */
+  flex: 1 1 auto;
+  min-height: 0;
   position: relative; /* positioning context for the wires overlay */
 }
 /* patch-cable overlay: sits above the chips, never intercepts taps */
@@ -1011,17 +1021,23 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
   display: flex;
   flex-direction: column;
   gap: 0.55rem;
+  min-height: 0;
 }
 .exo-tap__item {
+  flex: 1 1 0; /* chips grow to fill the column height (no min-height, so they
+                  never force overflow and the fit stays at scale 1) */
+  min-height: 0;
+  display: flex;
+  align-items: center;
   font-family: var(--j-font-body);
-  font-size: 1.05rem;
+  font-size: 1.2rem;
   font-weight: 600;
   color: var(--j-ink);
   text-align: left;
   background: var(--j-paper-1);
   border: 1.5px solid rgba(126, 150, 176, 0.3);
   border-radius: 10px;
-  padding: 0.6rem 0.85rem;
+  padding: 0.35rem 0.95rem;
   cursor: pointer;
   transition: background 0.15s, border-color 0.15s, box-shadow 0.15s;
 }
