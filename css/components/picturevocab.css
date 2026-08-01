@@ -13,8 +13,10 @@
   align-items: center;
   justify-content: flex-end; /* buttons hug the right edge, under the PDF badge */
   gap: 0.5rem;
-  /* tuck up just beneath the top-right PDF button and align to its edge */
-  margin: -3.1rem 1.6rem 0.6rem auto;
+  /* Sit just BELOW the top-right Name tag + PDF badge (absolute, bottoming
+     out ~5.35rem down), not over them. Less pull-up than before so the two
+     buttons clear the badge on every viewport. */
+  margin: -1.5rem 1.6rem 0.6rem auto;
   width: max-content;
   max-width: min(100%, 34rem);
   position: relative;
