@@ -980,7 +980,7 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
 .exo-tap__head {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0.6rem 1.1rem;
+  gap: 0.6rem 3.2rem; /* wide column gap = the patch-cable lane */
   margin-bottom: 0.4rem;
 }
 .exo-tap__collabel {
@@ -993,8 +993,19 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
 .exo-tap__grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0.6rem 1.1rem;
+  gap: 0.6rem 3.2rem; /* wide column gap = the patch-cable lane */
   align-items: start;
+  position: relative; /* positioning context for the wires overlay */
+}
+/* patch-cable overlay: sits above the chips, never intercepts taps */
+.exo-tap__wires {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+  z-index: 2;
 }
 .exo-tap__col {
   display: flex;

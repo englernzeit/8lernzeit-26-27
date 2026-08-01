@@ -1223,8 +1223,14 @@ export function createMatchUp({ options, items }) {
  * @param {{ pairs: Array<{left: string, right: string}>, leftLabel?: string, rightLabel?: string }} data
  */
 export function createTapMatch({ pairs, leftLabel = "English", rightLabel = "Deutsch" }) {
+  const SVG_NS = "http://www.w3.org/2000/svg";
+  // Rainbow feedback: each pair locks into its own hue (both sides share it),
+  // and a coloured "patch cable" is drawn across the gutter linking the two.
+  const HUES = [18, 52, 92, 140, 172, 205, 248, 288, 325];
+  const hue = (id) => HUES[id % HUES.length];
+
   const wrap = document.createElement("div");
-  wrap.className = "exo exo-tap";
+  wrap.className = "exo exo-tap exo-tap--wires";
 
   const head = document.createElement("div");
   head.className = "exo-tap__head";
@@ -1239,11 +1245,18 @@ export function createTapMatch({ pairs, leftLabel = "English", rightLabel = "Deu
 
   const grid = document.createElement("div");
   grid.className = "exo-tap__grid";
+  // Full-bleed overlay the wires are drawn on (absolute, so it never takes a
+  // grid track). viewBox is set to the grid's own px size on every redraw, so
+  // wire coordinates ride the fit-scaling transform with the rest of the card.
+  const wires = document.createElementNS(SVG_NS, "svg");
+  wires.setAttribute("class", "exo-tap__wires");
+  wires.setAttribute("preserveAspectRatio", "none");
+  wires.setAttribute("aria-hidden", "true");
   const leftCol = document.createElement("div");
   leftCol.className = "exo-tap__col";
   const rightCol = document.createElement("div");
   rightCol.className = "exo-tap__col";
-  grid.append(leftCol, rightCol);
+  grid.append(wires, leftCol, rightCol);
   wrap.appendChild(grid);
 
   // Random shuffle of the right column so answers aren't row-aligned.
@@ -1267,9 +1280,51 @@ export function createTapMatch({ pairs, leftLabel = "English", rightLabel = "Deu
   done.textContent = "✓ Well done — all matched!";
   footer.append(countPill, reset, done);
 
+  // Tint a matched chip with its pair's hue (inline so every pair differs and
+  // beats the shared :hover rule).
+  const tint = (btn, id) => {
+    const h = hue(id);
+    btn.style.background = `hsla(${h}, 62%, 52%, 0.22)`;
+    btn.style.borderColor = `hsla(${h}, 72%, 62%, 0.7)`;
+    btn.style.color = `hsl(${h}, 82%, 80%)`;
+  };
+  const untint = (btn) => {
+    btn.style.background = "";
+    btn.style.borderColor = "";
+    btn.style.color = "";
+  };
+
+  // Draw a coloured cable from each matched left chip to its right chip. Uses
+  // offset* (layout px, unaffected by the fit transform) relative to the grid.
+  const redraw = () => {
+    const gw = grid.offsetWidth;
+    const gh = grid.offsetHeight;
+    if (!gw || !gh) return;
+    wires.setAttribute("viewBox", `0 0 ${gw} ${gh}`);
+    let d = "";
+    matched.forEach((id) => {
+      const lb = leftBtns.get(id);
+      const rb = rightBtns.get(id);
+      if (!lb || !rb) return;
+      const sx = lb.offsetLeft + lb.offsetWidth;
+      const sy = lb.offsetTop + lb.offsetHeight / 2;
+      const ex = rb.offsetLeft;
+      const ey = rb.offsetTop + rb.offsetHeight / 2;
+      const c = sx + (ex - sx) * 0.5;
+      const col = `hsl(${hue(id)}, 82%, 66%)`;
+      d +=
+        `<path d="M ${sx} ${sy} C ${c} ${sy}, ${c} ${ey}, ${ex} ${ey}" fill="none" ` +
+        `stroke="${col}" stroke-width="2.5" stroke-linecap="round" opacity="0.9"/>` +
+        `<circle cx="${sx}" cy="${sy}" r="3.5" fill="${col}"/>` +
+        `<circle cx="${ex}" cy="${ey}" r="3.5" fill="${col}"/>`;
+    });
+    wires.innerHTML = d;
+  };
+
   const paint = () => {
     countPill.textContent = `${matched.size} / ${pairs.length}`;
     wrap.classList.toggle("exo-tap--done", matched.size === pairs.length);
+    redraw();
   };
 
   const clearSel = () => {
@@ -1304,9 +1359,12 @@ export function createTapMatch({ pairs, leftLabel = "English", rightLabel = "Deu
       if (matched.has(id) || selLeft == null) return;
       if (selLeft === id) {
         matched.add(id);
-        leftBtns.get(id).classList.remove("exo-tap__item--sel");
-        leftBtns.get(id).classList.add("exo-tap__item--done");
+        const lb = leftBtns.get(id);
+        lb.classList.remove("exo-tap__item--sel");
+        lb.classList.add("exo-tap__item--done");
         b.classList.add("exo-tap__item--done");
+        tint(lb, id);
+        tint(b, id);
         selLeft = null;
         paint();
       } else {
@@ -1327,12 +1385,26 @@ export function createTapMatch({ pairs, leftLabel = "English", rightLabel = "Deu
   reset.addEventListener("click", () => {
     matched.clear();
     selLeft = null;
-    leftBtns.forEach((b) => b.classList.remove("exo-tap__item--sel", "exo-tap__item--done", "exo-tap__item--wrong"));
-    rightBtns.forEach((b) => b.classList.remove("exo-tap__item--done", "exo-tap__item--wrong"));
+    leftBtns.forEach((b) => {
+      b.classList.remove("exo-tap__item--sel", "exo-tap__item--done", "exo-tap__item--wrong");
+      untint(b);
+    });
+    rightBtns.forEach((b) => {
+      b.classList.remove("exo-tap__item--done", "exo-tap__item--wrong");
+      untint(b);
+    });
     paint();
   });
 
   wrap.appendChild(footer);
+
+  // First draw once the grid has a size, and redraw on any layout change
+  // (orientation, reflow). ResizeObserver fires on first observe.
+  if (typeof ResizeObserver !== "undefined") {
+    const ro = new ResizeObserver(() => redraw());
+    ro.observe(grid);
+  }
+
   paint();
   return wrap;
 }
