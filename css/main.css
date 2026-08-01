@@ -15,6 +15,7 @@
 @import url("components/exercises.css");
 @import url("components/wordmaster.css");
 @import url("components/picturevocab.css");
+@import url("components/blogpost.css");
 
 /* Views */
 @import url("views/map.css");

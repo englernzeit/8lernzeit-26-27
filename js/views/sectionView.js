@@ -1076,6 +1076,11 @@ function buildCard(step, data, index, taskNo, ctx) {
   card.className = `taskcard taskcard--sheet taskcard--${step.accent}`;
   if (data.type === "game") card.classList.add("taskcard--game");
 
+  // A reading card can be dressed as a real blog post (byline, hint callout,
+  // article + sidebar) when it carries a `blog` block — see buildBlogPost.
+  const isBlog = data.type === "text" && Boolean(data.blog);
+  if (isBlog) card.classList.add("taskcard--blog");
+
   // Optional faded full-card background image (a picture behind the task, so
   // the picture costs no vertical space — the content sits on top).
   if (data.bgImage) {
@@ -1095,7 +1100,9 @@ function buildCard(step, data, index, taskNo, ctx) {
   card.appendChild(body);
 
   // The game card is nothing but the game — no header, title or intro.
-  if (data.type !== "game") {
+  // A blog card builds its own header (tag + headline + byline) in
+  // buildBlogPost, so skip the generic one here.
+  if (data.type !== "game" && !isBlog) {
     const head = document.createElement("div");
     head.className = "taskcard__head";
     const num = document.createElement("span");
@@ -1164,12 +1171,14 @@ function buildCard(step, data, index, taskNo, ctx) {
 
     case "text":
       body.appendChild(
-        createGlossaryText({
-          paragraphs: normalizeParagraphs(data.paragraphs),
-          highlight: data.highlight,
-          lineNumbers: data.lineNumbers,
-          paraStarts: data.paraStarts,
-        }),
+        isBlog
+          ? buildBlogPost(data)
+          : createGlossaryText({
+              paragraphs: normalizeParagraphs(data.paragraphs),
+              highlight: data.highlight,
+              lineNumbers: data.lineNumbers,
+              paraStarts: data.paraStarts,
+            }),
       );
       break;
     case "multiple-choice": {
@@ -1587,6 +1596,164 @@ function buildCard(step, data, index, taskNo, ctx) {
   }
 
   return card;
+}
+
+/**
+ * Render a reading card as a blog post in the night-journal palette: an
+ * article column (kind tag → headline → author byline → hint callout →
+ * glossed text) beside a sidebar of "blog furniture" (About the author,
+ * Categories, Popular posts). Mirrors a real blog page so the reading feels
+ * like the genuine article it asks the student to comment on.
+ *
+ * @param {{ title?: string, kind?: string, intro?: string, paragraphs: Array,
+ *   blog: { author?: string, date?: string, avatar?: string,
+ *     about?: { title?: string, bio: string, avatar?: string },
+ *     categories?: Array<string|{name:string,active?:boolean}>,
+ *     popular?: Array<{icon?:string,title:string,date?:string}> } }} data
+ */
+function buildBlogPost(data) {
+  const blog = data.blog ?? {};
+  const post = document.createElement("div");
+  post.className = "blogpost";
+
+  /* ---- article column ---- */
+  const main = document.createElement("article");
+  main.className = "blogpost__main";
+
+  const tag = document.createElement("div");
+  tag.className = "blogpost__tag";
+  tag.textContent = ["Text", data.kind].filter(Boolean).join(" · ");
+  main.appendChild(tag);
+
+  if (data.title) {
+    const h = document.createElement("h3");
+    h.className = "blogpost__title";
+    h.textContent = data.title;
+    main.appendChild(h);
+  }
+
+  const byline = document.createElement("div");
+  byline.className = "blogpost__byline";
+  const av = document.createElement("span");
+  av.className = "blogpost__avatar";
+  av.textContent = blog.avatar ?? (blog.author ?? "A").trim().charAt(0).toUpperCase();
+  byline.appendChild(av);
+  const who = document.createElement("span");
+  who.className = "blogpost__author";
+  who.textContent = blog.author ?? "";
+  byline.appendChild(who);
+  if (blog.date) {
+    const dot = document.createElement("span");
+    dot.className = "blogpost__dot";
+    dot.textContent = "•";
+    const date = document.createElement("span");
+    date.className = "blogpost__date";
+    date.textContent = blog.date;
+    byline.append(dot, date);
+  }
+  main.appendChild(byline);
+
+  if (data.intro) {
+    const hint = document.createElement("div");
+    hint.className = "blogpost__hint";
+    const ico = document.createElement("span");
+    ico.className = "blogpost__hint-ico";
+    ico.textContent = "💡";
+    ico.setAttribute("aria-hidden", "true");
+    const tx = document.createElement("span");
+    tx.textContent = data.intro;
+    hint.append(ico, tx);
+    main.appendChild(hint);
+  }
+
+  // The article text keeps the tappable glossary words; its own tap hint is
+  // suppressed because the callout above already gives the instruction.
+  const article = createGlossaryText({
+    paragraphs: normalizeParagraphs(data.paragraphs),
+    tapHint: false,
+  });
+  article.classList.add("blogpost__article");
+  main.appendChild(article);
+
+  post.appendChild(main);
+
+  /* ---- sidebar ---- */
+  const side = document.createElement("aside");
+  side.className = "blogpost__side";
+
+  if (blog.about) {
+    const box = document.createElement("section");
+    box.className = "blogpost__widget blogpost__widget--about";
+    const h = document.createElement("h4");
+    h.className = "blogpost__widget-title";
+    h.textContent = blog.about.title ?? "About the author";
+    const portrait = document.createElement("div");
+    portrait.className = "blogpost__portrait";
+    portrait.textContent =
+      blog.about.avatar ?? blog.avatar ?? (blog.author ?? "A").trim().charAt(0).toUpperCase();
+    const bio = document.createElement("p");
+    bio.className = "blogpost__bio";
+    bio.textContent = blog.about.bio;
+    box.append(h, portrait, bio);
+    side.appendChild(box);
+  }
+
+  if (blog.categories?.length) {
+    const box = document.createElement("section");
+    box.className = "blogpost__widget";
+    const h = document.createElement("h4");
+    h.className = "blogpost__widget-title";
+    h.textContent = "Categories";
+    const ul = document.createElement("ul");
+    ul.className = "blogpost__cats";
+    for (const c of blog.categories) {
+      const li = document.createElement("li");
+      li.className = "blogpost__cat";
+      const obj = typeof c === "object" && c !== null;
+      li.textContent = obj ? c.name : c;
+      if (obj && c.active) li.classList.add("blogpost__cat--on");
+      ul.appendChild(li);
+    }
+    box.append(h, ul);
+    side.appendChild(box);
+  }
+
+  if (blog.popular?.length) {
+    const box = document.createElement("section");
+    box.className = "blogpost__widget";
+    const h = document.createElement("h4");
+    h.className = "blogpost__widget-title";
+    h.textContent = "Popular posts";
+    const ul = document.createElement("ul");
+    ul.className = "blogpost__posts";
+    for (const p of blog.popular) {
+      const li = document.createElement("li");
+      li.className = "blogpost__post";
+      const thumb = document.createElement("span");
+      thumb.className = "blogpost__thumb";
+      thumb.textContent = p.icon ?? "🗽";
+      thumb.setAttribute("aria-hidden", "true");
+      const meta = document.createElement("span");
+      meta.className = "blogpost__post-meta";
+      const t = document.createElement("span");
+      t.className = "blogpost__post-title";
+      t.textContent = p.title;
+      meta.appendChild(t);
+      if (p.date) {
+        const d = document.createElement("span");
+        d.className = "blogpost__post-date";
+        d.textContent = p.date;
+        meta.appendChild(d);
+      }
+      li.append(thumb, meta);
+      ul.appendChild(li);
+    }
+    box.append(h, ul);
+    side.appendChild(box);
+  }
+
+  if (side.childElementCount) post.appendChild(side);
+  return post;
 }
 
 /**

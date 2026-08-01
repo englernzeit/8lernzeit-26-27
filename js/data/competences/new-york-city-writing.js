@@ -31,6 +31,24 @@ const GB3 = "3 · Opinion — Meinung + weil (because)";
 const GB4 = "4 · Answer — die Frage beantworten";
 const GB5 = "5 · Close — netter Schluss";
 
+/** Blog "furniture" shared by Alex's three posts: the author byline plus the
+ * sidebar widgets (About / Categories / Popular posts). Each reading card
+ * spreads this and overrides only its own `date`; the headline is the card's
+ * own `title`. Rendered by buildBlogPost() in the night-journal palette. */
+const BLOG = {
+  author: "Alex from Hamburg",
+  about: {
+    title: "About Alex",
+    bio: "Hi! I'm Alex, 14, from Hamburg. I love travelling and writing about the cities I visit.",
+  },
+  categories: ["All posts", { name: "Travel", active: true }, "City life", "Food", "Tips"],
+  popular: [
+    { icon: "🌉", title: "A weekend in San Francisco", date: "Apr 28, 2024" },
+    { icon: "🏰", title: "10 things to do in London", date: "Mar 5, 2024" },
+    { icon: "🍕", title: "The best pizza in Italy", date: "Feb 12, 2024" },
+  ],
+};
+
 export default {
   title: "The Perfect Comment",
 
@@ -175,6 +193,7 @@ export default {
           kind: "Blog lesen",
           title: "Alex's blog: One week in New York — wow!",
           intro: "Read Alex's blog post. Tap the underlined words for German help.",
+          blog: { ...BLOG, date: "May 20, 2024" },
           paragraphs: [
             ["Hi, I'm Alex from Hamburg. I was in New York for one week."],
             [
@@ -347,6 +366,7 @@ export default {
           kind: "Blog lesen",
           title: "Alex's blog: One week in New York — my honest opinion",
           intro: "Read Alex's post. Tap the underlined words for German help.",
+          blog: { ...BLOG, date: "May 22, 2024" },
           paragraphs: [
             [
               "Hi everyone! I'm Alex, 14, from Hamburg, and I have just spent one week in New York with my family. Here is my ",
@@ -496,6 +516,7 @@ export default {
           kind: "Blog lesen",
           title: "Alex's blog: New York — overrated or the greatest city on earth?",
           intro: "Read Alex's post. Tap the underlined words for German help.",
+          blog: { ...BLOG, date: "May 25, 2024" },
           paragraphs: [
             [
               "Hi everyone! I'm Alex, 14, from Hamburg, and I have just spent a week in New York. Before the trip, everybody told me it would be the best week of my life. Now I'm back — and I have ",
