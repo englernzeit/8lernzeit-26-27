@@ -743,6 +743,12 @@ function downloadAnswerSheet(view, unit, section, content, name) {
         if (card.type === "essay-editor") {
           return [{ label: card.title, answer: answers[`${base}-essay`] ?? "" }];
         }
+        if (card.questions?.length) {
+          return card.questions.map((q, k) => ({
+            label: `${card.title}: ${q.q}`,
+            answer: answers[`${base}s${k + 1}`] ?? "",
+          }));
+        }
         if (card.starters?.length) {
           return card.starters.map((starter, k) => ({
             label: `${card.title}: ${starter}`,
@@ -1088,9 +1094,10 @@ function buildCard(step, data, index, taskNo, ctx) {
   if (isBlog) card.classList.add("taskcard--blog");
 
   // The Listening page carries a faint NYC skyline rising from the bottom of
-  // every task card — except the Step-4 ★ game.
+  // every task card — except the Step-4 ★ game. A card can instead run a
+  // subway-line footer (data.subway), which takes the bottom strip for itself.
   if (ctx?.sectionId === "listening" && step.step !== 4 && data.type !== "game") {
-    card.classList.add("taskcard--skyline");
+    card.classList.add(data.subway ? "taskcard--subway" : "taskcard--skyline");
   }
 
   // Optional faded full-card background image (a picture behind the task, so
@@ -1621,7 +1628,42 @@ function buildCard(step, data, index, taskNo, ctx) {
     body.appendChild(fit);
   }
 
+  // Subway-line footer (card chrome): a stylised red line with named stops in
+  // the reserved bottom strip. Sits outside the fit layer so it never scales.
+  if (data.subway?.length) {
+    card.appendChild(buildSubwayLine(data.subway));
+  }
+
   return card;
+}
+
+/**
+ * A stylised subway line for the bottom strip of a Listening card: a red line
+ * with a "1"-train bullet at the start, hollow stops along the way, a terminus
+ * ring at the end, and a name under every stop.
+ * @param {string[]} stations
+ */
+function buildSubwayLine(stations) {
+  const foot = document.createElement("div");
+  foot.className = "taskcard__subway";
+  const stops = document.createElement("div");
+  stops.className = "taskcard__subway-stops";
+  stations.forEach((name, i) => {
+    const stop = document.createElement("div");
+    stop.className = "taskcard__subway-stop";
+    if (i === 0) stop.classList.add("taskcard__subway-stop--start");
+    if (i === stations.length - 1) stop.classList.add("taskcard__subway-stop--end");
+    const dot = document.createElement("span");
+    dot.className = "taskcard__subway-dot";
+    if (i === 0) dot.textContent = "1";
+    const label = document.createElement("span");
+    label.className = "taskcard__subway-name";
+    label.textContent = name;
+    stop.append(dot, label);
+    stops.appendChild(stop);
+  });
+  foot.appendChild(stops);
+  return foot;
 }
 
 /**
@@ -2010,6 +2052,63 @@ function buildTaskVideo(video) {
 
 /** Written-task content: optional bullet/check lines + a saved answer field. */
 function appendWrittenBody(body, step, data, index, ctx) {
+  // Optional icon strip — a row of round transport (or topic) badges above the
+  // questions, so the warm-up shows the vocabulary it asks the learner to use.
+  if (data.icons?.length) {
+    const strip = document.createElement("div");
+    strip.className = "taskcard__icons";
+    for (const it of data.icons) {
+      const cell = document.createElement("div");
+      cell.className = "taskcard__icon";
+      const badge = document.createElement("span");
+      badge.className = "taskcard__icon-badge";
+      if (it.bg) badge.style.background = it.bg;
+      badge.textContent = it.icon;
+      const label = document.createElement("span");
+      label.className = "taskcard__icon-label";
+      label.textContent = it.label;
+      cell.append(badge, label);
+      strip.appendChild(cell);
+    }
+    body.appendChild(strip);
+  }
+
+  // Numbered questions — each is a panel: a number badge + the question, then a
+  // ruled writing area whose placeholder is the sentence starter. Persistence
+  // reuses the starter key scheme so the PDF collects it the same way.
+  if (data.questions?.length && ctx) {
+    const list = document.createElement("div");
+    list.className = "taskcard__qs";
+    data.questions.forEach((q, k) => {
+      const panel = document.createElement("div");
+      panel.className = "taskcard__q";
+      const head = document.createElement("div");
+      head.className = "taskcard__q-head";
+      const badge = document.createElement("span");
+      badge.className = "taskcard__q-badge";
+      badge.textContent = k + 1;
+      const qt = document.createElement("span");
+      qt.className = "taskcard__q-text";
+      qt.textContent = q.q;
+      head.append(badge, qt);
+      panel.appendChild(head);
+
+      const key = `step${step.step}-task${index + 1}s${k + 1}`;
+      const area = document.createElement("textarea");
+      area.className = "taskcard__q-write";
+      area.rows = 2;
+      if (q.starter) area.placeholder = q.starter;
+      area.dataset.answerKey = key;
+      const saved = getAnswers(ctx.unitId, ctx.sectionId)[key];
+      if (saved) area.value = saved;
+      area.addEventListener("input", () => setAnswer(ctx.unitId, ctx.sectionId, key, area.value));
+      panel.appendChild(area);
+      list.appendChild(panel);
+    });
+    body.appendChild(list);
+    return;
+  }
+
   if (data.lines?.length) {
     const lines = document.createElement("div");
     lines.className = "taskcard__lines";

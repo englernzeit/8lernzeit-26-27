@@ -405,6 +405,82 @@
   background: url("../../assets/listening/unit1/skyline.png") no-repeat center bottom / 100% auto;
 }
 
+/* --- Listening subway-line footer ----------------------------- */
+/* A stylised red subway line in the reserved bottom strip (buildSubwayLine):
+   a "1"-train bullet at the start, hollow stops, a terminus ring, names under
+   each. The card reserves the strip with extra body padding so the dialogue
+   never overlaps it. Sits outside the fit layer, so it never scales. */
+.taskcard--subway { overflow: hidden; }
+.taskcard--subway > .taskcard__body { padding-bottom: 3.7rem; }
+.taskcard__subway {
+  position: absolute;
+  left: 1.8rem;
+  right: 1.8rem;
+  bottom: 0.7rem;
+  z-index: 2;
+  pointer-events: none;
+}
+.taskcard__subway-stops {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.taskcard__subway-stop {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  flex: 1 1 0;
+  min-width: 0;
+}
+/* Each stop (after the first) draws the red segment back to the previous stop's
+   centre — so the line spans exactly dot-centre to dot-centre for any count. */
+.taskcard__subway-stop:not(:first-child)::before {
+  content: "";
+  position: absolute;
+  top: 0.7rem;
+  right: 50%;
+  width: 100%;
+  height: 4px;
+  transform: translateY(-50%);
+  background: #e0483b;
+  z-index: 0;
+}
+.taskcard__subway-dot {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.4rem;
+  height: 1.4rem;
+  border-radius: 50%;
+  background: var(--j-paper-1);
+  border: 3px solid #cbd8e8;
+  box-sizing: border-box;
+}
+.taskcard__subway-stop--start .taskcard__subway-dot {
+  background: #e0483b;
+  border-color: #e0483b;
+  color: #fff;
+  font-family: var(--j-font-body);
+  font-weight: 800;
+  font-size: 0.85rem;
+}
+.taskcard__subway-stop--end .taskcard__subway-dot {
+  border-color: #cbd8e8;
+  box-shadow: 0 0 0 2px var(--j-paper-1), 0 0 0 4px #e0483b;
+}
+.taskcard__subway-name {
+  font-size: 0.74rem;
+  line-height: 1.15;
+  text-align: center;
+  color: var(--j-secondary);
+  max-width: 7rem;
+}
+
 /* --- Group sort ------------------------------------------------- */
 
 .exo-sort__tray {
@@ -595,6 +671,24 @@
 }
 
 .exo-gap__text { white-space: pre-wrap; }
+
+/* Speaker chip — a coloured person icon + name leading a dialogue line. */
+.exo-gap__speaker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.28rem;
+  font-weight: 700;
+  margin-right: 0.15rem;
+  white-space: nowrap;
+}
+.exo-gap__speaker svg {
+  width: 1.15em;
+  height: 1.15em;
+  fill: currentColor;
+  flex: 0 0 auto;
+}
+.exo-gap__speaker--emma { color: var(--j-coral); }
+.exo-gap__speaker--marcus { color: var(--j-ochre); }
 
 .exo-gap__blank {
   font-family: var(--j-font-display);

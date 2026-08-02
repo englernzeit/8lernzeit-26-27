@@ -1182,6 +1182,100 @@
   border-bottom-color: var(--j-coral);
 }
 
+/* --- Icon strip (warm-up vocabulary badges) --------------------- */
+.taskcard__icons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.6rem 1.5rem;
+  margin: 1rem 0 0.4rem;
+}
+.taskcard__icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+}
+.taskcard__icon-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: clamp(3rem, 5.4vw, 3.9rem);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  font-size: clamp(1.5rem, 2.8vw, 2rem);
+  line-height: 1;
+  box-shadow: 0 3px 10px rgba(7, 14, 26, 0.35);
+}
+.taskcard__icon-label {
+  font-size: 1rem;
+  color: var(--j-secondary);
+}
+
+/* --- Numbered questions (question + starter + ruled writing) ----- */
+.taskcard__qs {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  margin-top: 0.9rem;
+}
+.taskcard__q {
+  background: var(--j-panel);
+  border: 1.5px solid rgba(126, 150, 176, 0.22);
+  border-radius: 12px;
+  padding: 0.7rem 1rem 0.85rem;
+}
+.taskcard__q-head {
+  display: flex;
+  align-items: baseline;
+  gap: 0.55rem;
+}
+.taskcard__q-badge {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  background: var(--j-coral);
+  color: #fff;
+  font-family: var(--j-font-body);
+  font-weight: 700;
+  font-size: 0.9rem;
+  align-self: center;
+}
+.taskcard__q-text {
+  font-size: 1.2rem;
+  color: var(--j-ink);
+}
+.taskcard__q-write {
+  display: block;
+  width: 100%;
+  margin-top: 0.45rem;
+  border: none;
+  resize: none;
+  background-color: transparent;
+  color: var(--j-ink);
+  font-family: var(--j-font-display);
+  font-size: 1.25rem;
+  line-height: 2rem;
+  padding: 0;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent calc(2rem - 1.5px),
+    rgba(126, 150, 176, 0.32) calc(2rem - 1.5px),
+    rgba(126, 150, 176, 0.32) 2rem
+  );
+}
+.taskcard__q-write::placeholder {
+  color: var(--j-khaki);
+}
+.taskcard__q-write:focus-visible {
+  outline: none;
+}
+
 /* --- Portrait / narrow ------------------------------------------ */
 
 @media (orientation: portrait) {

@@ -2019,6 +2019,23 @@ export function createGapFill({ items, columns }) {
 
     const line = document.createElement("div");
     line.className = "exo-gap__line";
+
+    // A dialogue line can name its speaker; render a coloured person chip
+    // (violet · amber) so the two voices are easy to tell apart.
+    if (item.speaker) {
+      const who = item.speaker.trim().toLowerCase();
+      const chip = document.createElement("span");
+      chip.className = `exo-gap__speaker exo-gap__speaker--${who}`;
+      chip.innerHTML =
+        '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="7.5" r="4"/>' +
+        '<path d="M3.5 21a8.5 8.5 0 0 1 17 0z"/></svg>';
+      const name = document.createElement("span");
+      name.className = "exo-gap__speaker-name";
+      name.textContent = `${item.speaker.toUpperCase()}:`;
+      chip.appendChild(name);
+      line.appendChild(chip);
+    }
+
     for (const seg of item.segments) {
       if (typeof seg === "string") {
         const span = document.createElement("span");
