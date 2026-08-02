@@ -633,6 +633,30 @@
   color: var(--j-secondary);
 }
 
+/* The rows live in their own list layer so the Check bar can sit below,
+   spanning the full width. Default: the same single stack as before. */
+.exo-gap__list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+/* Two-column dialogue (columns: 2): flow the rows across both halves of the
+   card instead of one tall strip. Roughly halving the height lets the content
+   fill the card width; the fit-scaler (fitUniformCards) trims any small
+   overflow so nothing clips or collides with the Check button. */
+.exo-gap__list--cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 1rem;
+  row-gap: 0.55rem;
+  align-items: stretch;
+}
+@media (orientation: portrait) {
+  /* Narrow screen: one column again so the lines keep their width. */
+  .exo-gap__list--cols { grid-template-columns: 1fr; }
+}
+
 /* --- Audio player ----------------------------------------------- */
 
 .exo-audio {

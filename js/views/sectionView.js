@@ -1231,7 +1231,7 @@ function buildCard(step, data, index, taskNo, ctx) {
       body.appendChild(createSentenceBuild({ sentences: data.sentences }));
       break;
     case "gap-fill":
-      body.appendChild(createGapFill({ items: data.items }));
+      body.appendChild(createGapFill({ items: data.items, columns: data.columns }));
       break;
     case "image-match":
       body.appendChild(createImageMatch({ pairs: data.pairs }));

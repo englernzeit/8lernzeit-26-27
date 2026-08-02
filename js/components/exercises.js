@@ -1999,9 +1999,17 @@ export function createChecklist({ items, title }) {
  *
  * @param {{ items: Array<{ hint?: string, segments: Array<string|{answer:string, accept?:string[], size?:number}> }> }} data
  */
-export function createGapFill({ items }) {
+export function createGapFill({ items, columns }) {
   const wrap = document.createElement("div");
   wrap.className = "exo exo-gap";
+
+  // A wide dialogue can flow its rows in two balanced columns so it fills the
+  // card instead of stacking into one over-tall strip. The rows live in their
+  // own list layer; the Check bar stays below, spanning the full width.
+  const list = document.createElement("div");
+  list.className = "exo-gap__list";
+  if (columns === 2) list.classList.add("exo-gap__list--cols");
+  wrap.appendChild(list);
 
   const blanks = [];
 
@@ -2042,7 +2050,7 @@ export function createGapFill({ items }) {
       hint.textContent = item.hint;
       row.appendChild(hint);
     }
-    wrap.appendChild(row);
+    list.appendChild(row);
   });
 
   const checkBtn = checkButton(wrap, () => {

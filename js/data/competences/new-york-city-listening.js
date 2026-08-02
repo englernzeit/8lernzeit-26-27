@@ -463,7 +463,7 @@ export default {
           type: "gap-fill",
           kind: "Dialog · Audio 2",
           title: "Complete the dialogue",
-          split: "dialogue",
+          columns: 2,
           intro: "Listen and type the missing words and phrases — there is no word box, and some gaps need more than one word.",
           audio: { src: A2, label: "🎧 Audio 2 — Emma asks for help (listen 2–3×)" },
           items: [
