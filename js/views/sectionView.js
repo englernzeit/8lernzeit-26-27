@@ -21,6 +21,7 @@ import { createJournalCarousel } from "../components/journalCarousel.js";
 import {
   createGlossaryText,
   createMultipleChoice,
+  createRightWrong,
   createGroupSort,
   createSentenceBuild,
   createGame,
@@ -1199,6 +1200,20 @@ function buildCard(step, data, index, taskNo, ctx) {
           values: saved,
           keyFor,
           onChange: (qi, v) => ctx && setAnswer(ctx.unitId, ctx.sectionId, keyFor(qi), v),
+        }),
+      );
+      break;
+    }
+    case "right-wrong": {
+      const base = `step${step.step}-task${index + 1}`;
+      const saved = ctx ? getAnswers(ctx.unitId, ctx.sectionId) : {};
+      const keyFor = (i) => `${base}-rw${i}`;
+      body.appendChild(
+        createRightWrong({
+          statements: data.statements,
+          values: saved,
+          keyFor,
+          onChange: (i, v) => ctx && setAnswer(ctx.unitId, ctx.sectionId, keyFor(i), v),
         }),
       );
       break;

@@ -22,6 +22,8 @@
 const AUDIO = "assets/audio/unit1";
 const A1 = `${AUDIO}/announcements.mp3`;
 const A2 = `${AUDIO}/subway-dialogue.mp3`;
+/** Picture tiles for the "Right or wrong?" quiz. */
+const IMG = "assets/listening/unit1";
 
 /** Audio-1 transcript for the Step-1 "Help me" button and the ★ game. */
 const ANNOUNCEMENTS = [
@@ -207,19 +209,17 @@ export default {
           ],
         },
         {
-          type: "multiple-choice",
+          type: "right-wrong",
           kind: "Quiz",
           title: "Right or wrong?",
           intro: "Read your completed dialogue. Right or wrong?",
-          shuffle: false,
-          columns: 2,
-          questions: [
-            { q: "Emma wants to go to Brooklyn.", options: ["Right ✔", "Wrong ✖"], correct: 1 },
-            { q: "Uptown means north.", options: ["Right ✔", "Wrong ✖"], correct: 0 },
-            { q: "Emma must buy a MetroCard.", options: ["Right ✔", "Wrong ✖"], correct: 1 },
-            { q: "One ride costs $2.90.", options: ["Right ✔", "Wrong ✖"], correct: 0 },
-            { q: "The local train stops at every station.", options: ["Right ✔", "Wrong ✖"], correct: 0 },
-            { q: "You have to go downtown to reach Times Square.", options: ["Right ✔", "Wrong ✖"], correct: 1 },
+          statements: [
+            { text: "Emma wants to go to Brooklyn.", answer: false, img: `${IMG}/q1-brooklyn.jpg`, ph: "🌉" },
+            { text: "Uptown means north.", answer: true, img: `${IMG}/q2-compass.jpg`, ph: "🧭" },
+            { text: "Emma must buy a MetroCard.", answer: false, img: `${IMG}/q3-metrocard.jpg`, ph: "🎫" },
+            { text: "One ride costs $2.90.", answer: true, img: `${IMG}/q4-fare.jpg`, ph: "💲" },
+            { text: "The local train stops at every station.", answer: true, img: `${IMG}/q5-subway.jpg`, ph: "🚇" },
+            { text: "You have to go downtown to reach Times Square.", answer: false, img: `${IMG}/q6-timessquare.jpg`, ph: "🚏" },
           ],
         },
         {

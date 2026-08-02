@@ -387,6 +387,156 @@ export function createMultipleChoice({ questions, columns, shuffle = true, lineR
   return wrap;
 }
 
+/* ---------- Right or wrong (picture true/false grid) ----------- */
+
+/**
+ * A true/false quiz as a grid of picture tiles. Each statement gets a number
+ * badge, its text, a themed picture, and Right / Wrong buttons. Submit checks
+ * all at once and shows the score; the choice per tile persists. A missing
+ * picture falls back to an emoji placeholder (so tiles look right before the
+ * art is dropped in). A faint NYC skyline rides the bottom of the card.
+ *
+ * @param {{ statements: Array<{text:string, answer:boolean, img?:string, ph?:string}>,
+ *   values?: object, keyFor?: (i:number)=>string, onChange?: (i:number, v:string)=>void }} data
+ */
+export function createRightWrong({ statements, values, keyFor, onChange }) {
+  const wrap = document.createElement("div");
+  wrap.className = "exo exo-rw";
+
+  const grid = document.createElement("div");
+  grid.className = "exo-rw__grid";
+  wrap.appendChild(grid);
+
+  const picks = new Array(statements.length).fill(null); // "right" | "wrong" | null
+  const tiles = [];
+
+  statements.forEach((st, i) => {
+    const tile = document.createElement("div");
+    tile.className = "exo-rw__tile";
+
+    const top = document.createElement("div");
+    top.className = "exo-rw__top";
+
+    const info = document.createElement("div");
+    info.className = "exo-rw__info";
+    const badge = document.createElement("span");
+    badge.className = "exo-rw__badge";
+    badge.textContent = String(i + 1);
+    const text = document.createElement("p");
+    text.className = "exo-rw__text";
+    text.textContent = st.text;
+    info.append(badge, text);
+
+    const media = document.createElement("div");
+    media.className = "exo-rw__img";
+    if (st.img) {
+      const img = document.createElement("img");
+      img.src = st.img;
+      img.alt = "";
+      img.loading = "lazy";
+      // Before the art exists the file 404s — show the emoji placeholder
+      // instead of a broken-image icon. Drop the file in and it just appears.
+      img.addEventListener("error", () => {
+        media.classList.add("exo-rw__img--ph");
+        media.textContent = st.ph ?? "🖼";
+      });
+      media.appendChild(img);
+    } else {
+      media.classList.add("exo-rw__img--ph");
+      media.textContent = st.ph ?? "🖼";
+    }
+
+    top.append(info, media);
+    tile.appendChild(top);
+
+    const btns = document.createElement("div");
+    btns.className = "exo-rw__btns";
+    const key = keyFor?.(i);
+
+    const clearMarks = () => {
+      tile.classList.remove("exo-rw__tile--correct", "exo-rw__tile--wrong", "exo-rw__tile--todo");
+      [bRight, bWrong].forEach((x) => x.classList.remove("exo-rw__btn--ok", "exo-rw__btn--bad"));
+    };
+    const select = (val, btn) => {
+      picks[i] = val;
+      [bRight, bWrong].forEach((x) => x.classList.remove("exo-rw__btn--sel"));
+      btn.classList.add("exo-rw__btn--sel");
+      clearMarks();
+      if (key) onChange?.(i, val);
+    };
+    const bRight = document.createElement("button");
+    bRight.type = "button";
+    bRight.className = "exo-rw__btn exo-rw__btn--right";
+    bRight.innerHTML = "Right <span class='exo-rw__ico'>✓</span>";
+    bRight.addEventListener("click", () => select("right", bRight));
+    const bWrong = document.createElement("button");
+    bWrong.type = "button";
+    bWrong.className = "exo-rw__btn exo-rw__btn--wrong";
+    bWrong.innerHTML = "Wrong <span class='exo-rw__ico'>✗</span>";
+    bWrong.addEventListener("click", () => select("wrong", bWrong));
+    btns.append(bRight, bWrong);
+    tile.appendChild(btns);
+
+    // restore a saved choice
+    if (key && values?.[key]) {
+      picks[i] = values[key];
+      (values[key] === "right" ? bRight : bWrong).classList.add("exo-rw__btn--sel");
+    }
+
+    grid.appendChild(tile);
+    tiles.push({ tile, bRight, bWrong });
+  });
+
+  const foot = document.createElement("div");
+  foot.className = "exo-rw__foot";
+  const submit = document.createElement("button");
+  submit.type = "button";
+  submit.className = "exo-rw__submit";
+  submit.textContent = "Submit";
+  const score = document.createElement("span");
+  score.className = "exo-rw__score";
+  score.hidden = true;
+  foot.append(submit, score);
+  wrap.appendChild(foot);
+
+  submit.addEventListener("click", () => {
+    let correct = 0;
+    statements.forEach((st, i) => {
+      const { tile, bRight, bWrong } = tiles[i];
+      tile.classList.remove("exo-rw__tile--correct", "exo-rw__tile--wrong", "exo-rw__tile--todo");
+      // drop --sel too: its two-class selector would otherwise out-specify the
+      // --ok / --bad result colours.
+      [bRight, bWrong].forEach((x) => x.classList.remove("exo-rw__btn--ok", "exo-rw__btn--bad", "exo-rw__btn--sel"));
+      const pick = picks[i];
+      if (!pick) {
+        tile.classList.add("exo-rw__tile--todo");
+        return;
+      }
+      const want = st.answer ? "right" : "wrong";
+      const picked = pick === "right" ? bRight : bWrong;
+      if (pick === want) {
+        correct += 1;
+        tile.classList.add("exo-rw__tile--correct");
+        picked.classList.add("exo-rw__btn--ok");
+      } else {
+        tile.classList.add("exo-rw__tile--wrong");
+        picked.classList.add("exo-rw__btn--bad");
+        (want === "right" ? bRight : bWrong).classList.add("exo-rw__btn--ok");
+      }
+    });
+    score.hidden = false;
+    score.textContent = `${correct} / ${statements.length}`;
+    wrap.classList.toggle("exo-rw--done", correct === statements.length);
+  });
+
+  const sky = document.createElement("div");
+  sky.className = "exo-rw__skyline";
+  sky.setAttribute("aria-hidden", "true");
+  wrap.appendChild(sky);
+
+  return wrap;
+}
+
 /* ---------- Group sort ("Раздели на группы") ------------------- */
 
 /**
