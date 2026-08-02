@@ -407,9 +407,6 @@ export function createRightWrong({ statements, values, keyFor, onChange }) {
   grid.className = "exo-rw__grid";
   wrap.appendChild(grid);
 
-  const picks = new Array(statements.length).fill(null); // "right" | "wrong" | null
-  const tiles = [];
-
   statements.forEach((st, i) => {
     const tile = document.createElement("div");
     tile.className = "exo-rw__tile";
@@ -452,81 +449,44 @@ export function createRightWrong({ statements, values, keyFor, onChange }) {
     const btns = document.createElement("div");
     btns.className = "exo-rw__btns";
     const key = keyFor?.(i);
+    const want = st.answer ? "right" : "wrong";
 
-    const clearMarks = () => {
-      tile.classList.remove("exo-rw__tile--correct", "exo-rw__tile--wrong", "exo-rw__tile--todo");
-      [bRight, bWrong].forEach((x) => x.classList.remove("exo-rw__btn--ok", "exo-rw__btn--bad"));
-    };
-    const select = (val, btn) => {
-      picks[i] = val;
-      [bRight, bWrong].forEach((x) => x.classList.remove("exo-rw__btn--sel"));
-      btn.classList.add("exo-rw__btn--sel");
-      clearMarks();
+    // Self-check on tap — no Submit button. A correct tap turns green and locks
+    // the tile; a wrong tap turns red and disables itself, so the learner tries
+    // the other one (which is then correct).
+    const check = (val, btn) => {
+      if (tile.classList.contains("exo-rw__tile--solved")) return;
       if (key) onChange?.(i, val);
+      if (val === want) {
+        btn.classList.remove("exo-rw__btn--bad");
+        btn.classList.add("exo-rw__btn--ok");
+        tile.classList.remove("exo-rw__tile--wrong");
+        tile.classList.add("exo-rw__tile--correct", "exo-rw__tile--solved");
+        bRight.disabled = true;
+        bWrong.disabled = true;
+      } else {
+        btn.classList.add("exo-rw__btn--bad");
+        btn.disabled = true;
+        tile.classList.add("exo-rw__tile--wrong");
+      }
     };
     const bRight = document.createElement("button");
     bRight.type = "button";
     bRight.className = "exo-rw__btn exo-rw__btn--right";
     bRight.innerHTML = "Right <span class='exo-rw__ico'>✓</span>";
-    bRight.addEventListener("click", () => select("right", bRight));
+    bRight.addEventListener("click", () => check("right", bRight));
     const bWrong = document.createElement("button");
     bWrong.type = "button";
     bWrong.className = "exo-rw__btn exo-rw__btn--wrong";
     bWrong.innerHTML = "Wrong <span class='exo-rw__ico'>✗</span>";
-    bWrong.addEventListener("click", () => select("wrong", bWrong));
+    bWrong.addEventListener("click", () => check("wrong", bWrong));
     btns.append(bRight, bWrong);
     tile.appendChild(btns);
 
-    // restore a saved choice
-    if (key && values?.[key]) {
-      picks[i] = values[key];
-      (values[key] === "right" ? bRight : bWrong).classList.add("exo-rw__btn--sel");
-    }
+    // replay a saved choice so its checked state is restored
+    if (key && values?.[key]) check(values[key], values[key] === "right" ? bRight : bWrong);
 
     grid.appendChild(tile);
-    tiles.push({ tile, bRight, bWrong });
-  });
-
-  const foot = document.createElement("div");
-  foot.className = "exo-rw__foot";
-  const submit = document.createElement("button");
-  submit.type = "button";
-  submit.className = "exo-rw__submit";
-  submit.textContent = "Submit";
-  const score = document.createElement("span");
-  score.className = "exo-rw__score";
-  score.hidden = true;
-  foot.append(submit, score);
-  wrap.appendChild(foot);
-
-  submit.addEventListener("click", () => {
-    let correct = 0;
-    statements.forEach((st, i) => {
-      const { tile, bRight, bWrong } = tiles[i];
-      tile.classList.remove("exo-rw__tile--correct", "exo-rw__tile--wrong", "exo-rw__tile--todo");
-      // drop --sel too: its two-class selector would otherwise out-specify the
-      // --ok / --bad result colours.
-      [bRight, bWrong].forEach((x) => x.classList.remove("exo-rw__btn--ok", "exo-rw__btn--bad", "exo-rw__btn--sel"));
-      const pick = picks[i];
-      if (!pick) {
-        tile.classList.add("exo-rw__tile--todo");
-        return;
-      }
-      const want = st.answer ? "right" : "wrong";
-      const picked = pick === "right" ? bRight : bWrong;
-      if (pick === want) {
-        correct += 1;
-        tile.classList.add("exo-rw__tile--correct");
-        picked.classList.add("exo-rw__btn--ok");
-      } else {
-        tile.classList.add("exo-rw__tile--wrong");
-        picked.classList.add("exo-rw__btn--bad");
-        (want === "right" ? bRight : bWrong).classList.add("exo-rw__btn--ok");
-      }
-    });
-    score.hidden = false;
-    score.textContent = `${correct} / ${statements.length}`;
-    wrap.classList.toggle("exo-rw--done", correct === statements.length);
   });
 
   const sky = document.createElement("div");
