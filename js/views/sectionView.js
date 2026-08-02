@@ -1087,6 +1087,12 @@ function buildCard(step, data, index, taskNo, ctx) {
   const isBlog = data.type === "text" && Boolean(data.blog);
   if (isBlog) card.classList.add("taskcard--blog");
 
+  // The Listening page carries a faint NYC skyline rising from the bottom of
+  // every task card — except the Step-4 ★ game.
+  if (ctx?.sectionId === "listening" && step.step !== 4 && data.type !== "game") {
+    card.classList.add("taskcard--skyline");
+  }
+
   // Optional faded full-card background image (a picture behind the task, so
   // the picture costs no vertical space — the content sits on top).
   if (data.bgImage) {

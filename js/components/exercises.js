@@ -489,11 +489,6 @@ export function createRightWrong({ statements, values, keyFor, onChange }) {
     grid.appendChild(tile);
   });
 
-  const sky = document.createElement("div");
-  sky.className = "exo-rw__skyline";
-  sky.setAttribute("aria-hidden", "true");
-  wrap.appendChild(sky);
-
   return wrap;
 }
 

@@ -278,10 +278,6 @@
 
 .exo-rw {
   position: relative;
-  display: flex;
-  flex-direction: column;
-  flex: 1 1 auto;
-  min-height: 0;
 }
 .exo-rw__grid {
   position: relative;
@@ -289,8 +285,6 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 0.7rem;
-  flex: 1 1 auto;
-  min-height: 0;
 }
 @media (orientation: portrait) {
   .exo-rw__grid { grid-template-columns: repeat(2, 1fr); }
@@ -395,15 +389,20 @@
 .exo-rw__tile--correct { border-color: rgba(90, 217, 143, 0.55); }
 .exo-rw__tile--wrong { border-color: rgba(239, 109, 122, 0.55); }
 
-/* faint NYC skyline strip along the very bottom of the card (bleeds to the
-   card edges, under the tiles) */
-.exo-rw__skyline {
-  flex: 0 0 auto;
-  height: 3.1rem;
-  margin: 0.5rem -1.8rem -1.1rem;
-  opacity: 0.3;
+/* --- Listening skyline footer --------------------------------- */
+/* A faint NYC skyline (bridge · skyscrapers · train) rising from the bottom of
+   every Listening task card. Added by buildCard on steps 1-3 (not step 4).
+   Sits behind the content, spans the full card width, clipped to the card. */
+.taskcard--skyline { overflow: hidden; }
+.taskcard--skyline > .taskcard__body { position: relative; z-index: 1; }
+.taskcard--skyline::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  opacity: 0.42;
   pointer-events: none;
-  background: url("../../assets/listening/unit1/skyline.svg") no-repeat bottom center / 100% 100%;
+  background: url("../../assets/listening/unit1/skyline.png") no-repeat center bottom / 100% auto;
 }
 
 /* --- Group sort ------------------------------------------------- */
