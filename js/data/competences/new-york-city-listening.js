@@ -430,7 +430,6 @@ export default {
             { left: "express train", right: "a fast train that skips smaller stations" },
             { left: "local train", right: "a train that stops at every station" },
             { left: "uptown", right: "toward the north of Manhattan" },
-            { left: "service change", right: "when trains do not run in the normal way" },
             { left: "to tap your card", right: "hold your card on the reader to pay" },
             { left: "to transfer", right: "change from one line to another" },
             { left: "suspicious", right: "strange, and maybe dangerous" },
