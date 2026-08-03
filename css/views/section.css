@@ -835,6 +835,18 @@
   box-shadow: 0 0 0 2px rgba(164, 108, 245, 0.4);
 }
 
+/* Fill the card: on a written task the answer area grows to use the whole card
+   so a short task (a single box, or a few starter lines) doesn't leave the
+   bottom empty. The single box stretches; starter rows spread down the card. */
+.journal .taskcard--sheet .taskcard__fit > .taskcard__answer {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+.journal .taskcard--sheet .taskcard__fit > .taskcard__starters {
+  flex: 1 1 auto;
+  justify-content: space-between;
+}
+
 /* Framed writing — the answer field laid over a template image (a phone
    messenger, a blog webpage). The image scales; the field is positioned
    over the template's empty region in %, so it tracks at every width. */
