@@ -159,6 +159,11 @@ export function renderSectionView(root, unitId, sectionId) {
 
   root.innerHTML = "";
 
+  // A field focused on the previous page may not fire focusout when its view is
+  // torn down, which would leave the keyboard freeze stuck on. Clear it so the
+  // new page measures --app-vh normally.
+  keyboardOpen = false;
+
   const view = document.createElement("div");
   view.className = "view journal";
   view.dataset.section = sectionId; // lets CSS target one competence page
@@ -257,6 +262,16 @@ function buildCoverPage(view) {
  * @param {HTMLElement} view
  */
 /**
+ * True while a text field is focused (the on-screen keyboard is up). Module-
+ * level on purpose: buildVerticalPager / fitUniformCards add window listeners
+ * on every route change and never remove them, so stale listeners from earlier
+ * pages keep firing. A per-pager flag wouldn't stop those; a shared one does —
+ * and updateAppVh honours it, so no listener can shrink --app-vh (and every
+ * card with it) while the keyboard is animating in. Reset on each render.
+ */
+let keyboardOpen = false;
+
+/**
  * Publish the real viewport height as `--app-vh` (px). The whole pager is
  * built on full-screen pages; relying on the CSS `svh` unit alone is not
  * robust on iPad Safari (heights come out wrong, so cards don't scale and
@@ -266,6 +281,9 @@ function buildCoverPage(view) {
  */
 function updateAppVh() {
   if (typeof window === "undefined") return;
+  // Never re-measure under the keyboard: iPad shrinks innerHeight then, and
+  // baking that in would shrink --card-h and shift every card up.
+  if (keyboardOpen) return;
   const h = window.innerHeight || 800;
   document.documentElement.style.setProperty("--app-vh", `${h}px`);
 }
@@ -460,10 +478,9 @@ function buildVerticalPager(view) {
   // While a text field is focused, the on-screen keyboard shrinks the viewport
   // and iPad Safari fires resize / visualViewport-resize events. Re-measuring
   // --app-vh and re-fitting the cards then would rescale every page and jump it
-  // to a new offset mid-typing — so freeze the layout while a field is focused,
-  // and restore it once the keyboard has closed. (Declared out here so the
-  // returned isKeyboardOpen() — used by fitUniformCards — can read it.)
-  let keyboardOpen = false;
+  // to a new offset mid-typing — so freeze the layout while a field is focused
+  // (module-level keyboardOpen, honoured by updateAppVh and fitUniformCards),
+  // and restore it once the keyboard has closed.
   if (typeof window !== "undefined") {
     const isField = (el) => {
       if (!el) return false;

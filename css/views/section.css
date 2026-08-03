@@ -1288,7 +1288,12 @@
 
 @media (orientation: portrait) {
   .journal {
-    overflow-y: visible; /* the page itself scrolls in portrait */
+    /* Keep the pager a fixed one-screen canvas in portrait too. Letting the
+       page scroll (overflow-y: visible + the bottom pad) gave the document a
+       scrollable overflow that iPad Safari scrolls to reveal a focused field —
+       which shifted the whole card when the keyboard opened. */
+    overflow: hidden;
+    padding-bottom: 0;
   }
 
   .journal-passage {
