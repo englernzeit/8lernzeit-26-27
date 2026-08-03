@@ -1306,7 +1306,7 @@ function buildCard(step, data, index, taskNo, ctx) {
       body.appendChild(createMatchUp({ options: data.options, items: data.items }));
       break;
     case "tap-match":
-      body.appendChild(createTapMatch({ pairs: data.pairs, leftLabel: data.leftLabel, rightLabel: data.rightLabel }));
+      body.appendChild(createTapMatch({ pairs: data.pairs }));
       break;
     case "argument-pick":
       body.appendChild(createArgumentPick({ args: data.args, lead: data.lead, labels: data.labels }));

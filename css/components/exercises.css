@@ -1234,19 +1234,6 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
   flex: 1 1 auto;
   min-height: 0;
 }
-.exo-tap__head {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.6rem 3.2rem; /* wide column gap = the patch-cable lane */
-  margin-bottom: 0.4rem;
-}
-.exo-tap__collabel {
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--j-khaki);
-}
 .exo-tap__grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -1279,14 +1266,14 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
   display: flex;
   align-items: center;
   font-family: var(--j-font-body);
-  font-size: 1.2rem;
+  font-size: 1.35rem;
   font-weight: 600;
   color: var(--j-ink);
   text-align: left;
   background: var(--j-paper-1);
   border: 1.5px solid rgba(126, 150, 176, 0.3);
-  border-radius: 10px;
-  padding: 0.35rem 0.95rem;
+  border-radius: 12px;
+  padding: 0.55rem 1.15rem;
   cursor: pointer;
   transition: background 0.15s, border-color 0.15s, box-shadow 0.15s;
 }

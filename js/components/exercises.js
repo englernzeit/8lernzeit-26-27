@@ -1327,7 +1327,7 @@ export function createMatchUp({ options, items }) {
  *
  * @param {{ pairs: Array<{left: string, right: string}>, leftLabel?: string, rightLabel?: string }} data
  */
-export function createTapMatch({ pairs, leftLabel = "English", rightLabel = "Deutsch" }) {
+export function createTapMatch({ pairs }) {
   const SVG_NS = "http://www.w3.org/2000/svg";
   // Rainbow feedback: each pair locks into its own hue (both sides share it),
   // and a coloured "patch cable" is drawn across the gutter linking the two.
@@ -1337,17 +1337,8 @@ export function createTapMatch({ pairs, leftLabel = "English", rightLabel = "Deu
   const wrap = document.createElement("div");
   wrap.className = "exo exo-tap exo-tap--wires";
 
-  const head = document.createElement("div");
-  head.className = "exo-tap__head";
-  const hl = document.createElement("span");
-  hl.className = "exo-tap__collabel";
-  hl.textContent = leftLabel;
-  const hr = document.createElement("span");
-  hr.className = "exo-tap__collabel";
-  hr.textContent = rightLabel;
-  head.append(hl, hr);
-  wrap.appendChild(head);
-
+  // No column labels — the word ↔ meaning columns are self-evident, and the
+  // saved space lets the word chips grow bigger and fill the card.
   const grid = document.createElement("div");
   grid.className = "exo-tap__grid";
   // Full-bleed overlay the wires are drawn on (absolute, so it never takes a

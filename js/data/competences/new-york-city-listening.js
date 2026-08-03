@@ -130,10 +130,7 @@ export default {
         {
           type: "tap-match",
           kind: "Verbinden",
-          title: "Subway words",
-          intro: "Tap an English word, then tap its German partner.",
-          leftLabel: "English",
-          rightLabel: "Deutsch",
+          intro: "Match each word with its meaning.",
           pairs: [
             { left: "the subway", right: "die U-Bahn" },
             { left: "the station", right: "die Station" },
@@ -296,10 +293,7 @@ export default {
         {
           type: "tap-match",
           kind: "Verbinden",
-          title: "Subway words",
-          intro: "Tap an English word, then tap its German partner.",
-          leftLabel: "English",
-          rightLabel: "Deutsch",
+          intro: "Match each word with its meaning.",
           pairs: [
             { left: "the subway", right: "die U-Bahn" },
             { left: "the platform", right: "der Bahnsteig" },
@@ -428,10 +422,7 @@ export default {
         {
           type: "tap-match",
           kind: "Verbinden",
-          title: "Words: English · simple English",
-          intro: "No German this time — match each word with its meaning in simple English.",
-          leftLabel: "Word",
-          rightLabel: "Meaning",
+          intro: "Match each word with its meaning.",
           pairs: [
             { left: "platform", right: "where you wait for the train" },
             { left: "announcement", right: "spoken information for all passengers" },
