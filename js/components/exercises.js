@@ -1363,18 +1363,18 @@ export function createTapMatch({ pairs }) {
   const matched = new Set();
   let selLeft = null;
 
-  const footer = document.createElement("div");
-  footer.className = "exo-tap__footer";
+  // Progress count + reset. Exposed via wrap._corner so buildCard can lift it
+  // into the card's top-right head corner — off the bottom, so the word chips
+  // get the whole card height.
+  const corner = document.createElement("div");
+  corner.className = "exo-tap__corner";
   const countPill = document.createElement("span");
   countPill.className = "exo-tap__count";
   const reset = document.createElement("button");
   reset.type = "button";
   reset.className = "exo-tap__reset";
   reset.textContent = "Reset";
-  const done = document.createElement("span");
-  done.className = "exo-tap__done";
-  done.textContent = "✓ Well done — all matched!";
-  footer.append(countPill, reset, done);
+  corner.append(countPill, reset);
 
   // Tint a matched chip with its pair's hue (inline so every pair differs and
   // beats the shared :hover rule).
@@ -1418,8 +1418,10 @@ export function createTapMatch({ pairs }) {
   };
 
   const paint = () => {
-    countPill.textContent = `${matched.size} / ${pairs.length}`;
-    wrap.classList.toggle("exo-tap--done", matched.size === pairs.length);
+    const allDone = matched.size === pairs.length;
+    countPill.textContent = `${allDone ? "✓ " : ""}${matched.size} / ${pairs.length}`;
+    corner.classList.toggle("exo-tap__corner--done", allDone);
+    wrap.classList.toggle("exo-tap--done", allDone);
     redraw();
   };
 
@@ -1492,7 +1494,8 @@ export function createTapMatch({ pairs }) {
     paint();
   });
 
-  wrap.appendChild(footer);
+  // Not appended here: buildCard lifts wrap._corner into the card head corner.
+  wrap._corner = corner;
 
   // First draw once the grid has a size, and redraw on any layout change
   // (orientation, reflow). ResizeObserver fires on first observe.

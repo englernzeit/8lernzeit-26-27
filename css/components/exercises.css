@@ -1296,12 +1296,14 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
   animation: imatchShake 0.4s;
 }
 
-.exo-tap__footer {
+/* Count + reset, lifted into the card head's top-right corner (buildCard) so
+   the chips own the whole card height. */
+.taskcard__head .exo-tap__corner {
+  margin-left: auto;
+  align-self: center;
   display: flex;
   align-items: center;
-  gap: 0.8rem;
-  margin-top: 0.9rem;
-  flex-wrap: wrap;
+  gap: 0.6rem;
 }
 .exo-tap__count {
   font-family: var(--j-font-display);
@@ -1311,6 +1313,7 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
   background: rgba(90, 217, 143, 0.16);
   border-radius: 999px;
   padding: 0.1rem 0.8rem;
+  white-space: nowrap;
 }
 .exo-tap__reset {
   font-family: var(--j-font-body);
@@ -1324,8 +1327,6 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
   cursor: pointer;
 }
 .exo-tap__reset:hover { background: rgba(126, 150, 176, 0.1); }
-.exo-tap__done { display: none; font-weight: 700; color: var(--j-olive); }
-.exo-tap--done .exo-tap__done { display: inline; }
 
 /* --- Argument pick ---------------------------------------------- */
 

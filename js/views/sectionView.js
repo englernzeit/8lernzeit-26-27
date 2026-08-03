@@ -1171,9 +1171,11 @@ function buildCard(step, data, index, taskNo, ctx) {
   // The game card is nothing but the game — no header, title or intro.
   // A blog card builds its own header (tag + headline + byline) in
   // buildBlogPost, so skip the generic one here.
+  let headEl = null;
   if (data.type !== "game" && !isBlog) {
     const head = document.createElement("div");
     head.className = "taskcard__head";
+    headEl = head;
     const num = document.createElement("span");
     num.className = "taskcard__num";
     num.textContent =
@@ -1305,9 +1307,14 @@ function buildCard(step, data, index, taskNo, ctx) {
     case "match-up":
       body.appendChild(createMatchUp({ options: data.options, items: data.items }));
       break;
-    case "tap-match":
-      body.appendChild(createTapMatch({ pairs: data.pairs }));
+    case "tap-match": {
+      const tap = createTapMatch({ pairs: data.pairs });
+      // Lift the count + reset into the card's top-right head corner so the
+      // word chips get the whole card height (no bottom footer row).
+      if (headEl && tap._corner) headEl.appendChild(tap._corner);
+      body.appendChild(tap);
       break;
+    }
     case "argument-pick":
       body.appendChild(createArgumentPick({ args: data.args, lead: data.lead, labels: data.labels }));
       break;
