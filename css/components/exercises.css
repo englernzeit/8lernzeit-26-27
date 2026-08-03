@@ -1205,31 +1205,62 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
 .exo-phrases__de { font-size: 1rem; color: var(--j-olive); font-weight: 600; }
 
 /* --- Match up (dropdown matching) ------------------------------- */
+/* Tile the prompts so they fill the whole card. The column count comes from
+   the longest prompt (data-cols, set in createMatchUp): short prompts go
+   three-up and read big; full sentences stay 1-2 columns. */
+.exo-match {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.exo-match__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-auto-rows: minmax(0, 1fr); /* rows share the height evenly -> fills card */
+  gap: 0.8rem;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+.exo-match[data-cols="2"] .exo-match__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.exo-match[data-cols="1"] .exo-match__grid { grid-template-columns: minmax(0, 1fr); }
 
 .exo-match__row {
   display: flex;
-  align-items: center;
-  gap: 0.9rem;
+  flex-direction: column;
+  justify-content: space-between; /* prompt at top, its dropdown pinned below */
+  gap: 0.7rem;
   background: var(--j-panel);
   border: 1.5px solid rgba(126, 150, 176, 0.22);
   border-radius: 12px;
-  padding: 0.5rem 0.8rem;
-  margin-bottom: 0.5rem;
+  padding: 0.85rem 1rem;
 }
 
 .exo-match__row--right { background: rgba(90, 217, 143, 0.16); border-color: var(--j-olive); }
 .exo-match__row--wrong { background: rgba(164, 108, 245, 0.14); border-color: var(--j-coral); }
 
-.exo-match__left { flex: 1; font-size: 1.1rem; color: var(--j-ink); font-style: italic; }
+.exo-match__left {
+  font-size: 1.3rem;
+  line-height: 1.28;
+  color: var(--j-ink);
+  font-style: italic;
+}
 
 .exo-match__select {
   font-family: var(--j-font-body);
-  font-size: 1rem;
+  font-size: 1.15rem;
   color: var(--j-ink);
   background: var(--j-paper-1);
   border: 1.5px solid rgba(126, 150, 176, 0.35);
-  border-radius: 9px;
-  padding: 0.3rem 0.5rem;
+  border-radius: 10px;
+  padding: 0.45rem 0.7rem;
+  align-self: stretch; /* full-width = a big, obvious tap target on iPad */
+}
+
+/* Portrait is narrower — never crush three sentence-cells across it. */
+@media (orientation: portrait) {
+  .exo-match[data-cols="3"] .exo-match__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 /* --- Tap match (two-column instant matcher) -------------------- */

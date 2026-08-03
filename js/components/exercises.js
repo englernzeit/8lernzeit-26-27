@@ -1265,6 +1265,18 @@ export function createMatchUp({ options, items }) {
   const wrap = document.createElement("div");
   wrap.className = "exo exo-match";
 
+  // Tile the prompts so they fill the (wide) card instead of stacking in one
+  // thin column. The column count follows the longest prompt: short prompts
+  // (a topic, a single word) go three-up and read big; full sentences stay
+  // one- or two-up so nothing is cramped. Each cell pairs the prompt with its
+  // own dropdown right below it — no more lonely selects stranded at the edge.
+  const maxLeft = items.reduce((m, it) => Math.max(m, (it.left || "").length), 0);
+  wrap.dataset.cols = maxLeft <= 36 ? "3" : maxLeft <= 60 ? "2" : "1";
+
+  const grid = document.createElement("div");
+  grid.className = "exo-match__grid";
+  wrap.appendChild(grid);
+
   // Shuffle the option list so its order never mirrors the rows' answers.
   const shownOptions = shuffledCopy(options);
 
@@ -1290,7 +1302,7 @@ export function createMatchUp({ options, items }) {
       row.classList.remove("exo-match__row--right", "exo-match__row--wrong"),
     );
     row.append(left, sel);
-    wrap.appendChild(row);
+    grid.appendChild(row);
     return { row, sel, answer: item.answer };
   });
 
