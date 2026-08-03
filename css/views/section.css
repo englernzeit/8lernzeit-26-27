@@ -152,6 +152,20 @@
   background: rgba(164, 108, 245, 0.12);
 }
 
+/* A learner's own writing shows in the gold of the "Name" label — like ink on
+   the page — so every answer stands out from the printed task text. Applies to
+   all typed fields; the exceptions below keep their own colour:
+   · framed writing sits on a real-looking messenger/blog template
+   · gap-fill right/wrong feedback must still win. */
+.journal input[type="text"],
+.journal input:not([type]),
+.journal textarea {
+  color: var(--j-ochre);
+}
+.journal .taskcard__frame-field { color: #eef4ff; }
+.journal .exo-gap__blank--right { color: var(--j-olive); }
+.journal .exo-gap__blank--wrong { color: var(--j-coral-deep); }
+
 .journal__pdf-badge {
   width: 3.6rem;
   height: 3.6rem;

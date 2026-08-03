@@ -355,6 +355,18 @@
   min-height: 0;
   overflow: hidden;
 }
+/* The embedded game posts its exact height and the iframe matches it, so its
+   card must wrap the game — not the uniform --card-h, which clipped the game
+   on short viewports and left a dark gap below it on tall ones (iPad). The
+   carousel measures this card and fits the stage to it. */
+.journal .jcar--slide .taskcard--sheet.taskcard--game,
+.journal .jcar--spread .taskcard--sheet.taskcard--game {
+  height: auto;
+}
+.journal .taskcard--game .taskcard__body {
+  flex: 0 0 auto;
+  overflow: visible;
+}
 /* The fit layer holds all the card's content and fills the body; when it is
    taller than the box, JS scales it from the top so it fits without a scroll. */
 .journal .taskcard--sheet .taskcard__fit {
