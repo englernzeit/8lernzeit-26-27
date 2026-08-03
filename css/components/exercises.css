@@ -1267,7 +1267,7 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
   align-items: center;
   font-family: var(--j-font-body);
   font-size: 1.35rem;
-  font-weight: 600;
+  font-weight: 400;
   color: var(--j-ink);
   text-align: left;
   background: var(--j-paper-1);
