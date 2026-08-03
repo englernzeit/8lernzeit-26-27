@@ -457,14 +457,28 @@ function buildVerticalPager(view) {
   });
 
   render();
+  // While a text field is focused, the on-screen keyboard shrinks the viewport
+  // and iPad Safari fires resize / visualViewport-resize events. Re-measuring
+  // --app-vh and re-fitting the cards then would rescale every page and jump it
+  // to a new offset mid-typing — so freeze the layout while a field is focused,
+  // and restore it once the keyboard has closed. (Declared out here so the
+  // returned isKeyboardOpen() — used by fitUniformCards — can read it.)
+  let keyboardOpen = false;
   if (typeof window !== "undefined") {
+    const isField = (el) => {
+      if (!el) return false;
+      const t = el.tagName;
+      return t === "INPUT" || t === "TEXTAREA" || t === "SELECT" || el.isContentEditable;
+    };
+
     // Keep --app-vh (and the page geometry that depends on it) in step with the
     // real viewport — orientation flips and the iPad toolbar showing/hiding.
     const onViewport = () => {
-      // iPad Safari fires visualViewport "resize" continuously during a
-      // pinch-zoom; re-laying-out mid-gesture fights the native zoom and makes
-      // it jitter. Only react to real viewport changes (orientation flip,
-      // toolbar show/hide), which happen at scale 1.
+      // Don't relayout under the keyboard (see above) …
+      if (keyboardOpen) return;
+      // … or during a pinch-zoom: iPad Safari fires visualViewport "resize"
+      // continuously then, and re-laying-out mid-gesture makes it jitter. Only
+      // react to real viewport changes (orientation flip, toolbar), at scale 1.
       if (window.visualViewport && window.visualViewport.scale > 1.01) return;
       updateAppVh();
       render();
@@ -473,8 +487,24 @@ function buildVerticalPager(view) {
     window.addEventListener("resize", onViewport);
     window.addEventListener("orientationchange", onViewport);
     if (window.visualViewport) window.visualViewport.addEventListener("resize", onViewport);
+
+    view.addEventListener("focusin", (e) => {
+      if (isField(e.target)) keyboardOpen = true;
+    });
+    view.addEventListener("focusout", (e) => {
+      if (!isField(e.target)) return;
+      keyboardOpen = false;
+      // Give a follow-up focus (tabbing between fields) time to re-arm the
+      // freeze; only when the keyboard is truly gone do we undo any scroll the
+      // browser applied to reveal the field and re-fit for the real viewport.
+      setTimeout(() => {
+        if (keyboardOpen) return;
+        window.scrollTo(0, 0);
+        onViewport();
+      }, 150);
+    });
   }
-  return { sync, go };
+  return { sync, go, isKeyboardOpen: () => keyboardOpen };
 }
 
 /* ================= reading passage ============================= */
@@ -1899,6 +1929,10 @@ function fitUniformCards(view, pager) {
     return fit;
   };
   const run = () => {
+    // Never re-fit while the keyboard is up: the viewport is temporarily short,
+    // and rescaling every card to it is what makes the focused card jump and
+    // its layout collapse. The blur handler re-runs this once the keyboard goes.
+    if (pager && pager.isKeyboardOpen && pager.isKeyboardOpen()) return;
     // Cards: fit each into its fixed body box.
     view.querySelectorAll(".taskcard--sheet > .taskcard__body > .taskcard__fit").forEach((fit) => {
       const body = fit.parentElement;
