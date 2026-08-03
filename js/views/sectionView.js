@@ -2108,8 +2108,11 @@ function appendWrittenBody(body, step, data, index, ctx) {
   }
 
   // Numbered questions — each is a panel: a number badge + the question, then a
-  // ruled writing area whose placeholder is the sentence starter. Persistence
-  // reuses the starter key scheme so the PDF collects it the same way.
+  // single-line writing field whose placeholder is the sentence starter. It is
+  // an <input>, not a <textarea>, on purpose: on iPad a focused textarea keeps
+  // scrolling the page to track the caret, which makes this full-screen card
+  // jump (a plain input doesn't). Persistence reuses the starter key scheme so
+  // the PDF collects it the same way.
   if (data.questions?.length && ctx) {
     const list = document.createElement("div");
     list.className = "taskcard__qs";
@@ -2128,15 +2131,16 @@ function appendWrittenBody(body, step, data, index, ctx) {
       panel.appendChild(head);
 
       const key = `step${step.step}-task${index + 1}s${k + 1}`;
-      const area = document.createElement("textarea");
-      area.className = "taskcard__q-write";
-      area.rows = 2;
-      if (q.starter) area.placeholder = q.starter;
-      area.dataset.answerKey = key;
+      const input = document.createElement("input");
+      input.type = "text";
+      input.className = "taskcard__q-write";
+      input.setAttribute("autocomplete", "off");
+      if (q.starter) input.placeholder = q.starter;
+      input.dataset.answerKey = key;
       const saved = getAnswers(ctx.unitId, ctx.sectionId)[key];
-      if (saved) area.value = saved;
-      area.addEventListener("input", () => setAnswer(ctx.unitId, ctx.sectionId, key, area.value));
-      panel.appendChild(area);
+      if (saved) input.value = saved;
+      input.addEventListener("input", () => setAnswer(ctx.unitId, ctx.sectionId, key, input.value));
+      panel.appendChild(input);
       list.appendChild(panel);
     });
     body.appendChild(list);
