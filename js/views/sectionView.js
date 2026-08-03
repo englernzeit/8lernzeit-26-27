@@ -494,14 +494,34 @@ function buildVerticalPager(view) {
     view.addEventListener("focusout", (e) => {
       if (!isField(e.target)) return;
       keyboardOpen = false;
-      // Give a follow-up focus (tabbing between fields) time to re-arm the
-      // freeze; only when the keyboard is truly gone do we undo any scroll the
-      // browser applied to reveal the field and re-fit for the real viewport.
-      setTimeout(() => {
-        if (keyboardOpen) return;
+      // The keyboard animates away asynchronously: iOS restores the viewport
+      // height and undoes its scroll only a few hundred ms later. A single
+      // reset would fire mid-animation and bake a too-short --app-vh into every
+      // card (they'd stay a bit high). So pin the scroll to the top and re-lay
+      // everything out (pager geometry + card fit, via a synthetic resize) on a
+      // short loop until innerHeight has been stable for two ticks — then stop.
+      let ticks = 0;
+      let lastH = -1;
+      let stable = 0;
+      const settle = () => {
+        if (keyboardOpen) return; // another field took focus — stay frozen
         window.scrollTo(0, 0);
-        onViewport();
-      }, 150);
+        if (document.scrollingElement) document.scrollingElement.scrollTop = 0;
+        if (document.body) document.body.scrollTop = 0;
+        const h = window.innerHeight || 0;
+        if (h === lastH) stable += 1;
+        else {
+          stable = 0;
+          lastH = h;
+        }
+        // Re-runs onViewport (updateAppVh + render + sync) and fitUniformCards.
+        window.dispatchEvent(new Event("resize"));
+        ticks += 1;
+        if (stable < 2 && ticks < 14) setTimeout(settle, 90);
+      };
+      // Defer the first pass so a follow-up focus (tabbing to the next field)
+      // can re-arm the freeze before we start resetting anything.
+      setTimeout(settle, 80);
     });
   }
   return { sync, go, isKeyboardOpen: () => keyboardOpen };
