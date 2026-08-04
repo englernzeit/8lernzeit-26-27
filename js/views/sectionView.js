@@ -1162,6 +1162,8 @@ function buildCard(step, data, index, taskNo, ctx) {
   const card = document.createElement("article");
   card.className = `taskcard taskcard--sheet taskcard--${step.accent}`;
   if (data.type === "game") card.classList.add("taskcard--game");
+  // A video card is just its player; tag it so page backgrounds can skip it.
+  if (data.type === "video") card.classList.add("taskcard--video");
 
   // A reading card can be dressed as a real blog post (byline, hint callout,
   // article + sidebar) when it carries a `blog` block — see buildBlogPost.

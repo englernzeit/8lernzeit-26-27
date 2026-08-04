@@ -5488,3 +5488,44 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
   .journal[data-section="writing"] .taskcard__starter-label { white-space: normal; }
   .journal[data-section="writing"] .taskcard__starter-input { flex-basis: 100%; min-width: 0; }
 }
+
+/* ===================================================================
+   WRITING page — Alex's-desk background + glassmorphism.
+   Every Writing card carries the NYC-window photo behind the content; a
+   diagonal scrim keeps the (mostly left-aligned) text readable while the
+   window/skyline stays visible toward the lower-right. The panel-fill
+   variables are made translucent + frosted so the photo glows through the
+   task panels (the glassmorphism look from the drafts). Scoped to the page.
+   =================================================================== */
+/* Blog-post (article) cards keep their own reading layout — the busy photo
+   behind dense text would hurt readability — so they are excluded below. */
+.journal[data-section="writing"] .taskcard--sheet:not(.taskcard--blog):not(.taskcard--video) {
+  overflow: hidden; /* clip the photo to the card's rounded corners */
+  /* Translucent glass fills — the photo shows through the task panels. */
+  --j-paper-2: rgba(20, 34, 56, 0.5);
+  --j-panel: rgba(212, 226, 246, 0.09);
+}
+.journal[data-section="writing"] .taskcard--sheet:not(.taskcard--blog):not(.taskcard--video)::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-image:
+    linear-gradient(107deg, rgba(11, 20, 35, 0.92) 22%, rgba(11, 20, 35, 0.6) 50%, rgba(11, 20, 35, 0.32) 100%),
+    linear-gradient(rgba(11, 20, 35, 0.34), rgba(11, 20, 35, 0.34)),
+    url("../../assets/blog/unit1/nyc-window.png");
+  background-size: cover, cover, cover;
+  background-position: center, center, right center;
+  background-repeat: no-repeat;
+}
+/* Lift all real content above the photo layer. */
+.journal[data-section="writing"] .taskcard--sheet:not(.taskcard--blog):not(.taskcard--video) > * { position: relative; z-index: 1; }
+/* Frost the task panels so text stays legible over the photo. */
+.journal[data-section="writing"] .taskcard--sheet:not(.taskcard--blog):not(.taskcard--video) :is(
+  .exo-mc__opt, .exo-sort__chip, .exo-sort__bin-drop, .exo-sort__bin,
+  .exo-inline__bank, .exo-args__row, .exo-essay__area, .exo-clab__comment,
+  .exo-rw__tile, .exo-gap__item, .exo-match__left, .exo-match__right
+) {
+  -webkit-backdrop-filter: blur(7px) saturate(1.1);
+  backdrop-filter: blur(7px) saturate(1.1);
+}
