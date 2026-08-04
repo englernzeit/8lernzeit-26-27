@@ -113,6 +113,7 @@ export default {
           kind: "Aufwärmen",
           title: "Before you listen",
           intro: "Think about how you travel. Answer the questions in one or two sentences.",
+          answerLines: 3,
           icons: [
             { icon: "🚆", label: "Train", bg: "#9fd0f5" },
             { icon: "🚌", label: "Bus", bg: "#a7e8c4" },
@@ -164,6 +165,7 @@ export default {
           type: "inline-choice",
           kind: "Hören & schreiben · Audio 1",
           title: "Listen and write",
+          split: "dialogue",
           intro: "Listen to Audio 1 again and choose the missing word or number for each gap.",
           audio: { src: A1, label: "🎧 Audio 1 — announcements", transcript: ANNOUNCEMENTS },
           bank: ["34th", "L", "bus", "four", "last"],
@@ -341,9 +343,8 @@ export default {
           kind: "Dialog · Audio 2",
           title: "Fill in the dialogue",
           split: "dialogue",
-          intro: "Listen and choose the 12 missing words. Careful — the word box has three words too many!",
+          intro: "Listen to Audio 2 and choose the 12 missing words.",
           audio: { src: A2, label: "🎧 Audio 2 — Emma asks for help (listen 2–3×)" },
-          bank: ["$2.90", "Brooklyn", "bus", "downtown", "gate", "map", "middle", "north", "red", "service changes", "signs", "south", "station", "three", "uptown"],
           layout: "dialogue",
           lines: [
             { speaker: "Emma", segments: ["I want to go to Times Square, but I don't understand this ", { gap: 0 }, "."] },
@@ -376,6 +377,7 @@ export default {
           kind: "Antworten",
           title: "Answer in full sentences",
           intro: "Use your completed dialogue. Answer in full sentences.",
+          answerLines: 3,
           starters: [
             "What is the difference between an express train and a local train? → An express train …, but a local train …",
             "How can Emma pay for her ride? → She can …",
@@ -386,6 +388,7 @@ export default {
           type: "dialogue-write",
           kind: "Finale",
           title: "Answer the tourist",
+          split: "dialogue",
           intro: "A tourist from New York visits YOUR town and wants to use the bus, tram or U-Bahn. The tourist's lines are already here — write YOUR answers to help them.",
           lines: [
             { speaker: "Tourist", text: "Excuse me, can you help me? I want to go to the city centre. Which line do I take?" },
@@ -455,6 +458,7 @@ export default {
           kind: "Reagieren · Audio 1",
           title: "What do you do?",
           intro: "Use the information from Audio 1. What do you do in these situations? Answer in one or two sentences and explain why.",
+          answerLines: 3,
           starters: [
             "It is Saturday. You want to take the L train from Manhattan to Brooklyn. →",
             "The train suddenly stops between two stations and an announcement comes on. Should you worry? →",
@@ -466,7 +470,6 @@ export default {
           kind: "Dialog · Audio 2",
           title: "Complete the dialogue",
           columns: 2,
-          subway: ["34 St – Penn Station", "28 St", "23 St", "14 St – Union Sq", "8 St – NYU", "3 Av", "Grand Central – 42 St"],
           intro: "Listen and type the missing words and phrases — there is no word box, and some gaps need more than one word.",
           audio: { src: A2, label: "🎧 Audio 2 — Emma asks for help (listen 2–3×)" },
           items: [
@@ -488,6 +491,7 @@ export default {
           kind: "Erklären",
           title: "Explain it in your own words",
           intro: "Answer using your completed dialogue. Do not copy whole sentences from the text.",
+          answerLines: 3,
           starters: [
             "A friend says: “Uptown, downtown — I don't get it.” Explain the system in two sentences. →",
             "When is it better to take the local train, and when the express train? →",
@@ -498,6 +502,7 @@ export default {
           type: "dialogue-write",
           kind: "Finale",
           title: "A problem on the platform",
+          split: "dialogue",
           intro: "It is Saturday and you have just heard announcement 3: no L train to Brooklyn this weekend. A tourist wants exactly that train. Write the whole dialogue — every line is empty. Cover all five beats.",
           lines: [
             { speaker: "Tourist", hint: "The tourist's question — they want the L train to Brooklyn.", rows: 2 },

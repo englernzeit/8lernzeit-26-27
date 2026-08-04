@@ -425,7 +425,17 @@
    and leaves only the coloured lines glowing over the card; a soft mask fades
    the top and left edges so it melts into the card instead of ending in a box.
    Sits under the content (z 0); the red line footer (z 2) rides on top. */
-.taskcard--dlgwide { position: relative; }
+.taskcard--dlgwide { position: relative; overflow: hidden; }
+/* Check lifted out of the dialogue flow into the top-right corner, so the
+   dialogue owns the whole card height and reads bigger. Card chrome (never
+   scaled by the fit layer). */
+.taskcard__corner-check {
+  position: absolute;
+  top: 1rem;
+  right: 1.4rem;
+  z-index: 3;
+  margin: 0;
+}
 .taskcard__submap {
   position: absolute;
   right: 0;
@@ -1270,6 +1280,12 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
   line-height: 1.28;
   color: var(--j-ink);
   font-style: italic;
+}
+/* Three-up cells are narrow: shrink the prompt so each topic sits on ONE line
+   and never pushes its dropdown out of the cell. */
+.exo-match[data-cols="3"] .exo-match__left {
+  font-size: 0.98rem;
+  line-height: 1.2;
 }
 
 .exo-match__select {

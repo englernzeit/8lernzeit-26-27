@@ -810,16 +810,24 @@ function downloadAnswerSheet(view, unit, section, content, name) {
         if (card.type === "essay-editor") {
           return [{ label: card.title, answer: answers[`${base}-essay`] ?? "" }];
         }
+        // Join any extra ruled writing lines (answerLines) into one answer.
+        const nLines = Math.max(1, card.answerLines || 1);
+        const joinLines = (k) => {
+          const b = `${base}s${k + 1}`;
+          const parts = [answers[b] ?? ""];
+          for (let li = 2; li <= nLines; li += 1) parts.push(answers[`${b}_${li}`] ?? "");
+          return parts.filter(Boolean).join(" ");
+        };
         if (card.questions?.length) {
           return card.questions.map((q, k) => ({
             label: `${card.title}: ${q.q}`,
-            answer: answers[`${base}s${k + 1}`] ?? "",
+            answer: joinLines(k),
           }));
         }
         if (card.starters?.length) {
           return card.starters.map((starter, k) => ({
             label: `${card.title}: ${starter}`,
-            answer: answers[`${base}s${k + 1}`] ?? "",
+            answer: joinLines(k),
           }));
         }
         if (card.answer) {
@@ -1162,9 +1170,12 @@ function buildCard(step, data, index, taskNo, ctx) {
 
   // The Listening page carries a faint NYC skyline rising from the bottom of
   // every task card — except the Step-4 ★ game. A card can instead run a
-  // subway-line footer (data.subway), which takes the bottom strip for itself.
+  // subway-line footer (data.subway); the wide dialogue (dlgwide) carries its
+  // own faint subway map, so it opts out of both.
   if (ctx?.sectionId === "listening" && step.step !== 4 && data.type !== "game") {
-    card.classList.add(data.subway ? "taskcard--subway" : "taskcard--skyline");
+    const isDlgWide = data.type === "gap-fill" && data.columns === 2;
+    if (data.subway) card.classList.add("taskcard--subway");
+    else if (!isDlgWide) card.classList.add("taskcard--skyline");
   }
 
   // Optional faded full-card background image (a picture behind the task, so
@@ -1306,14 +1317,30 @@ function buildCard(step, data, index, taskNo, ctx) {
     case "sentence-build":
       body.appendChild(createSentenceBuild({ sentences: data.sentences }));
       break;
-    case "gap-fill":
-      body.appendChild(createGapFill({ items: data.items, columns: data.columns }));
+    case "gap-fill": {
+      const gap = createGapFill({ items: data.items, columns: data.columns });
+      body.appendChild(gap);
       // A wide 2-column dialogue is laid out at a generous design width (so the
       // lines wrap like the mockup, not into tall 4-line panels) and then the
       // fit-scaler shrinks the whole card to fill the width. See the width
       // branch in fitUniformCards + .taskcard--dlgwide in CSS.
-      if (data.columns === 2) card.classList.add("taskcard--dlgwide");
+      if (data.columns === 2) {
+        card.classList.add("taskcard--dlgwide");
+        // Faint NYC subway map behind the dialogue (screen-blended card chrome).
+        const map = document.createElement("div");
+        map.className = "taskcard__submap";
+        map.setAttribute("aria-hidden", "true");
+        card.appendChild(map);
+        // Lift the Check bar out of the flow into the card's top-right corner so
+        // the dialogue owns the whole height and reads bigger.
+        const bar = gap.querySelector(".exo__checkbar");
+        if (bar) {
+          bar.classList.add("taskcard__corner-check");
+          card.appendChild(bar);
+        }
+      }
       break;
+    }
     case "image-match":
       body.appendChild(createImageMatch({ pairs: data.pairs }));
       break;
@@ -1694,6 +1721,7 @@ function buildCard(step, data, index, taskNo, ctx) {
           el.classList.contains("taskcard__figure") ||
           el.classList.contains("taskcard__figure-frame") ||
           el.classList.contains("exo-inline") ||
+          el.classList.contains("exo-dwrite") ||
           el.classList.contains("exo-gap"));
       while (body.firstChild) {
         const el = body.firstChild;
@@ -1710,14 +1738,6 @@ function buildCard(step, data, index, taskNo, ctx) {
   // Subway-line footer (card chrome): a stylised red line with named stops in
   // the reserved bottom strip. Sits outside the fit layer so it never scales.
   if (data.subway?.length) {
-    // Faint real NYC subway map behind the strip (mockup). Screen-blended so the
-    // near-black land/water drop out and only the coloured lines glow faintly.
-    if (card.classList.contains("taskcard--dlgwide")) {
-      const map = document.createElement("div");
-      map.className = "taskcard__submap";
-      map.setAttribute("aria-hidden", "true");
-      card.appendChild(map);
-    }
     card.appendChild(buildSubwayLine(data.subway));
   }
 
@@ -2205,17 +2225,24 @@ function appendWrittenBody(body, step, data, index, ctx) {
       head.append(badge, qt);
       panel.appendChild(head);
 
-      const key = `step${step.step}-task${index + 1}s${k + 1}`;
-      const input = document.createElement("input");
-      input.type = "text";
-      input.className = "taskcard__q-write";
-      input.setAttribute("autocomplete", "off");
-      if (q.starter) input.placeholder = q.starter;
-      input.dataset.answerKey = key;
-      const saved = getAnswers(ctx.unitId, ctx.sectionId)[key];
-      if (saved) input.value = saved;
-      input.addEventListener("input", () => setAnswer(ctx.unitId, ctx.sectionId, key, input.value));
-      panel.appendChild(input);
+      // One or more ruled writing lines (answerLines). Each line is its own
+      // single-line <input> (never a <textarea> — that caret-jumps the card on
+      // iPad). The first line carries the sentence starter as its placeholder.
+      const nLines = Math.max(1, data.answerLines || 1);
+      for (let li = 0; li < nLines; li += 1) {
+        const base = `step${step.step}-task${index + 1}s${k + 1}`;
+        const key = li === 0 ? base : `${base}_${li + 1}`;
+        const input = document.createElement("input");
+        input.type = "text";
+        input.className = "taskcard__q-write";
+        input.setAttribute("autocomplete", "off");
+        if (li === 0 && q.starter) input.placeholder = q.starter;
+        input.dataset.answerKey = key;
+        const saved = getAnswers(ctx.unitId, ctx.sectionId)[key];
+        if (saved) input.value = saved;
+        input.addEventListener("input", () => setAnswer(ctx.unitId, ctx.sectionId, key, input.value));
+        panel.appendChild(input);
+      }
       list.appendChild(panel);
     });
     body.appendChild(list);
@@ -2241,25 +2268,33 @@ function appendWrittenBody(body, step, data, index, ctx) {
   // Sentence starters — each becomes a "starter … [input]" row; the
   // learner completes five sentences. Replaces the single textarea.
   if (data.starters?.length && ctx) {
+    const nLines = Math.max(1, data.answerLines || 1);
     const list = document.createElement("div");
     list.className = "taskcard__starters";
     data.starters.forEach((starter, k) => {
       const row = document.createElement("div");
-      row.className = "taskcard__starter";
+      // With multiple answer lines the prompt sits on its own line above a
+      // little stack of ruled writing lines (column layout); the single-line
+      // default keeps the inline "prompt … [line]" look.
+      row.className = nLines > 1 ? "taskcard__starter taskcard__starter--multi" : "taskcard__starter";
       const label = document.createElement("span");
       label.className = "taskcard__starter-label";
       label.textContent = starter;
-      const key = `step${step.step}-task${index + 1}s${k + 1}`;
-      const input = document.createElement("input");
-      input.type = "text";
-      input.className = "taskcard__starter-input";
-      input.dataset.answerKey = key;
-      const saved = getAnswers(ctx.unitId, ctx.sectionId)[key];
-      if (saved) input.value = saved;
-      input.addEventListener("input", () => {
-        setAnswer(ctx.unitId, ctx.sectionId, key, input.value);
-      });
-      row.append(label, input);
+      row.appendChild(label);
+      const base = `step${step.step}-task${index + 1}s${k + 1}`;
+      for (let li = 0; li < nLines; li += 1) {
+        const key = li === 0 ? base : `${base}_${li + 1}`;
+        const input = document.createElement("input");
+        input.type = "text";
+        input.className = "taskcard__starter-input";
+        input.dataset.answerKey = key;
+        const saved = getAnswers(ctx.unitId, ctx.sectionId)[key];
+        if (saved) input.value = saved;
+        input.addEventListener("input", () => {
+          setAnswer(ctx.unitId, ctx.sectionId, key, input.value);
+        });
+        row.appendChild(input);
+      }
       list.appendChild(row);
     });
     body.appendChild(list);

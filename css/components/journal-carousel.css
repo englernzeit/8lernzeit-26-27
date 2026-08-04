@@ -384,7 +384,7 @@
    4-line panels. fitUniformCards then scales the whole card down by the width
    ratio so it fills the card at the mockup's proportions. */
 .journal .taskcard--dlgwide .taskcard__fit {
-  width: 81rem;
+  width: 76rem;
   align-self: center;
   flex: 0 0 auto;
 }

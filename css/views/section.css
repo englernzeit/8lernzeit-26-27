@@ -894,15 +894,30 @@
 }
 
 /* --- Dialogue split: compact directions + audio left, dialogue right ---- */
+/* Let the fit take its natural height so a tall dialogue makes fit.scrollHeight
+   exceed the box and the fit-scaler shrinks the card to fit (instead of the
+   flex layout pinning it to the box height and clipping the last lines). The
+   compound .taskcard--sheet.taskcard--split-dialogue selector outranks the
+   generic `.journal .taskcard--sheet .taskcard__fit { flex: 1 1 auto }`. */
+.journal .taskcard--sheet.taskcard--split-dialogue .taskcard__fit {
+  flex: 0 0 auto;
+}
+.taskcard--split-dialogue .taskcard__fit .taskcard__cols {
+  flex: 0 0 auto;
+  min-height: auto;
+}
 .taskcard--split-dialogue .taskcard__col--left {
-  flex: 0 0 38%;
+  flex: 0 0 33%;
   justify-content: flex-start;
 }
 .taskcard--split-dialogue .taskcard__col--right {
   flex: 1 1 0;
   min-width: 0;
   align-items: stretch;
-  justify-content: center;
+  /* Top-align (not centre): a tall dialogue then overflows DOWNWARD, so the
+     fit-scaler sees its true height and scales the card to fit — instead of a
+     centred overflow that clips the last lines and reports a false "it fits". */
+  justify-content: flex-start;
 }
 .taskcard--split-dialogue .taskcard__col--right > .exo {
   width: 100%;
@@ -1206,6 +1221,23 @@
 .taskcard__starter-input:focus-visible {
   outline: none;
   border-bottom-color: var(--j-coral);
+}
+
+/* answerLines > 1: the prompt sits on its own line above a small stack of
+   ruled writing lines, so each question gets real room to answer. */
+.taskcard__starter--multi {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.45rem;
+}
+.taskcard__starter--multi .taskcard__starter-label {
+  white-space: normal;
+  line-height: 1.35;
+}
+.taskcard__starter--multi .taskcard__starter-input {
+  flex: none;
+  width: 100%;
+  min-width: 0;
 }
 
 /* --- Icon strip (warm-up vocabulary badges) --------------------- */
