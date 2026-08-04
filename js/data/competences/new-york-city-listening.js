@@ -466,7 +466,7 @@ export default {
           kind: "Dialog · Audio 2",
           title: "Complete the dialogue",
           columns: 2,
-          subway: ["14 St – Union Sq", "23 St", "28 St", "34 St – Penn", "42 St – Times Sq"],
+          subway: ["34 St – Penn Station", "28 St", "23 St", "14 St – Union Sq", "8 St – NYU", "3 Av", "Grand Central – 42 St"],
           intro: "Listen and type the missing words and phrases — there is no word box, and some gaps need more than one word.",
           audio: { src: A2, label: "🎧 Audio 2 — Emma asks for help (listen 2–3×)" },
           items: [

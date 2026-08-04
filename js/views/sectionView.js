@@ -1308,6 +1308,11 @@ function buildCard(step, data, index, taskNo, ctx) {
       break;
     case "gap-fill":
       body.appendChild(createGapFill({ items: data.items, columns: data.columns }));
+      // A wide 2-column dialogue is laid out at a generous design width (so the
+      // lines wrap like the mockup, not into tall 4-line panels) and then the
+      // fit-scaler shrinks the whole card to fill the width. See the width
+      // branch in fitUniformCards + .taskcard--dlgwide in CSS.
+      if (data.columns === 2) card.classList.add("taskcard--dlgwide");
       break;
     case "image-match":
       body.appendChild(createImageMatch({ pairs: data.pairs }));
@@ -1960,11 +1965,20 @@ function fitUniformCards(view, pager) {
   const observed = [];
   // Scale `fit` down (as far as needed, never below the floor) so its content
   // fits `avail` px. Returns the fit element so we can observe it for reflow.
-  const fitInto = (fit, avail) => {
+  const fitInto = (fit, avail, availW) => {
     fit.style.transform = "none";
     const need = fit.scrollHeight;
-    if (avail > 0 && need > avail) {
-      const k = Math.max(MIN_SCALE, avail / need);
+    const needW = fit.scrollWidth;
+    // Fit to BOTH the height box and the width box, whichever binds harder.
+    // For every normal card the content is already ≤ the card width, so the
+    // width term is 1 and this behaves exactly as before. A card laid out
+    // deliberately wider than the box (taskcard--dlgwide) is scaled down by
+    // the width term so it fills the card at the mockup's proportions.
+    let k = 1;
+    if (avail > 0 && need > avail) k = Math.min(k, avail / need);
+    if (availW > 0 && needW > availW) k = Math.min(k, availW / needW);
+    if (k < 1) {
+      k = Math.max(MIN_SCALE, k);
       fit.style.transform = `scale(${k})`;
       fit.dataset.fit = k.toFixed(3);
     } else {
@@ -1981,14 +1995,23 @@ function fitUniformCards(view, pager) {
     view.querySelectorAll(".taskcard--sheet > .taskcard__body > .taskcard__fit").forEach((fit) => {
       const body = fit.parentElement;
       const cs = getComputedStyle(body);
-      fitInto(fit, body.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom));
+      fitInto(
+        fit,
+        body.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom),
+        body.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight),
+      );
     });
     // Cover: fit the whole intro (header + vocab + theory) into one screen.
     const cover = view.querySelector(".journal__cover");
     if (cover) {
       const cfit = cover.querySelector(":scope > .journal__cover-fit");
       const cs = getComputedStyle(cover);
-      if (cfit) fitInto(cfit, cover.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom));
+      if (cfit)
+        fitInto(
+          cfit,
+          cover.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom),
+          cover.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight),
+        );
     }
     // Now that heights are settled, tell the pager which pages can scroll.
     if (pager && pager.sync) pager.sync();

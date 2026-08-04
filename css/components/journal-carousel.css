@@ -378,6 +378,43 @@
   transition: transform 0.25s ease;
 }
 
+/* Wide-dialogue cards (Listening "Complete the dialogue"): lay the content out
+   at a generous DESIGN width so the two-column lines wrap to ~2 lines like the
+   mockup — instead of cramming into the real card width and stacking into tall
+   4-line panels. fitUniformCards then scales the whole card down by the width
+   ratio so it fills the card at the mockup's proportions. */
+.journal .taskcard--dlgwide .taskcard__fit {
+  width: 81rem;
+  align-self: center;
+  flex: 0 0 auto;
+}
+/* Slim the audio bar on this dense card so the dialogue owns the height. */
+.journal .taskcard--dlgwide .exo-audio {
+  margin-bottom: 0.5rem;
+  padding: 0.5rem 0.9rem;
+}
+.journal .taskcard--dlgwide .exo-audio__btn { width: 2.6rem; height: 2.6rem; }
+/* Blanks read as clean underlines (like the mockup), not filled grey boxes.
+   The right/wrong tints still apply once the learner checks their answers. */
+.journal .taskcard--dlgwide .exo-gap__blank {
+  background: transparent;
+  border-radius: 0;
+  border-bottom: 2px solid rgba(126, 150, 176, 0.55);
+}
+.journal .taskcard--dlgwide .exo-gap__blank:focus-visible {
+  background: rgba(164, 108, 245, 0.1);
+  border-bottom-color: var(--j-coral);
+}
+/* Portrait: no room for the wide two-column design — revert to the normal
+   full-height fit; the dialogue stacks in one column (see exo-gap media query). */
+@media (orientation: portrait) {
+  .journal .taskcard--dlgwide .taskcard__fit {
+    width: auto;
+    align-self: stretch;
+    flex: 1 1 auto;
+  }
+}
+
 /* Faded full-card background image: a picture that fills the whole card,
    dimmed so the task content stays readable on top and costs no space. */
 .taskcard--bg {
