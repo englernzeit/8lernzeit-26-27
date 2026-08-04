@@ -387,6 +387,83 @@ export function createMultipleChoice({ questions, columns, shuffle = true, lineR
   return wrap;
 }
 
+/* ---------- Comment quiz (Writing "Good comment or bad comment?") ----
+ * A list of blog comments; each row shows the commenter (avatar + name) and
+ * their comment, then two face buttons — 😊 Good / ☹ Bad. Tapping gives
+ * instant feedback (right locks green, wrong marks red and keeps trying),
+ * like the multiple-choice card but styled as a comment thread. Used with the
+ * Alex's-blog scene layout (photo right, blog chip top-right). */
+const CQ_PERSON =
+  '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8.2" r="3.4"/>' +
+  '<path d="M5.5 19.5a6.5 6.5 0 0 1 13 0z"/></svg>';
+const cqFace = (kind) =>
+  '<svg class="exo-cq__face" viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+  'stroke-width="2" stroke-linecap="round" aria-hidden="true">' +
+  '<circle cx="12" cy="12" r="9"/><path d="M8.6 9.8h.01"/><path d="M15.4 9.8h.01"/>' +
+  (kind === "good" ? '<path d="M8 14.2c1 1.3 2.4 2 4 2s3-.7 4-2"/>' : '<path d="M8 16c1-1.3 2.4-2 4-2s3 .7 4 2"/>') +
+  "</svg>";
+
+export function createCommentQuiz({ comments }) {
+  const wrap = document.createElement("div");
+  wrap.className = "exo exo-cq";
+
+  comments.forEach((c, i) => {
+    const row = document.createElement("div");
+    row.className = "exo-cq__row";
+
+    const num = document.createElement("span");
+    num.className = "exo-cq__num";
+    num.textContent = `${i + 1}.`;
+
+    const main = document.createElement("div");
+    main.className = "exo-cq__main";
+    const who = document.createElement("span");
+    who.className = "exo-cq__who";
+    const ava = document.createElement("span");
+    ava.className = "exo-cq__ava";
+    ava.innerHTML = CQ_PERSON;
+    const name = document.createElement("span");
+    name.className = "exo-cq__name";
+    name.textContent = c.author;
+    who.append(ava, name);
+    const text = document.createElement("p");
+    text.className = "exo-cq__text";
+    text.textContent = `“${c.text}”`;
+    main.append(who, text);
+
+    const btns = document.createElement("div");
+    btns.className = "exo-cq__btns";
+    let solved = false;
+    const makeBtn = (kind, label, correct) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = `exo-cq__btn exo-cq__btn--${kind}`;
+      b.innerHTML = `${cqFace(kind)}<span>${label}</span>`;
+      b.addEventListener("click", () => {
+        if (solved || b.disabled) return;
+        if (correct) {
+          solved = true;
+          b.classList.add("exo-cq__btn--right");
+          btns.querySelectorAll("button").forEach((x) => (x.disabled = true));
+        } else {
+          b.classList.add("exo-cq__btn--wrong");
+          b.disabled = true;
+        }
+      });
+      return b;
+    };
+    btns.append(
+      makeBtn("good", "Good", c.answer === "good"),
+      makeBtn("bad", "Bad", c.answer === "bad"),
+    );
+
+    row.append(num, main, btns);
+    wrap.appendChild(row);
+  });
+
+  return wrap;
+}
+
 /* ---------- Right or wrong (picture true/false grid) ----------- */
 
 /**

@@ -33,6 +33,18 @@ const GB5 = "5 · Close — netter Schluss";
 
 const BLOG_IMG = "assets/blog/unit1";
 
+/** The blog post the whole page reacts to, as shown in the top-right "blog
+ * chip" of the Writing scene cards (Alex's avatar + post title + meta row). */
+const POST = {
+  blog: "Alex's NYC Blog",
+  title: "Staying in New York 🍏",
+  date: "May 12",
+  place: "New York, NY",
+  likes: 42,
+  comments: 18,
+  avatar: `${BLOG_IMG}/alex.jpg`,
+};
+
 /** Blog "furniture" shared by Alex's three posts: the author byline plus the
  * sidebar widgets (About / Categories / Popular posts) and the cover photo.
  * Each reading card spreads this and overrides only its own `date`; the
@@ -219,18 +231,17 @@ export default {
           ],
         },
         {
-          type: "multiple-choice",
+          type: "comment-quiz",
           kind: "Quiz",
           title: "Good comment or bad comment?",
           intro: "Read each comment under Alex's post. Good netiquette — or bad? Tap your answer.",
-          // Fixed order: Good is always left, Bad always right.
-          shuffle: false,
-          questions: [
-            { q: "“Your post is stupid and boring.”", options: ["Good ✔", "Bad ✖"], correct: 1 },
-            { q: "“Great post! I also love Central Park because it is so green.”", options: ["Good ✔", "Bad ✖"], correct: 0 },
-            { q: "“cool”", options: ["Good ✔", "Bad ✖"], correct: 1 },
-            { q: "“Thanks, Alex! I think six dollars for a hot dog is crazy!”", options: ["Good ✔", "Bad ✖"], correct: 0 },
-            { q: "“Nobody wants to read your blog!!!”", options: ["Good ✔", "Bad ✖"], correct: 1 },
+          blogChip: POST,
+          comments: [
+            { author: "Anonymous", text: "Your post is stupid and boring.", answer: "bad" },
+            { author: "Emma", text: "Great post! I also love Central Park because it is so green.", answer: "good" },
+            { author: "Mike", text: "cool", answer: "bad" },
+            { author: "Sam", text: "Thanks, Alex! I think six dollars for a hot dog is crazy!", answer: "good" },
+            { author: "Chris", text: "Nobody wants to read your blog!!!", answer: "bad" },
           ],
         },
         {

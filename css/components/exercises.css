@@ -5518,8 +5518,9 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
   background-position: center, center, right center;
   background-repeat: no-repeat;
 }
-/* Lift all real content above the photo layer. */
-.journal[data-section="writing"] .taskcard--sheet:not(.taskcard--blog):not(.taskcard--video) > * { position: relative; z-index: 1; }
+/* Lift all real content above the photo layer (the blog chip keeps its own
+   absolute top-right placement, so exclude it from this relative override). */
+.journal[data-section="writing"] .taskcard--sheet:not(.taskcard--blog):not(.taskcard--video) > *:not(.taskcard__blogchip) { position: relative; z-index: 1; }
 /* Frost the task panels so text stays legible over the photo. */
 .journal[data-section="writing"] .taskcard--sheet:not(.taskcard--blog):not(.taskcard--video) :is(
   .exo-mc__opt, .exo-sort__chip, .exo-sort__bin-drop, .exo-sort__bin,
@@ -5528,4 +5529,143 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
 ) {
   -webkit-backdrop-filter: blur(7px) saturate(1.1);
   backdrop-filter: blur(7px) saturate(1.1);
+}
+
+/* ===================================================================
+   WRITING "scene" cards (Task 1 quiz, …) — content in the left column, the
+   desk photo on the right, a glass blog chip floating top-right.
+   =================================================================== */
+.taskcard--blogscene .taskcard__body { padding-right: 36%; }
+
+/* --- Blog chip (top-right) --------------------------------------- */
+.taskcard__blogchip {
+  position: absolute;
+  top: 1.1rem;
+  right: 1.4rem;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  width: min(34%, 25rem);
+  padding: 0.7rem 1rem;
+  border-radius: 16px;
+  border: 1px solid rgba(184, 204, 234, 0.28);
+  background: rgba(19, 32, 54, 0.5);
+  -webkit-backdrop-filter: blur(13px) saturate(1.25);
+  backdrop-filter: blur(13px) saturate(1.25);
+  box-shadow: 0 10px 26px rgba(7, 14, 26, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+.taskcard__blogchip-ava {
+  flex: 0 0 auto;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 1.5px solid rgba(255, 255, 255, 0.28);
+}
+.taskcard__blogchip-ava img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.taskcard__blogchip-body { min-width: 0; }
+.taskcard__blogchip-label {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--j-coral);
+}
+.taskcard__blogchip-title {
+  display: block;
+  font-family: var(--j-font-display);
+  font-size: 1.35rem;
+  line-height: 1.1;
+  color: var(--j-ink);
+  margin-top: 0.05rem;
+}
+.taskcard__blogchip-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.1rem 0.5rem;
+  margin-top: 0.35rem;
+}
+.taskcard__blogchip-m {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.24rem;
+  font-size: 0.76rem;
+  white-space: nowrap;
+  color: var(--j-khaki);
+}
+.taskcard__blogchip-m svg { width: 0.85rem; height: 0.85rem; flex: 0 0 auto; }
+
+/* --- Comment quiz rows ------------------------------------------- */
+.exo-cq { display: flex; flex-direction: column; gap: 0.5rem; }
+.exo-cq__row {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid rgba(164, 184, 214, 0.16);
+  border-radius: 13px;
+  background: rgba(18, 31, 52, 0.42);
+  -webkit-backdrop-filter: blur(7px);
+  backdrop-filter: blur(7px);
+}
+.exo-cq__num {
+  flex: 0 0 auto;
+  min-width: 1.4rem;
+  font-family: var(--j-font-display);
+  font-size: 1.5rem;
+  color: var(--j-secondary);
+}
+.exo-cq__main { flex: 1 1 auto; min-width: 0; }
+.exo-cq__who { display: inline-flex; align-items: center; gap: 0.4rem; }
+.exo-cq__ava {
+  width: 1.4rem;
+  height: 1.4rem;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: var(--j-coral);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.exo-cq__ava svg { width: 1rem; height: 1rem; fill: #fff; }
+.exo-cq__name { font-weight: 700; font-size: 1.05rem; color: var(--j-coral); }
+.exo-cq__text { margin: 0.12rem 0 0; font-size: 1.12rem; line-height: 1.3; color: var(--j-ink); }
+.exo-cq__btns { display: flex; gap: 0.55rem; flex: 0 0 auto; }
+.exo-cq__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  min-width: 6rem;
+  padding: 0.42rem 1rem;
+  border-radius: 999px;
+  border: 1.5px solid rgba(164, 184, 214, 0.32);
+  background: rgba(18, 31, 52, 0.4);
+  color: var(--j-ink);
+  font-size: 1.06rem;
+  font-weight: 600;
+  transition: border-color 0.15s, background 0.15s, transform 0.1s;
+}
+.exo-cq__face { width: 1.45rem; height: 1.45rem; flex: 0 0 auto; }
+.exo-cq__btn--good .exo-cq__face { color: var(--j-olive); }
+.exo-cq__btn--bad .exo-cq__face { color: #ef6d7a; }
+.exo-cq__btn:not(:disabled):hover { border-color: rgba(200, 216, 240, 0.5); }
+.exo-cq__btn:active { transform: scale(0.96); }
+.exo-cq__btn--right {
+  border-color: var(--j-olive);
+  background: rgba(90, 217, 143, 0.22);
+}
+.exo-cq__btn--wrong {
+  border-color: #ef6d7a;
+  background: rgba(239, 109, 122, 0.18);
+}
+.exo-cq__btn:disabled { cursor: default; }
+
+@media (orientation: portrait) {
+  /* No room for a dedicated photo column in portrait — content uses the full
+     width; the chip stays a compact glass badge in the top-right corner. */
+  .taskcard--blogscene .taskcard__body { padding-right: 1.8rem; }
+  .taskcard__blogchip { width: min(46%, 20rem); }
 }

@@ -21,6 +21,7 @@ import { createJournalCarousel } from "../components/journalCarousel.js";
 import {
   createGlossaryText,
   createMultipleChoice,
+  createCommentQuiz,
   createRightWrong,
   createGroupSort,
   createSentenceBuild,
@@ -1158,6 +1159,54 @@ function buildStepSection(step, ctx) {
  * @param {number} taskNo
  * @param {{unitId: string, sectionId: string}} ctx
  */
+/* A small glass "blog card" that floats in the top-right corner of the Writing
+ * scene cards: Alex's avatar, the blog + post title, and a meta row (date ·
+ * place · likes · comments). Card chrome — sits over the desk photo. */
+const CHIP_ICONS = {
+  cal: '<path d="M7 2v3M17 2v3M3.5 8.5h17M5 4.5h14a1.5 1.5 0 0 1 1.5 1.5v13A1.5 1.5 0 0 1 19 20.5H5A1.5 1.5 0 0 1 3.5 19V6A1.5 1.5 0 0 1 5 4.5z"/>',
+  pin: '<path d="M12 21s7-5.6 7-11a7 7 0 1 0-14 0c0 5.4 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/>',
+  heart: '<path d="M12 20s-7-4.6-7-9.7A4.3 4.3 0 0 1 12 7a4.3 4.3 0 0 1 7 3.3C19 15.4 12 20 12 20z"/>',
+  chat: '<path d="M20 12a7.5 7.5 0 0 1-10.9 6.7L4 20l1.3-4.2A7.5 7.5 0 1 1 20 12z"/>',
+};
+function chipMeta(icon, text) {
+  return (
+    '<span class="taskcard__blogchip-m"><svg viewBox="0 0 24 24" fill="none" ' +
+    'stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" ' +
+    `aria-hidden="true">${CHIP_ICONS[icon]}</svg>${text}</span>`
+  );
+}
+function buildBlogChip(chip) {
+  const el = document.createElement("aside");
+  el.className = "taskcard__blogchip";
+  if (chip.avatar) {
+    const ava = document.createElement("span");
+    ava.className = "taskcard__blogchip-ava";
+    const img = document.createElement("img");
+    img.src = chip.avatar;
+    img.alt = "";
+    ava.appendChild(img);
+    el.appendChild(ava);
+  }
+  const bd = document.createElement("div");
+  bd.className = "taskcard__blogchip-body";
+  const label = document.createElement("span");
+  label.className = "taskcard__blogchip-label";
+  label.textContent = chip.blog;
+  const title = document.createElement("span");
+  title.className = "taskcard__blogchip-title";
+  title.textContent = chip.title;
+  const meta = document.createElement("div");
+  meta.className = "taskcard__blogchip-meta";
+  meta.innerHTML =
+    chipMeta("cal", chip.date) +
+    chipMeta("pin", chip.place) +
+    chipMeta("heart", chip.likes) +
+    chipMeta("chat", chip.comments);
+  bd.append(label, title, meta);
+  el.appendChild(bd);
+  return el;
+}
+
 function buildCard(step, data, index, taskNo, ctx) {
   const card = document.createElement("article");
   card.className = `taskcard taskcard--sheet taskcard--${step.accent}`;
@@ -1299,6 +1348,9 @@ function buildCard(step, data, index, taskNo, ctx) {
       );
       break;
     }
+    case "comment-quiz":
+      body.appendChild(createCommentQuiz({ comments: data.comments }));
+      break;
     case "right-wrong": {
       const base = `step${step.step}-task${index + 1}`;
       const saved = ctx ? getAnswers(ctx.unitId, ctx.sectionId) : {};
@@ -1777,6 +1829,14 @@ function buildCard(step, data, index, taskNo, ctx) {
   // the reserved bottom strip. Sits outside the fit layer so it never scales.
   if (data.subway?.length) {
     card.appendChild(buildSubwayLine(data.subway));
+  }
+
+  // Alex's-blog "scene" cards (Writing drafts): the content holds the left
+  // column while the desk photo fills the right, and a glass blog chip floats in
+  // the top-right corner. Appended last so it layers above the content.
+  if (data.blogChip) {
+    card.classList.add("taskcard--blogscene");
+    card.appendChild(buildBlogChip(data.blogChip));
   }
 
   return card;
