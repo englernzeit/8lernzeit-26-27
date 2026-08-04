@@ -419,6 +419,16 @@ export default {
           kind: "Modell",
           title: "Lisa's comment — all 5 blocks",
           intro: "Lisa's comment is a perfect example: all five blocks, in order. Read it — then find the blocks in Task 1.",
+          checklist: {
+            title: "All 5 blocks",
+            items: [
+              "Say hello + thank you",
+              "Say what you liked",
+              "Your opinion + because",
+              "Answer Alex's question",
+              "Friendly ending",
+            ],
+          },
           comments: [
             {
               user: "Lisa_2011",

@@ -5518,9 +5518,9 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
   background-position: center, center, right center;
   background-repeat: no-repeat;
 }
-/* Lift all real content above the photo layer (the blog chip keeps its own
-   absolute top-right placement, so exclude it from this relative override). */
-.journal[data-section="writing"] .taskcard--sheet:not(.taskcard--blog):not(.taskcard--video) > *:not(.taskcard__blogchip) { position: relative; z-index: 1; }
+/* Lift all real content above the photo layer (the floating blog chip and
+   checklist keep their own absolute placement, so exclude them here). */
+.journal[data-section="writing"] .taskcard--sheet:not(.taskcard--blog):not(.taskcard--video) > *:not(.taskcard__blogchip):not(.taskcard__checklist) { position: relative; z-index: 1; }
 /* Frost the task panels so text stays legible over the photo. */
 .journal[data-section="writing"] .taskcard--sheet:not(.taskcard--blog):not(.taskcard--video) :is(
   .exo-mc__opt, .exo-sort__chip, .exo-sort__bin-drop, .exo-sort__bin,
@@ -5637,6 +5637,71 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
   color: var(--j-khaki);
 }
 .taskcard__blogchip-m svg { width: 0.85rem; height: 0.85rem; flex: 0 0 auto; }
+
+/* --- "All 5 blocks" checklist panel (right side, over the photo) --- */
+.taskcard__checklist {
+  position: absolute;
+  top: 50%;
+  right: 1.6rem;
+  transform: translateY(-50%);
+  z-index: 4;
+  width: min(30%, 20rem);
+  padding: 1rem 1.15rem;
+  border-radius: 16px;
+  border: 1px solid rgba(184, 204, 234, 0.28);
+  background: rgba(19, 32, 54, 0.5);
+  -webkit-backdrop-filter: blur(13px) saturate(1.25);
+  backdrop-filter: blur(13px) saturate(1.25);
+  box-shadow: 0 10px 26px rgba(7, 14, 26, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+.taskcard__checklist-head {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.8rem;
+}
+.taskcard__checklist-icon {
+  flex: 0 0 auto;
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--j-olive);
+  background: rgba(90, 217, 143, 0.18);
+  border: 1px solid rgba(90, 217, 143, 0.4);
+}
+.taskcard__checklist-icon svg { width: 1.3rem; height: 1.3rem; }
+.taskcard__checklist-title {
+  font-family: var(--j-font-display);
+  font-size: 1.5rem;
+  color: var(--j-olive);
+}
+.taskcard__checklist-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+.taskcard__checklist-item {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 1.05rem;
+  color: var(--j-ink);
+}
+.taskcard__checklist-tick { flex: 0 0 auto; display: inline-flex; color: var(--j-olive); }
+.taskcard__checklist-tick svg { width: 1.2rem; height: 1.2rem; }
+
+@media (orientation: portrait) {
+  /* Portrait has no photo column for the checklist to float over, and the card
+     is a fixed height, so hide the reference panel — the comment itself (the
+     task) uses the full width. */
+  .taskcard__checklist { display: none; }
+}
 
 /* --- Comment quiz rows ------------------------------------------- */
 .exo-cq { display: flex; flex-direction: column; gap: 0.5rem; }

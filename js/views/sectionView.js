@@ -1207,6 +1207,46 @@ function buildBlogChip(chip) {
   return el;
 }
 
+/* A frosted "checklist" panel that floats over the desk photo on the right of a
+ * Writing scene card (e.g. the model comment's "All 5 blocks"): a quill icon +
+ * green title, then numbered items each ticked with a green check. */
+const CHECKLIST_PEN =
+  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" ' +
+  'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+  '<path d="M4 20h3.5L18 9.5a2 2 0 1 0-2.8-2.8L4.5 17.4 4 20z"/><path d="M13.5 8.2l2.3 2.3"/></svg>';
+const CHECKLIST_TICK =
+  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" ' +
+  'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+  '<circle cx="12" cy="12" r="9"/><path d="M8.4 12.3l2.3 2.3 4.9-5"/></svg>';
+function buildBlockChecklist(cl) {
+  const el = document.createElement("aside");
+  el.className = "taskcard__checklist";
+  const head = document.createElement("div");
+  head.className = "taskcard__checklist-head";
+  const ic = document.createElement("span");
+  ic.className = "taskcard__checklist-icon";
+  ic.innerHTML = CHECKLIST_PEN;
+  const title = document.createElement("span");
+  title.className = "taskcard__checklist-title";
+  title.textContent = cl.title;
+  head.append(ic, title);
+  const ul = document.createElement("ul");
+  ul.className = "taskcard__checklist-list";
+  cl.items.forEach((item, i) => {
+    const li = document.createElement("li");
+    li.className = "taskcard__checklist-item";
+    const tick = document.createElement("span");
+    tick.className = "taskcard__checklist-tick";
+    tick.innerHTML = CHECKLIST_TICK;
+    const label = document.createElement("span");
+    label.textContent = `${i + 1}. ${item}`;
+    li.append(tick, label);
+    ul.appendChild(li);
+  });
+  el.append(head, ul);
+  return el;
+}
+
 function buildCard(step, data, index, taskNo, ctx) {
   const card = document.createElement("article");
   card.className = `taskcard taskcard--sheet taskcard--${step.accent}`;
@@ -1838,9 +1878,12 @@ function buildCard(step, data, index, taskNo, ctx) {
   // last so it layers above the content.
   if (data.blogChip) {
     card.classList.add("taskcard--haschip");
-    if (data.blogScene) card.classList.add("taskcard--blogscene");
     card.appendChild(buildBlogChip(data.blogChip));
   }
+  // `blogScene` holds the content in a left column so the photo (and any right
+  // panel) shows on the right; a checklist panel floats over that right side.
+  if (data.blogScene || data.checklist) card.classList.add("taskcard--blogscene");
+  if (data.checklist) card.appendChild(buildBlockChecklist(data.checklist));
 
   return card;
 }
