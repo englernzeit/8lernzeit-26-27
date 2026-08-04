@@ -1710,6 +1710,14 @@ function buildCard(step, data, index, taskNo, ctx) {
   // Subway-line footer (card chrome): a stylised red line with named stops in
   // the reserved bottom strip. Sits outside the fit layer so it never scales.
   if (data.subway?.length) {
+    // Faint real NYC subway map behind the strip (mockup). Screen-blended so the
+    // near-black land/water drop out and only the coloured lines glow faintly.
+    if (card.classList.contains("taskcard--dlgwide")) {
+      const map = document.createElement("div");
+      map.className = "taskcard__submap";
+      map.setAttribute("aria-hidden", "true");
+      card.appendChild(map);
+    }
     card.appendChild(buildSubwayLine(data.subway));
   }
 

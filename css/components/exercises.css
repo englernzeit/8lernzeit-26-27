@@ -419,6 +419,31 @@
    never overlaps it. Sits outside the fit layer, so it never scales. */
 .taskcard--subway { overflow: hidden; }
 .taskcard--subway > .taskcard__body { padding-bottom: 3.7rem; }
+
+/* Faint NYC subway map behind the bottom of the dialogue card (mockup). The
+   map's land/water are near-black, so mix-blend-mode: screen drops them out
+   and leaves only the coloured lines glowing over the card; a soft mask fades
+   the top and left edges so it melts into the card instead of ending in a box.
+   Sits under the content (z 0); the red line footer (z 2) rides on top. */
+.taskcard--dlgwide { position: relative; }
+.taskcard__submap {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 66%;
+  height: 82%;
+  z-index: 0;
+  pointer-events: none;
+  background: url("../../assets/listening/unit1/subway-map.svg") no-repeat;
+  background-position: 48% 90%;
+  background-size: 175% auto;
+  opacity: 0.28;
+  mix-blend-mode: screen;
+  -webkit-mask-image: linear-gradient(to top left, #000 8%, transparent 62%);
+  mask-image: linear-gradient(to top left, #000 8%, transparent 62%);
+}
+/* Keep the dialogue content above the faint map. */
+.taskcard--dlgwide > .taskcard__body { position: relative; z-index: 1; }
 .taskcard__subway {
   position: absolute;
   left: 1.8rem;
