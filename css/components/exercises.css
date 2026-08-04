@@ -5460,3 +5460,31 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
 .exo-quiz__report-grade span { color: var(--j-ink); font-size: 1.1rem; }
 .exo-quiz__report-rows { margin: 0; font-family: var(--j-font-body); font-size: 0.92rem; color: var(--j-secondary); }
 .exo-quiz__report-rows b { color: var(--j-ink); }
+
+/* ===================================================================
+   WRITING page — bigger, more readable type.
+   These cards sit well within the card width (verified: nothing overflows
+   left-to-right in landscape) and mostly under-fill the height, so the text
+   was smaller than it needed to be. Bump the core elements a notch; the
+   fit-scaler still shrinks any card that would overflow, so this only grows
+   the ones with room. Scoped to the Writing page via [data-section].
+   =================================================================== */
+.journal[data-section="writing"] .taskcard__intro { font-size: 1.32rem; }
+/* Multiple-choice ("Good comment or bad comment?" etc.) */
+.journal[data-section="writing"] .exo-mc__prompt { font-size: 1.3rem; }
+.journal[data-section="writing"] .exo-mc__opt { font-size: 1.18rem; padding: 0.4rem 1rem; }
+/* Sentence-starter writing tasks ("Your opinion", "Make it polite!", …) */
+.journal[data-section="writing"] .taskcard__starter-label { font-size: 1.5rem; }
+.journal[data-section="writing"] .taskcard__starter-input { font-size: 1.45rem; }
+/* Sort-into-blocks phrase chips + block labels */
+.journal[data-section="writing"] .exo-sort__chip { font-size: 1.16rem; }
+.journal[data-section="writing"] .exo-sort__bin-label { font-size: 1.28rem; }
+
+/* Portrait: a couple of writing tasks pair a long nowrap prompt with a wide
+   answer line, which together overrun the narrow width (they were being scaled
+   down to compensate). Let the prompt wrap and drop the answer line onto its own
+   full-width row so the whole thing fits left-to-right at full size. */
+@media (orientation: portrait) {
+  .journal[data-section="writing"] .taskcard__starter-label { white-space: normal; }
+  .journal[data-section="writing"] .taskcard__starter-input { flex-basis: 100%; min-width: 0; }
+}
