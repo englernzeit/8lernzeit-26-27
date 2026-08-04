@@ -1831,11 +1831,14 @@ function buildCard(step, data, index, taskNo, ctx) {
     card.appendChild(buildSubwayLine(data.subway));
   }
 
-  // Alex's-blog "scene" cards (Writing drafts): the content holds the left
-  // column while the desk photo fills the right, and a glass blog chip floats in
-  // the top-right corner. Appended last so it layers above the content.
+  // Alex's-blog "scene" cards (Writing drafts): a glass blog chip floats in the
+  // top-right corner over the desk photo. `blogScene` additionally holds the
+  // content in a left column so the photo shows on the right (Task 1 quiz);
+  // without it the content keeps the full width (Task 5 step grid). Appended
+  // last so it layers above the content.
   if (data.blogChip) {
-    card.classList.add("taskcard--blogscene");
+    card.classList.add("taskcard--haschip");
+    if (data.blogScene) card.classList.add("taskcard--blogscene");
     card.appendChild(buildBlogChip(data.blogChip));
   }
 

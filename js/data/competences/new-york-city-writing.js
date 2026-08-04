@@ -236,6 +236,7 @@ export default {
           title: "Good comment or bad comment?",
           intro: "Read each comment under Alex's post. Good netiquette — or bad? Tap your answer.",
           blogChip: POST,
+          blogScene: true,
           comments: [
             { author: "Anonymous", text: "Your post is stupid and boring.", answer: "bad" },
             { author: "Emma", text: "Great post! I also love Central Park because it is so green.", answer: "good" },
@@ -308,36 +309,42 @@ export default {
           kind: "Finale",
           title: "Write YOUR comment!",
           intro: "Now answer Alex! Build your comment step by step — use your ideas from Task 4.",
+          blogChip: POST,
           paragraph: {
             title: "Your comment under Alex's post",
             goal: "All 5 steps, at least one because, friendly words.",
             sentences: [
               {
                 label: "Step 1 — Say hello + thank you",
+                icon: "chat",
                 starter: "Hi Alex!",
                 hint: "Begrüßung + Danke für den Post.",
                 example: "Hi Alex! Thanks for your great post!",
               },
               {
                 label: "Step 2 — Say what you liked",
+                icon: "heart",
                 starter: "I liked the part about",
                 hint: "Was fandest du im Blog gut?",
                 example: "I liked the part about Central Park.",
               },
               {
                 label: "Step 3 — Your opinion + because",
+                icon: "chat",
                 starter: "I think New York is",
                 hint: "Deine Meinung + because + Grund!",
                 example: "I think New York is exciting because there is so much to see.",
               },
               {
                 label: "Step 4 — Answer Alex's question",
+                icon: "question",
                 starter: "I could / couldn't live there because",
                 hint: "Könntest du dort leben? Warum (nicht)?",
                 example: "I couldn't live there because it is too loud for me.",
               },
               {
                 label: "Step 5 — Friendly ending",
+                icon: "wave",
                 starter: "",
                 hint: "Netter Schluss + Gruß.",
                 example: "Keep writing! Greetings from Frankfurt!",

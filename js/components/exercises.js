@@ -1699,9 +1699,24 @@ export function createArgumentPick({ args, lead: leadText, labels = {} }) {
  *   values: Record<string,string>, keyFor: (i:number)=>string, onChange: (i:number, v:string)=>void,
  * }} opts
  */
+// Step-panel icons (opt-in via sentence.icon) — thin line glyphs in a soft
+// circle, matching the "build your comment" draft.
+const PARA_ICONS = {
+  chat: '<path d="M20 11.5a7 7 0 0 1-10 6.3L4.5 19l1.2-3.7A7 7 0 1 1 20 11.5z"/>',
+  heart: '<path d="M12 19.5s-6.5-4.3-6.5-9A4 4 0 0 1 12 7.2 4 4 0 0 1 18.5 10.5c0 4.7-6.5 9-6.5 9z"/>',
+  question:
+    '<circle cx="12" cy="12" r="9"/><path d="M9.6 9.6a2.4 2.4 0 1 1 3.5 2.1c-.8.4-1.2 1-1.2 1.9"/><path d="M12 16.6h.01"/>',
+  wave: '<path d="M6.5 12.5 5 11a1.3 1.3 0 0 1 1.9-1.8l1.1 1.1V6.2a1.3 1.3 0 0 1 2.6 0v3.6m0 0V5.4a1.3 1.3 0 0 1 2.6 0v4.4m0 0V6.6a1.3 1.3 0 0 1 2.6 0v5.9a6 6 0 0 1-6 6 6 6 0 0 1-5.2-3z"/>',
+};
+
 export function createParagraphBuilder({ paragraph, values, keyFor, onChange }) {
   const wrap = document.createElement("div");
   wrap.className = "exo exo-para";
+  // "Stepped" cards number each block and put a line icon on the left (Writing
+  // "Write YOUR comment!"). Opt-in so the plain paragraph builder (Revision) is
+  // unaffected — it renders when a sentence carries an `icon`.
+  const stepped = paragraph.sentences.some((s) => s.icon);
+  if (stepped) wrap.classList.add("exo-para--stepped");
 
   const goal = document.createElement("p");
   goal.className = "exo-para__goal";
@@ -1718,12 +1733,37 @@ export function createParagraphBuilder({ paragraph, values, keyFor, onChange }) 
     const row = document.createElement("div");
     row.className = "exo-para__row";
 
+    // A stepped row is a flex of [icon] + [content column]; a plain row is just
+    // the content stacked directly, exactly as before.
+    let content = row;
+    if (stepped) {
+      row.classList.add("exo-para__row--stepped");
+      const icon = document.createElement("span");
+      icon.className = "exo-para__icon";
+      icon.innerHTML =
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" ' +
+        `stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${PARA_ICONS[s.icon] || ""}</svg>`;
+      row.appendChild(icon);
+      content = document.createElement("div");
+      content.className = "exo-para__content";
+      row.appendChild(content);
+    }
+
     const head = document.createElement("div");
     head.className = "exo-para__head";
+    const titleGroup = document.createElement("span");
+    titleGroup.className = "exo-para__titlegroup";
+    if (stepped) {
+      const badge = document.createElement("span");
+      badge.className = "exo-para__badge";
+      badge.textContent = String(i + 1);
+      titleGroup.appendChild(badge);
+    }
     const label = document.createElement("span");
     label.className = "exo-para__label";
     label.textContent = s.label;
-    head.appendChild(label);
+    titleGroup.appendChild(label);
+    head.appendChild(titleGroup);
 
     let exBox = null;
     if (s.example) {
@@ -1741,8 +1781,8 @@ export function createParagraphBuilder({ paragraph, values, keyFor, onChange }) 
       });
       head.appendChild(toggle);
     }
-    row.appendChild(head);
-    if (exBox) row.appendChild(exBox);
+    content.appendChild(head);
+    if (exBox) content.appendChild(exBox);
 
     const line = document.createElement("div");
     line.className = "exo-para__line";
@@ -1757,13 +1797,13 @@ export function createParagraphBuilder({ paragraph, values, keyFor, onChange }) 
     input.value = values?.[keyFor(i)] ?? "";
     input.addEventListener("input", () => onChange(i, input.value));
     line.append(starter, input);
-    row.appendChild(line);
+    content.appendChild(line);
 
     if (s.hint) {
       const hint = document.createElement("p");
       hint.className = "exo-para__hint";
       hint.textContent = `🇩🇪 ${s.hint}`;
-      row.appendChild(hint);
+      content.appendChild(hint);
     }
     rows.appendChild(row);
   });
