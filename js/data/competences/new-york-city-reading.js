@@ -299,6 +299,7 @@ export default {
           title: "Fill in the words",
           intro: "Choose the right word from the box for each gap.",
           bank: ["bike", "helmet", "New York", "delivers", "packages"],
+          bankDe: { bike: "Fahrrad", helmet: "Helm", "New York": "New York", delivers: "liefert", packages: "Pakete" },
           segments: [
             "Leo lives in ",
             { gap: 0 },

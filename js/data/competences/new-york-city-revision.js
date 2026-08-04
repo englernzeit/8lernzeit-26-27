@@ -107,6 +107,7 @@ export default {
           title: "New York City — fact file",
           intro: "Choose the right word from the box for each gap.",
           bank: ["USA", "Apple", "five", "Central", "Liberty", "Times"],
+          bankDe: { USA: "USA", Apple: "Apfel", five: "fünf", Central: "Central Park", Liberty: "Freiheit", Times: "Times Square" },
           segments: [
             "New York City is in the ",
             { gap: 0 },

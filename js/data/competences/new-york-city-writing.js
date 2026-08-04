@@ -259,6 +259,7 @@ export default {
           title: "Complete Tom's comment",
           intro: "Choose the right word from the box for each gap.",
           bank: ["because", "Thanks", "liked", "Greetings", "think"],
+          bankDe: { because: "weil", Thanks: "Danke", liked: "hat gefallen", Greetings: "Grüße", think: "denken" },
           segments: [
             "Hi Alex! ",
             { gap: 0 },

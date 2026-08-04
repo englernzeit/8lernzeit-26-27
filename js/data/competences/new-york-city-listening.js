@@ -101,6 +101,14 @@ function splitDialogue(card, lineCounts) {
   return parts;
 }
 
+// Drop the "Useful language" word box from the second half of a split dialogue
+// (the gap dropdowns still work) — used where the first card scaffolds the words
+// and the follow-up card asks students to recall them.
+function dropSecondBank(parts) {
+  if (parts[1]) delete parts[1].bank;
+  return parts;
+}
+
 export default {
   title: "On the Subway",
 
@@ -211,6 +219,7 @@ export default {
           intro: "Listen to Audio 1 again and choose the missing word or number for each gap.",
           audio: { src: A1, label: "🎧 Audio 1 — announcements", transcript: ANNOUNCEMENTS },
           bank: ["34th", "L", "bus", "four", "last"],
+          bankDe: { "34th": "34.", L: "L-Linie", bus: "Bus", four: "vier", last: "letzte" },
           layout: "dialogue",
           lines: [
             { speaker: "1", segments: ["The next stop is ", { gap: 0 }, " Street–Herald Square."] },
@@ -227,7 +236,9 @@ export default {
             { options: ["34th", "L", "bus", "four", "last"], answer: "last" },
           ],
         },
-        ...splitDialogue({
+        // Task 5 (1/2) keeps the "Useful language" word box; Task 6 (2/2) drops
+        // it so students recall the words themselves (the gap dropdowns stay).
+        ...dropSecondBank(splitDialogue({
           type: "inline-choice",
           kind: "Dialog · Audio 2",
           title: "Fill in the dialogue",
@@ -235,6 +246,11 @@ export default {
           intro: "Emma is a student from Germany, lost in a subway station. Listen and choose the missing words. “Help me” shows the whole dialogue.",
           audio: { src: A2, label: "🎧 Audio 2 — Emma asks for help (listen 2–3×)", transcript: DIALOGUE },
           bank: ["announcements", "green", "local", "map", "north", "phone", "platform", "three", "train", "uptown"],
+          bankDe: {
+            announcements: "Durchsagen", green: "grün", local: "Bummelbahn",
+            map: "Plan", north: "Norden", phone: "Handy",
+            platform: "Bahnsteig", three: "drei", train: "Zug", uptown: "Richtung Norden",
+          },
           layout: "dialogue",
           lines: [
             { speaker: "Emma", segments: ["Excuse me, can you help me? I want to go to Times Square, but I don't understand this ", { gap: 0 }, "."] },
@@ -260,7 +276,7 @@ export default {
             { options: ["announcements", "green", "local", "map", "north", "phone", "platform", "three", "train", "uptown"], answer: "platform" },
             { options: ["announcements", "green", "local", "map", "north", "phone", "platform", "three", "train", "uptown"], answer: "green" },
           ],
-        }, [5, 5]),
+        }, [5, 5])),
         {
           type: "right-wrong",
           kind: "Quiz",
@@ -511,7 +527,7 @@ export default {
           type: "gap-fill",
           kind: "Dialog · Audio 2",
           title: "Complete the dialogue",
-          columns: 2,
+          columns: 3,
           intro: "Listen and type the missing words and phrases — there is no word box, and some gaps need more than one word.",
           audio: { src: A2, label: "🎧 Audio 2 — Emma asks for help (listen 2–3×)" },
           items: [

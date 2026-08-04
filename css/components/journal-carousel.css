@@ -86,13 +86,17 @@
   transform: translateY(-50%);
   width: 3.4rem;
   height: 3.4rem;
-  background: rgba(20, 36, 60, 0.95);
-  border: 2px solid rgba(7, 14, 26, 0.45);
-  box-shadow: 0 8px 18px rgba(7, 14, 26, 0.16);
+  /* Glassmorphism: a frosted, translucent pane over the page rather than a
+     solid dark disc — blurs whatever is behind it and catches a soft rim. */
+  background: rgba(150, 178, 214, 0.14);
+  -webkit-backdrop-filter: blur(13px) saturate(1.35);
+  backdrop-filter: blur(13px) saturate(1.35);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  box-shadow: 0 8px 22px rgba(7, 14, 26, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.22);
   font-size: 1.6rem;
-  color: var(--j-ink);
+  color: rgba(255, 255, 255, 0.82);
   z-index: 40;
-  transition: transform 0.3s, opacity 0.3s;
+  transition: transform 0.3s, opacity 0.3s, background 0.3s, border-color 0.3s;
 }
 
 .jcar__arrow--prev {
@@ -112,6 +116,9 @@
 .jcar__arrow:hover,
 .jcar__arrow:focus-visible {
   transform: translateY(-50%) scale(1.1);
+  background: rgba(170, 198, 232, 0.24);
+  border-color: rgba(255, 255, 255, 0.38);
+  color: rgba(255, 255, 255, 0.95);
 }
 
 .jcar__arrow:active {
@@ -386,6 +393,16 @@
 .journal .taskcard--dlgwide .taskcard__fit {
   width: 76rem;
   align-self: center;
+  flex: 0 0 auto;
+}
+/* Three-column variant: NO over-wide design width. Lay the dialogue out at the
+   real card width in three columns so the blanks render at full, readable size
+   (the 76rem two-column card is scaled ~0.8× and reads small). flex:0 0 auto
+   keeps the fit at its natural content height so the height fit-scaler measures
+   real overflow and shrinks only if the three columns still overrun. */
+.journal .taskcard--dlgwide.taskcard--dlg3 .taskcard__fit {
+  width: auto;
+  align-self: stretch;
   flex: 0 0 auto;
 }
 /* Slim the audio bar on this dense card so the dialogue owns the height. */

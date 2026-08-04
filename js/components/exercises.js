@@ -989,10 +989,31 @@ export function createInlineChoice(data) {
     cap.textContent = "Useful language";
     bank.appendChild(cap);
     data.bank.forEach((p) => {
-      const pill = document.createElement("span");
-      pill.className = "exo-inline__bank-pill";
-      pill.textContent = p;
-      bank.appendChild(pill);
+      const de = data.bankDe?.[p];
+      // A word with a German gloss becomes a tappable pill: press to reveal the
+      // translation, press again to hide it. Words without a gloss stay plain.
+      if (de) {
+        const pill = document.createElement("button");
+        pill.type = "button";
+        pill.className = "exo-inline__bank-pill exo-inline__bank-pill--has-de";
+        pill.setAttribute("aria-label", `${p} — auf Deutsch anzeigen`);
+        const w = document.createElement("span");
+        w.className = "exo-inline__bank-w";
+        w.textContent = p;
+        const d = document.createElement("span");
+        d.className = "exo-inline__bank-de";
+        d.textContent = de;
+        pill.append(w, d);
+        pill.addEventListener("click", () =>
+          pill.classList.toggle("exo-inline__bank-pill--open"),
+        );
+        bank.appendChild(pill);
+      } else {
+        const pill = document.createElement("span");
+        pill.className = "exo-inline__bank-pill";
+        pill.textContent = p;
+        bank.appendChild(pill);
+      }
     });
     wrap.appendChild(bank);
   }
@@ -2014,7 +2035,10 @@ export function createGapFill({ items, columns }) {
   // own list layer; the Check bar stays below, spanning the full width.
   const list = document.createElement("div");
   list.className = "exo-gap__list";
-  if (columns === 2) list.classList.add("exo-gap__list--cols");
+  if (columns >= 2) {
+    list.classList.add("exo-gap__list--cols");
+    list.style.setProperty("--gap-cols", String(columns));
+  }
   wrap.appendChild(list);
 
   const blanks = [];

@@ -1173,7 +1173,7 @@ function buildCard(step, data, index, taskNo, ctx) {
   // subway-line footer (data.subway); the wide dialogue (dlgwide) carries its
   // own faint subway map, so it opts out of both.
   if (ctx?.sectionId === "listening" && step.step !== 4 && data.type !== "game") {
-    const isDlgWide = data.type === "gap-fill" && data.columns === 2;
+    const isDlgWide = data.type === "gap-fill" && data.columns >= 2;
     if (data.subway) card.classList.add("taskcard--subway");
     else if (!isDlgWide) card.classList.add("taskcard--skyline");
   }
@@ -1324,8 +1324,12 @@ function buildCard(step, data, index, taskNo, ctx) {
       // lines wrap like the mockup, not into tall 4-line panels) and then the
       // fit-scaler shrinks the whole card to fill the width. See the width
       // branch in fitUniformCards + .taskcard--dlgwide in CSS.
-      if (data.columns === 2) {
+      if (data.columns >= 2) {
         card.classList.add("taskcard--dlgwide");
+        // Three-column dialogue: lay it out at the real card width (not the wide
+        // design width) so the type-in blanks read at full size instead of being
+        // scaled down small. See .taskcard--dlg3 in journal-carousel.css.
+        if (data.columns >= 3) card.classList.add("taskcard--dlg3");
         // Faint NYC subway map behind the dialogue (screen-blended card chrome).
         const map = document.createElement("div");
         map.className = "taskcard__submap";
@@ -1692,6 +1696,29 @@ function buildCard(step, data, index, taskNo, ctx) {
     }
     default:
       appendWrittenBody(body, step, data, index, ctx);
+  }
+
+  // Unit-wide: the Check button belongs in the card's top-right corner rather
+  // than a bottom footer row. Skip cards that already put something in that
+  // corner (tap-match's count/reset, or a card like the wide dialogue that
+  // cornered its own Check) — leave those where the card placed them.
+  const cornerBusy =
+    card.querySelector(".taskcard__corner-check") ||
+    (headEl && headEl.querySelector(".exo-tap__corner"));
+  const checkbar = body.querySelector(".exo__checkbar");
+  if (checkbar && !cornerBusy) {
+    if (data.split) {
+      // Split cards put their header in the LEFT column, so the header's right
+      // end is mid-card — pin the Check to the card's own top-right corner as
+      // chrome (same slot as the wide dialogue), unscaled and clear of the flow.
+      checkbar.classList.add("taskcard__corner-check");
+      card.classList.add("taskcard--has-corner-check");
+      card.appendChild(checkbar);
+    } else if (headEl) {
+      // Full-width header: the Check rides in the header's right end.
+      checkbar.classList.add("taskcard__head-check");
+      headEl.appendChild(checkbar);
+    }
   }
 
   if (data.help) {
