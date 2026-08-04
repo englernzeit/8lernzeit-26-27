@@ -86,15 +86,17 @@
   transform: translateY(-50%);
   width: 3.4rem;
   height: 3.4rem;
-  /* Glassmorphism: a frosted, translucent pane over the page rather than a
-     solid dark disc — blurs whatever is behind it and catches a soft rim. */
-  background: rgba(150, 178, 214, 0.14);
-  -webkit-backdrop-filter: blur(13px) saturate(1.35);
-  backdrop-filter: blur(13px) saturate(1.35);
-  border: 1px solid rgba(255, 255, 255, 0.24);
-  box-shadow: 0 8px 22px rgba(7, 14, 26, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.22);
+  /* Near-clear glass: barely tinted with only a hint of blur, so the text or
+     image behind the arrow stays readable through it. Just a thin rim + a
+     shadowed glyph keep the button legible over any background. */
+  background: rgba(205, 220, 244, 0.05);
+  -webkit-backdrop-filter: blur(1.5px) saturate(1.1);
+  backdrop-filter: blur(1.5px) saturate(1.1);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  box-shadow: 0 5px 14px rgba(7, 14, 26, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.18);
   font-size: 1.6rem;
-  color: rgba(255, 255, 255, 0.82);
+  color: rgba(255, 255, 255, 0.95);
+  text-shadow: 0 1px 4px rgba(7, 14, 26, 0.6);
   z-index: 40;
   transition: transform 0.3s, opacity 0.3s, background 0.3s, border-color 0.3s;
 }
@@ -116,9 +118,9 @@
 .jcar__arrow:hover,
 .jcar__arrow:focus-visible {
   transform: translateY(-50%) scale(1.1);
-  background: rgba(170, 198, 232, 0.24);
-  border-color: rgba(255, 255, 255, 0.38);
-  color: rgba(255, 255, 255, 0.95);
+  background: rgba(205, 220, 244, 0.13);
+  border-color: rgba(255, 255, 255, 0.42);
+  color: rgba(255, 255, 255, 1);
 }
 
 .jcar__arrow:active {
