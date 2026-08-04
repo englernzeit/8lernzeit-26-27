@@ -1347,9 +1347,18 @@ function buildCard(step, data, index, taskNo, ctx) {
     case "event-order":
       body.appendChild(createEventOrder({ events: data.events }));
       break;
-    case "inline-choice":
-      body.appendChild(createInlineChoice(data));
+    case "inline-choice": {
+      const inline = createInlineChoice(data);
+      // Dialogue split: the word box ("Useful language") belongs in the left
+      // column with the directions + player, not above the dialogue. Hoist it
+      // out of the exercise so the split sorts it left (it isn't "visual").
+      if (data.split === "dialogue") {
+        const bank = inline.querySelector(".exo-inline__bank");
+        if (bank) body.appendChild(bank);
+      }
+      body.appendChild(inline);
       break;
+    }
     case "phrase-reference":
       body.appendChild(createPhraseReference({ sections: data.sections }));
       break;
@@ -2022,6 +2031,14 @@ function fitUniformCards(view, pager) {
     // Cards: fit each into its fixed body box.
     view.querySelectorAll(".taskcard--sheet > .taskcard__body > .taskcard__fit").forEach((fit) => {
       const body = fit.parentElement;
+      // Dialogue-split cards are laid out at a fixed, readable size and are
+      // never shrunk to fit: if the dialogue is too tall we surface it rather
+      // than scaling it down. (Deliberate design choice for these cards.)
+      if (body.parentElement.classList.contains("taskcard--split-dialogue")) {
+        fit.style.transform = "none";
+        delete fit.dataset.fit;
+        return;
+      }
       const cs = getComputedStyle(body);
       fitInto(
         fit,

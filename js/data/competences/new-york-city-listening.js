@@ -59,6 +59,48 @@ const DIALOGUE = [
   { speaker: "Marcus", text: "No problem. Have fun at Times Square!" },
 ];
 
+/**
+ * Split one inline-choice dialogue card into several smaller cards, so a long
+ * dialogue fits at a big, readable size on one screen (these cards are never
+ * shrunk). `lineCounts` is how many dialogue lines go into each chunk; the gaps
+ * used in a chunk are renumbered from 0, and — if the card had a word box — a
+ * fresh word box is built from that chunk's own answers. Spread the result into
+ * the `cards` array: `...splitDialogue({ …card… }, [5, 5])`.
+ */
+function splitDialogue(card, lineCounts) {
+  const parts = [];
+  let start = 0;
+  lineCounts.forEach((count, ci) => {
+    const slice = card.lines.slice(start, start + count);
+    start += count;
+    const used = [];
+    for (const ln of slice)
+      for (const seg of ln.segments)
+        if (seg && typeof seg === "object" && "gap" in seg) used.push(seg.gap);
+    const remap = new Map(used.map((g, i) => [g, i]));
+    const lines = slice.map((ln) => ({
+      ...(ln.speaker ? { speaker: ln.speaker } : {}),
+      segments: ln.segments.map((seg) =>
+        seg && typeof seg === "object" && "gap" in seg ? { gap: remap.get(seg.gap) } : seg,
+      ),
+    }));
+    const gaps = used.map((g) => ({ ...card.gaps[g] }));
+    let bank;
+    if (card.bank) {
+      bank = [...new Set(gaps.map((g) => g.answer))].sort();
+      for (const g of gaps) g.options = bank;
+    }
+    parts.push({
+      ...card,
+      title: `${card.title} (${ci + 1}/${lineCounts.length})`,
+      ...(bank ? { bank } : {}),
+      lines,
+      gaps,
+    });
+  });
+  return parts;
+}
+
 export default {
   title: "On the Subway",
 
@@ -185,12 +227,12 @@ export default {
             { options: ["34th", "L", "bus", "four", "last"], answer: "last" },
           ],
         },
-        {
+        ...splitDialogue({
           type: "inline-choice",
           kind: "Dialog · Audio 2",
           title: "Fill in the dialogue",
           split: "dialogue",
-          intro: "Emma is a student from Germany, lost in a subway station. Listen and choose the 10 missing words. “Help me” shows the whole dialogue.",
+          intro: "Emma is a student from Germany, lost in a subway station. Listen and choose the missing words. “Help me” shows the whole dialogue.",
           audio: { src: A2, label: "🎧 Audio 2 — Emma asks for help (listen 2–3×)", transcript: DIALOGUE },
           bank: ["announcements", "green", "local", "map", "north", "phone", "platform", "three", "train", "uptown"],
           layout: "dialogue",
@@ -218,7 +260,7 @@ export default {
             { options: ["announcements", "green", "local", "map", "north", "phone", "platform", "three", "train", "uptown"], answer: "platform" },
             { options: ["announcements", "green", "local", "map", "north", "phone", "platform", "three", "train", "uptown"], answer: "green" },
           ],
-        },
+        }, [5, 5]),
         {
           type: "right-wrong",
           kind: "Quiz",
@@ -338,12 +380,12 @@ export default {
             "How long do you have to wait for the next uptown train? →",
           ],
         },
-        {
+        ...splitDialogue({
           type: "inline-choice",
           kind: "Dialog · Audio 2",
           title: "Fill in the dialogue",
           split: "dialogue",
-          intro: "Listen to Audio 2 and choose the 12 missing words.",
+          intro: "Listen to Audio 2 and choose the missing words.",
           audio: { src: A2, label: "🎧 Audio 2 — Emma asks for help (listen 2–3×)" },
           layout: "dialogue",
           lines: [
@@ -371,7 +413,7 @@ export default {
             { options: ["$2.90", "Brooklyn", "bus", "downtown", "gate", "map", "middle", "north", "red", "service changes", "signs", "south", "station", "three", "uptown"], answer: "middle" },
             { options: ["$2.90", "Brooklyn", "bus", "downtown", "gate", "map", "middle", "north", "red", "service changes", "signs", "south", "station", "three", "uptown"], answer: "signs" },
           ],
-        },
+        }, [4, 5]),
         {
           type: "written",
           kind: "Antworten",

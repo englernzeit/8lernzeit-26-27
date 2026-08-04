@@ -907,7 +907,7 @@
   min-height: auto;
 }
 .taskcard--split-dialogue .taskcard__col--left {
-  flex: 0 0 22%;
+  flex: 0 0 25%;
   justify-content: flex-start;
 }
 .taskcard--split-dialogue .taskcard__col--right {
@@ -929,18 +929,20 @@
    gap. The wider dialogue then wraps far less, so the fit-scaler keeps it big
    and it reaches the bottom edge. */
 .journal .taskcard--sheet.taskcard--split-dialogue .taskcard__body {
-  padding: 1rem 0.75rem 0.65rem;
+  padding: 0.9rem 0.55rem 0.6rem;
 }
 .taskcard--split-dialogue .taskcard__fit .taskcard__cols {
-  gap: 1rem;
+  gap: 0.9rem;
 }
-/* Bigger, tighter dialogue lines so the (now wide) dialogue fills the height.
-   A tighter line-height lowers the natural height, so the fit-scaler shrinks
-   less and the glyphs render bigger. */
-.taskcard--split-dialogue .exo-inline__dline { padding: 0.34rem 0.7rem; }
-.taskcard--split-dialogue .exo-inline__said { font-size: 1.06rem; line-height: 1.3; }
+/* Left column stack (directions + player + word box), full width of its 1/4. */
+.taskcard--split-dialogue .taskcard__col--left > * { width: 100%; }
+.taskcard--split-dialogue .exo-inline__bank { margin: 0.6rem 0 0; }
+/* Fixed, readable dialogue — these cards are NOT auto-shrunk (see
+   fitUniformCards); if a dialogue is too tall it is reported, not scaled. */
+.taskcard--split-dialogue .exo-inline__dline { padding: 0.5rem 0.8rem; }
+.taskcard--split-dialogue .exo-inline__said { font-size: 1.2rem; line-height: 1.5; }
 .taskcard--split-dialogue .exo-inline__opt,
-.taskcard--split-dialogue .exo-inline__select { font-size: 1.05rem; }
+.taskcard--split-dialogue .exo-inline__select { font-size: 1.1rem; }
 
 @media (orientation: portrait) {
   /* Narrow screen: stack again — directions on top, image below. */
