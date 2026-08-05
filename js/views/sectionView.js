@@ -1406,7 +1406,9 @@ function buildCard(step, data, index, taskNo, ctx) {
       break;
     }
     case "group-sort":
-      body.appendChild(createGroupSort({ groups: data.groups, trayLabel: data.trayLabel }));
+      body.appendChild(
+        createGroupSort({ groups: data.groups, trayLabel: data.trayLabel, maxPerBin: data.maxPerBin }),
+      );
       break;
     case "sentence-build":
       body.appendChild(createSentenceBuild({ sentences: data.sentences }));

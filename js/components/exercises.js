@@ -577,7 +577,7 @@ export function createRightWrong({ statements, values, keyFor, onChange }) {
  *
  * @param {{ groups: Array<{label: string, items: string[]}> }} data
  */
-export function createGroupSort({ groups, trayLabel }) {
+export function createGroupSort({ groups, trayLabel, maxPerBin }) {
   const wrap = document.createElement("div");
   wrap.className = "exo exo-sort";
 
@@ -638,13 +638,19 @@ export function createGroupSort({ groups, trayLabel }) {
     }
     chip.dataset.group = String(entry.group);
     chip.addEventListener("click", (e) => {
-      // A placed chip lives inside a bin drop zone. Without this, the click
-      // bubbles to the bin and its handler instantly re-drops the chip in the
-      // same column — so a chip in the wrong column could never be re-selected
-      // and therefore never moved. Stopping propagation lets the user pick a
-      // placed chip up again and move it to another column (or the tray).
+      // Stop the click bubbling to the bin/tray handlers underneath the chip.
       e.stopPropagation();
       if (chip.classList.contains("exo-sort__chip--locked")) return;
+      // A placed chip (inside a bin) taps straight back to the tray — the most
+      // reliable "take it out again" gesture (the old tap-chip-then-tap-empty-
+      // tray flow broke once the tray had collapsed with no empty area left).
+      if (chip.closest(".exo-sort__bin-drop")) {
+        chip.classList.remove("exo-sort__chip--sel");
+        if (selected === chip) selected = null;
+        tray.appendChild(chip);
+        return;
+      }
+      // A tray chip toggles its "picked up" highlight, ready to drop in a bin.
       const isSel = chip === selected;
       wrap.querySelectorAll(".exo-sort__chip--sel").forEach((c) =>
         c.classList.remove("exo-sort__chip--sel"),
@@ -655,7 +661,7 @@ export function createGroupSort({ groups, trayLabel }) {
     tray.appendChild(chip);
     return chip;
   });
-  // Tap the tray (empty area) to pull a selected chip back out of a column.
+  // Tap the tray's empty area to deselect / return a picked-up chip.
   tray.addEventListener("click", () => {
     if (!selected || selected.classList.contains("exo-sort__chip--locked")) return;
     tray.appendChild(selected);
@@ -698,6 +704,10 @@ export function createGroupSort({ groups, trayLabel }) {
     drop.dataset.group = String(gi);
     drop.addEventListener("click", () => {
       if (!selected) return;
+      // Optional cap so a block never overflows its fixed slot (Writing sorts
+      // hold at most two phrases). A full block simply ignores the drop —
+      // the picked-up chip stays selected so it can go elsewhere.
+      if (maxPerBin && drop.querySelectorAll(".exo-sort__chip").length >= maxPerBin) return;
       drop.appendChild(selected);
       selected.classList.remove("exo-sort__chip--sel");
       selected = null;

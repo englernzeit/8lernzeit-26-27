@@ -471,6 +471,7 @@ export default {
           title: "Sort the phrases into the blocks",
           intro: "Tap a phrase, then tap its block. Sort all eight, then press Check.",
           trayLabel: "Available phrases",
+          maxPerBin: 2,
           groups: [
             { label: SORT_BLOCKS[0], items: ["Thanks for your cool post!"] },
             {
