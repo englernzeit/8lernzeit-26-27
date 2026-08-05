@@ -1356,6 +1356,20 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
   font-size: 0.98rem;
   line-height: 1.2;
 }
+/* Short one-word prompts (e.g. sign names) must NOT stretch into tall cells
+   with a big empty gap between the word and its dropdown (that space-between
+   layout is meant for the long-quote prompts on the Writing page). Keep the
+   cells compact, pair the word directly with its dropdown, and centre the
+   whole group vertically in the card. */
+.exo-match[data-cols="3"] .exo-match__grid {
+  grid-auto-rows: min-content;
+  align-content: center;
+  row-gap: 1rem;
+}
+.exo-match[data-cols="3"] .exo-match__row {
+  justify-content: center;
+  gap: 0.75rem;
+}
 
 .exo-match__select {
   font-family: var(--j-font-body);
@@ -1667,6 +1681,16 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
 .exo-essay--fill .exo-essay__cline .exo-clab__avatar { align-self: flex-start; }
 .exo-essay--fill .exo-essay__area--comment {
   height: 100%;
+  min-height: 5rem;
+  resize: none;
+}
+/* Fill mode with a plain writing box (mediation / finale essays): the textarea
+   grows to fill the leftover card height, so a reply card (message + chips +
+   writing) fits at full size instead of stacking too tall and being scaled to
+   a tiny fraction. */
+.exo-essay--fill > .exo-essay__area {
+  flex: 1 1 auto;
+  height: auto;
   min-height: 5rem;
   resize: none;
 }
