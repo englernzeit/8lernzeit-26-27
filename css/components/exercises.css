@@ -5965,7 +5965,10 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
     linear-gradient(103deg, rgba(9, 16, 30, 0.95) 33%, rgba(9, 16, 30, 0.7) 56%, rgba(9, 16, 30, 0.4) 100%),
     linear-gradient(rgba(10, 18, 33, 0.42), rgba(10, 18, 33, 0.42)),
     url("../../assets/vocab/unit1/nyc-shopping.png");
-  background-size: cover, cover, cover;
+  /* Scrim layers cover the card; the photo itself is rendered 20% smaller
+     (80% of cover) and anchored bottom-right, so the shopping scene reads a
+     touch smaller in the corner over the navy scrim. */
+  background-size: cover, cover, 80%;
   background-position: center, center, right bottom;
   background-repeat: no-repeat;
 }
