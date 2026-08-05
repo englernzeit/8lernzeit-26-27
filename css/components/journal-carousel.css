@@ -562,6 +562,11 @@
   box-shadow: 0 6px 16px -10px rgba(7, 14, 26, 0.3);
   transform: rotate(-0.4deg);
   overflow: hidden;
+  /* Never let the flex column squash this to nothing: `overflow:hidden` drops
+     a flex item's automatic min-height to 0, so on an over-full mediation card
+     the incoming message (essential content) was being collapsed to an 8px
+     sliver. Keep its full height and let the fit-scaler shrink the whole card. */
+  flex-shrink: 0;
 }
 
 .received-mail__head {
