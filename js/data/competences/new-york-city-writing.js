@@ -31,6 +31,18 @@ const GB3 = "3 · Opinion — Meinung + weil (because)";
 const GB4 = "4 · Answer — die Frage beantworten";
 const GB5 = "5 · Close — netter Schluss";
 
+/** The same five blocks, split into number · English name · German hint, for
+ * the Step-2 "Sort the phrases into the blocks" card. It renders each block as
+ * a labelled bin (coloured number + bold name + grey hint) with its own
+ * "Drop a phrase here" zone — see the supplied draft. */
+const SORT_BLOCKS = [
+  { n: 1, name: "React", de: "begrüßen & danken" },
+  { n: 2, name: "Refer", de: "ein Detail nennen" },
+  { n: 3, name: "Opinion", de: "Meinung + weil (because)" },
+  { n: 4, name: "Answer", de: "die Frage beantworten" },
+  { n: 5, name: "Close", de: "netter Schluss" },
+];
+
 const BLOG_IMG = "assets/blog/unit1";
 
 /** The blog post the whole page reacts to, as shown in the top-right "blog
@@ -458,24 +470,25 @@ export default {
           kind: "Sortieren",
           title: "Sort the phrases into the blocks",
           intro: "Tap a phrase, then tap its block. Sort all eight, then press Check.",
+          trayLabel: "Available phrases",
           groups: [
-            { label: GB1, items: ["Thanks for your cool post!"] },
+            { label: SORT_BLOCKS[0], items: ["Thanks for your cool post!"] },
             {
-              label: GB2,
+              label: SORT_BLOCKS[1],
               items: [
                 "I liked the part about the six-dollar hot dog.",
                 "It's funny that you wrote about the loud streets.",
               ],
             },
             {
-              label: GB3,
+              label: SORT_BLOCKS[2],
               items: [
                 "I don't agree with you because big cities are exciting.",
                 "In my opinion, New York is too stressful because it never sleeps.",
               ],
             },
-            { label: GB4, items: ["I could live there because I love busy streets."] },
-            { label: GB5, items: ["Greetings from Munich!", "Can't wait for your next post!"] },
+            { label: SORT_BLOCKS[3], items: ["I could live there because I love busy streets."] },
+            { label: SORT_BLOCKS[4], items: ["Greetings from Munich!", "Can't wait for your next post!"] },
           ],
         },
         {

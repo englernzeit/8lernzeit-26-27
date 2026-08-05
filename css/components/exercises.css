@@ -5532,6 +5532,137 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
 }
 
 /* ===================================================================
+   WRITING · Step 2 "Sort the phrases into the blocks" — scene layout.
+   Two columns: the five numbered blocks stack down the dark-left side; the
+   eight phrases float as frosted chips over the window on the right, under a
+   violet "Available phrases" label with a hand-drawn arrow. Matches the
+   supplied draft. Scoped so the group-sort in other sections is untouched.
+   =================================================================== */
+.journal[data-section="writing"] .taskcard--sheet .exo-sort {
+  display: grid;
+  grid-template-columns: minmax(0, 1.04fr) minmax(0, 0.96fr);
+  column-gap: 2.2rem;
+  align-items: start;
+}
+
+/* --- Left column: the five block bins, one per row --------------- */
+.journal[data-section="writing"] .taskcard--sheet .exo-sort__bins {
+  grid-column: 1;
+  grid-row: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+.journal[data-section="writing"] .exo-sort__bin--detail {
+  flex-direction: row;
+  align-items: stretch;
+  gap: 0.6rem;
+  padding: 0.5rem;
+  border-radius: 15px;
+  border: 1px solid rgba(150, 172, 202, 0.16);
+  background: rgba(15, 26, 44, 0.5);
+}
+.exo-sort__bin-label--detail {
+  flex: 0 0 40%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.12rem;
+  padding: 0.1rem 0.5rem 0.1rem 0.5rem;
+}
+.exo-sort__bin-head { display: inline-flex; align-items: baseline; gap: 0.45rem; }
+.exo-sort__bin-num {
+  font-family: var(--j-font-display);
+  font-style: italic;
+  font-size: 1.3rem;
+  color: var(--j-olive);
+}
+.journal[data-section="writing"] .exo-sort__bin-name {
+  font-family: var(--j-font-display);
+  font-weight: 700;
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--j-ink);
+}
+.exo-sort__bin-de {
+  font-size: 1rem;
+  line-height: 1.18;
+  color: var(--j-khaki);
+}
+/* Per-block drop target. Empty state shows the placeholder prompt. */
+.journal[data-section="writing"] .exo-sort__bin--detail .exo-sort__bin-drop {
+  flex: 1 1 auto;
+  min-height: 3.5rem;
+  align-content: center;
+  border: 2px dashed rgba(140, 164, 196, 0.4);
+  background: rgba(10, 19, 34, 0.26);
+}
+.journal[data-section="writing"] .exo-sort__bin-drop:empty::before {
+  content: "Drop a phrase here";
+  align-self: center;
+  font-size: 1.02rem;
+  color: rgba(160, 180, 208, 0.62);
+  padding-left: 0.35rem;
+}
+
+/* --- Right column: the loose phrases over the window ------------- */
+.journal[data-section="writing"] .taskcard--sheet .exo-sort__tray--labelled {
+  grid-column: 2;
+  grid-row: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  align-content: start;
+  min-height: 0;
+  padding: 0;
+  border: none;
+  background: none;
+}
+.exo-sort__tray-label {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.25rem;
+  margin: -0.5rem 0 0.15rem 0.2rem;
+  color: var(--j-coral);
+}
+.exo-sort__tray-label-text {
+  font-family: var(--j-font-display);
+  font-style: italic;
+  font-size: 1.6rem;
+  line-height: 1;
+}
+.exo-sort__tray-arrow { width: 2.1rem; height: 1.7rem; margin-top: 0.35rem; flex: 0 0 auto; }
+/* Phrase tiles: frosted glass over the skyline (backdrop-blur added above). */
+.journal[data-section="writing"] .exo-sort__tray--labelled .exo-sort__chip {
+  border-radius: 15px;
+  padding: 0.72rem 1rem;
+  text-align: left;
+  line-height: 1.25;
+  background: rgba(41, 49, 82, 0.44);
+  border: 1px solid rgba(184, 194, 234, 0.24);
+  box-shadow: 0 8px 22px rgba(7, 14, 26, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+.journal[data-section="writing"] .exo-sort__tray--labelled .exo-sort__chip--sel {
+  border-color: var(--j-teal);
+}
+
+@media (orientation: portrait) {
+  /* Portrait is tall + narrow: stack the phrases under the blocks. */
+  .journal[data-section="writing"] .taskcard--sheet .exo-sort {
+    grid-template-columns: 1fr;
+  }
+  .journal[data-section="writing"] .taskcard--sheet .exo-sort__bins { grid-column: 1; grid-row: 1; }
+  .journal[data-section="writing"] .taskcard--sheet .exo-sort__tray--labelled {
+    grid-column: 1;
+    grid-row: 2;
+    margin-top: 0.5rem;
+  }
+  .exo-sort__tray-label { margin-top: 0; }
+  .journal[data-section="writing"] .exo-sort__bin-label--detail { flex-basis: 44%; }
+}
+
+/* ===================================================================
    WRITING "scene" cards (Task 1 quiz, …) — content in the left column, the
    desk photo on the right, a glass blog chip floating top-right.
    =================================================================== */

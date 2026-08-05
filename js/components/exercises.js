@@ -577,7 +577,7 @@ export function createRightWrong({ statements, values, keyFor, onChange }) {
  *
  * @param {{ groups: Array<{label: string, items: string[]}> }} data
  */
-export function createGroupSort({ groups }) {
+export function createGroupSort({ groups, trayLabel }) {
   const wrap = document.createElement("div");
   wrap.className = "exo exo-sort";
 
@@ -594,6 +594,26 @@ export function createGroupSort({ groups }) {
   const tray = document.createElement("div");
   tray.className = "exo-sort__tray";
   if (hasImages) tray.classList.add("exo-sort__tray--img");
+  // Optional heading above the loose chips ("Available phrases" in the Writing
+  // sort card) — a violet script label with a little hand-drawn arrow pointing
+  // down at the phrases (matches the supplied draft).
+  if (trayLabel) {
+    tray.classList.add("exo-sort__tray--labelled");
+    const tl = document.createElement("div");
+    tl.className = "exo-sort__tray-label";
+    const txt = document.createElement("span");
+    txt.className = "exo-sort__tray-label-text";
+    txt.textContent = trayLabel;
+    tl.appendChild(txt);
+    tl.insertAdjacentHTML(
+      "beforeend",
+      '<svg class="exo-sort__tray-arrow" viewBox="0 0 48 40" fill="none" aria-hidden="true">' +
+        '<path d="M4 6 C 22 2, 40 8, 34 30" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/>' +
+        '<path d="M25 25 L 34 32 L 42 25" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>' +
+        "</svg>",
+    );
+    tray.appendChild(tl);
+  }
   const chips = items.map((entry) => {
     const chip = document.createElement("button");
     chip.className = "exo-sort__chip";
@@ -651,7 +671,28 @@ export function createGroupSort({ groups }) {
     bin.className = "exo-sort__bin";
     const label = document.createElement("div");
     label.className = "exo-sort__bin-label";
-    label.textContent = g.label;
+    // A structured label `{ n, name, de }` renders as a labelled bin card:
+    // coloured number + bold English name on one line, German hint below
+    // (the Writing "Sort into blocks" draft). A plain string stays as-is.
+    if (g.label && typeof g.label === "object") {
+      bin.classList.add("exo-sort__bin--detail");
+      label.classList.add("exo-sort__bin-label--detail");
+      const head = document.createElement("span");
+      head.className = "exo-sort__bin-head";
+      const num = document.createElement("span");
+      num.className = "exo-sort__bin-num";
+      num.textContent = `${g.label.n}.`;
+      const name = document.createElement("span");
+      name.className = "exo-sort__bin-name";
+      name.textContent = g.label.name;
+      head.append(num, name);
+      const de = document.createElement("span");
+      de.className = "exo-sort__bin-de";
+      de.textContent = g.label.de;
+      label.append(head, de);
+    } else {
+      label.textContent = g.label;
+    }
     const drop = document.createElement("div");
     drop.className = "exo-sort__bin-drop";
     drop.dataset.group = String(gi);
