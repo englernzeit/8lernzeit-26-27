@@ -1883,9 +1883,12 @@ function buildCard(step, data, index, taskNo, ctx) {
     card.appendChild(buildBlogChip(data.blogChip));
   }
   // `blogScene` holds the content in a left column so the photo (and any right
-  // panel) shows on the right; a checklist panel floats over that right side.
-  if (data.blogScene || data.checklist) card.classList.add("taskcard--blogscene");
-  if (data.checklist) card.appendChild(buildBlockChecklist(data.checklist));
+  // panel) shows on the right; a `blockChecklist` panel floats over that right
+  // side (the Writing "Model" card). NB: this is a distinct field from the
+  // essay-editor's `checklist` (an array of self-check strings) — do not merge
+  // them, or the array-form checklists in other sections crash here.
+  if (data.blogScene || data.blockChecklist) card.classList.add("taskcard--blogscene");
+  if (data.blockChecklist) card.appendChild(buildBlockChecklist(data.blockChecklist));
 
   return card;
 }
