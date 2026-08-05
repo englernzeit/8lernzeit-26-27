@@ -1316,7 +1316,13 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
 .exo-match__grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  grid-auto-rows: minmax(0, 1fr); /* rows share the height evenly -> fills card */
+  /* Rows grow to share the height evenly (fills the card) but never shrink
+     below their own content: with a plain `1fr` (min 0) a tall row's prompt +
+     dropdown overflowed its track and the next row's frosted panel painted
+     over it (the overlap seen on iPad). `min-content` floor keeps each row at
+     least content-tall; if the total then overflows, the fit-scaler shrinks
+     the whole card instead of letting rows collide. */
+  grid-auto-rows: minmax(min-content, 1fr);
   gap: 0.8rem;
   flex: 1 1 auto;
   min-height: 0;
