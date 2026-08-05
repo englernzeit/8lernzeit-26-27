@@ -1864,16 +1864,46 @@ export function createParagraphBuilder({ paragraph, values, keyFor, onChange }) 
 
 /* ---------- Essay editor (final written discussion) ------------ */
 
+/** Line icons for the essay "helping language" chips (opt-in: a chip that
+ * carries an `icon` key shows this glyph instead of its number badge). */
+const ESSAY_CHIP_ICONS = {
+  search:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>',
+  size:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="8" rx="2"/><path d="M7 8v3M11 8v4M15 8v3M19 8v4"/></svg>',
+  elevator:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9.5 9L12 6.5 14.5 9M9.5 15L12 17.5 14.5 15"/></svg>',
+  tag:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0l-7-7A2 2 0 0 1 3 12.2V5a2 2 0 0 1 2-2h7.2a2 2 0 0 1 1.4.6l7 7a2 2 0 0 1 0 2.8z"/><circle cx="8" cy="8" r="1.4"/></svg>',
+  receipt:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h12v20l-2-1.4L14 22l-2-1.4L10 22l-2-1.4L6 22z"/><path d="M9 7h6M9 11h6M9 15h4"/></svg>',
+  floor:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4v-4h4v-4h4V8h4"/></svg>',
+  bag:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8h12l-1 12H7z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>',
+};
+
+/** The "keep going" star badge shown at the end of the dialogue-mode meter. */
+const ESSAY_STAR =
+  '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.5l2.9 5.9 6.5.95-4.7 4.58 1.11 6.47L12 17.9l-5.81 3.06 1.11-6.47-4.7-4.58 6.5-.95z"/></svg>';
+
 /**
  * A big writing area with a live word count and a target bar, plus an
  * optional self-check list. Persists to the PDF.
  *
+ * With `dialogue`, the free textarea is replaced by a script skeleton:
+ * alternating speaker rows, each a single-line input (per the iPad caret
+ * rule), the first rows carrying example placeholders. The whole script
+ * serialises to the one saved value (newline-joined), so the answer store is
+ * unchanged; the meter then shows a Lines counter beside the word count.
+ *
  * @param {{
  *   min?: number, max?: number, placeholder?: string, checklist?: string[],
  *   value: string, answerKey: string, onChange: (v:string)=>void,
+ *   dialogue?: { speakers?: string[], lines?: number, placeholders?: string[] },
  * }} opts
  */
-export function createEssayEditor({ min = 120, max = 150, placeholder, checklist, chips, subject, comment, postcard, fillCard, value, answerKey, onChange }) {
+export function createEssayEditor({ min = 120, max = 150, placeholder, checklist, chips, subject, comment, postcard, fillCard, dialogue, value, answerKey, onChange }) {
   const wrap = document.createElement("div");
   wrap.className = "exo exo-essay";
   // fillCard: grow the writing area to fill the card height (no empty margins,
@@ -1889,9 +1919,24 @@ export function createEssayEditor({ min = 120, max = 150, placeholder, checklist
     chips.forEach((chip, i) => {
       const c = document.createElement("span");
       c.className = "exo-essay__chip";
-      const n = typeof chip === "string" ? String(i + 1).padStart(2, "0") : chip.n;
       const label = typeof chip === "string" ? chip : chip.label;
-      c.innerHTML = `<span class="exo-essay__chip-n">${n}</span>${label}`;
+      const iconKey = typeof chip === "object" ? chip.icon : null;
+      if (iconKey && ESSAY_CHIP_ICONS[iconKey]) {
+        const ic = document.createElement("span");
+        ic.className = "exo-essay__chip-ic";
+        ic.innerHTML = ESSAY_CHIP_ICONS[iconKey];
+        c.appendChild(ic);
+      } else {
+        const nEl = document.createElement("span");
+        nEl.className = "exo-essay__chip-n";
+        nEl.textContent =
+          typeof chip === "string" ? String(i + 1).padStart(2, "0") : chip.n ?? String(i + 1).padStart(2, "0");
+        c.appendChild(nEl);
+      }
+      const lab = document.createElement("span");
+      lab.className = "exo-essay__chip-label";
+      lab.textContent = label;
+      c.appendChild(lab);
       chipRow.appendChild(c);
     });
     // Without a postcard the chips sit as a row on top (default). With a
@@ -1907,6 +1952,46 @@ export function createEssayEditor({ min = 120, max = 150, placeholder, checklist
   area.placeholder = placeholder ?? `Write your written discussion here (${min}–${max} words)…`;
   area.dataset.answerKey = answerKey;
   area.value = value ?? "";
+
+  // --- Dialogue skeleton (opt-in) --------------------------------------
+  // Replaces the free textarea with a script: alternating speaker rows, each
+  // a single-line input. All rows serialise to the one saved value so the
+  // answer store is unchanged. `dlgLineCount()` feeds the Lines meter.
+  let dlgBox = null;
+  let dlgInputs = [];
+  const dlgSerialize = () => dlgInputs.map((el) => el.value).join("\n");
+  const dlgLineCount = () => dlgInputs.filter((el) => el.value.trim()).length;
+  if (dialogue) {
+    wrap.classList.add("exo-essay--dialogue");
+    const speakers = dialogue.speakers ?? ["ASSISTANT", "YOU"];
+    const nLines = dialogue.lines ?? (dialogue.placeholders?.length || 8);
+    const saved = (value ?? "").split("\n");
+    dlgBox = document.createElement("div");
+    dlgBox.className = "exo-essay__dlg";
+    const countTag = document.createElement("span");
+    countTag.className = "exo-essay__dlg-count";
+    for (let i = 0; i < nLines; i++) {
+      const row = document.createElement("div");
+      row.className = "exo-essay__dlg-row";
+      const sp = speakers[i % speakers.length];
+      const who = document.createElement("span");
+      who.className = "exo-essay__dlg-who";
+      who.dataset.role = i % speakers.length === 0 ? "a" : "b";
+      who.textContent = `${sp}:`;
+      const inp = document.createElement("input");
+      inp.type = "text";
+      inp.className = "exo-essay__dlg-input";
+      inp.placeholder = dialogue.placeholders?.[i] ?? "";
+      inp.value = saved[i] ?? "";
+      dlgInputs.push(inp);
+      row.append(who, inp);
+      dlgBox.appendChild(row);
+    }
+    dlgBox.appendChild(countTag);
+    dlgBox._countTag = countTag;
+  }
+  // One text getter both modes share, so the meter/paint code stays uniform.
+  const getText = () => (dialogue ? dlgSerialize() : area.value);
 
   // Optional postcard chrome: a cream card with ruled lines, a stamp
   // (artwork, with a dashed fallback slot) and an address block — the
@@ -2022,11 +2107,13 @@ export function createEssayEditor({ min = 120, max = 150, placeholder, checklist
   meter.className = "exo-essay__meter";
   const label = document.createElement("div");
   label.className = "exo-essay__meter-label";
+  // Dialogue mode gets a "Lines" tally in front of the word count.
+  const linesEl = document.createElement("span");
+  linesEl.className = "exo-essay__lines";
   const count = document.createElement("span");
   count.className = "exo-essay__count";
   const msg = document.createElement("span");
   msg.className = "exo-essay__msg";
-  label.append(count, msg);
   const track = document.createElement("div");
   track.className = "exo-essay__track";
   const zone = document.createElement("div");
@@ -2039,11 +2126,36 @@ export function createEssayEditor({ min = 120, max = 150, placeholder, checklist
   const target = document.createElement("p");
   target.className = "exo-essay__target";
   target.textContent = `Target: ${min}–${max} words`;
-  meter.append(label, track, target);
+  if (dialogue) {
+    // Single-row bar: Lines · Words | ——progress—— | message + star.
+    meter.classList.add("exo-essay__meter--dialogue");
+    const left = document.createElement("div");
+    left.className = "exo-essay__meter-left";
+    left.append(linesEl, count);
+    const right = document.createElement("div");
+    right.className = "exo-essay__meter-right";
+    const star = document.createElement("span");
+    star.className = "exo-essay__star";
+    star.innerHTML = ESSAY_STAR;
+    right.append(msg, star);
+    meter.append(left, track, right);
+  } else {
+    label.append(count, msg);
+    meter.append(label, track, target);
+  }
 
+  const dlgTotal = dialogue ? (dialogue.lines ?? (dialogue.placeholders?.length || 8)) : 0;
   const paint = () => {
-    const words = area.value.trim() ? area.value.trim().split(/\s+/).filter(Boolean).length : 0;
-    count.textContent = `${words} words`;
+    const text = getText();
+    const words = text.trim() ? text.trim().split(/\s+/).filter(Boolean).length : 0;
+    if (dialogue) {
+      const done = dlgLineCount();
+      linesEl.textContent = `Lines: ${done}/${dlgTotal}`;
+      count.textContent = `Words: ${words}/${max}`;
+      if (dlgBox?._countTag) dlgBox._countTag.textContent = `${words} words`;
+    } else {
+      count.textContent = `${words} words`;
+    }
     fill.style.width = `${Math.min((words / max) * 100, 100)}%`;
     let level = "low", m = "Keep going…";
     if (words > max) { level = "over"; m = "Over the limit — trim a little."; }
@@ -2051,15 +2163,26 @@ export function createEssayEditor({ min = 120, max = 150, placeholder, checklist
     else if (words > 0 && words >= min - 40) { level = "near"; m = "Almost there!"; }
     fill.dataset.level = level;
     count.dataset.level = level;
+    linesEl.dataset.level = level;
     msg.textContent = m;
   };
 
-  area.addEventListener("input", () => {
-    onChange(area.value);
-    paint();
-  });
+  if (dialogue) {
+    dlgInputs.forEach((inp) =>
+      inp.addEventListener("input", () => {
+        onChange(dlgSerialize());
+        paint();
+      }),
+    );
+  } else {
+    area.addEventListener("input", () => {
+      onChange(area.value);
+      paint();
+    });
+  }
 
-  if (!subject && !comment && !postcard) wrap.appendChild(area);
+  if (dialogue) wrap.appendChild(dlgBox);
+  else if (!subject && !comment && !postcard) wrap.appendChild(area);
   wrap.appendChild(meter);
 
   if (checklist?.length) {

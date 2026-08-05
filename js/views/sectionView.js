@@ -1504,6 +1504,7 @@ function buildCard(step, data, index, taskNo, ctx) {
           subject: data.subject,
           comment: data.comment,
           postcard: data.postcard,
+          dialogue: data.dialogue,
           fillCard: data.fill,
           value: saved[key] ?? "",
           answerKey: key,
