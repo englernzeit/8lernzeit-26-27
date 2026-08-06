@@ -542,6 +542,9 @@ export default {
           starters: [
             "1. A British tourist tells an American friend: „I love your pants!“ →",
             "2. A German shopper is told a toy store is „on the first floor“ and takes the elevator up one level. →",
+            "3. In a New York diner, a British visitor orders „chips“ and gets a bag of crisps instead of fries. →",
+            "4. At an American breakfast, a British guest asks for a „biscuit“ and is handed a warm, savoury bread roll. →",
+            "5. An American student tells his British host he feels „sick,“ and the host rushes to fetch a bucket. →",
           ],
         },
         {
