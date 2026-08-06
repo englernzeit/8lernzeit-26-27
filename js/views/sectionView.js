@@ -1269,6 +1269,11 @@ function buildCard(step, data, index, taskNo, ctx) {
     else if (!isDlgWide) card.classList.add("taskcard--skyline");
   }
 
+  // Mediation-board cards get a wide three-zone layout; an optional per-card
+  // scene swaps the page's default shopping photo for another (Task 6 kitchen).
+  if (data.board) card.classList.add("taskcard--board");
+  if (data.scene) card.classList.add(`taskcard--scene-${data.scene}`);
+
   // Optional faded full-card background image (a picture behind the task, so
   // the picture costs no vertical space — the content sits on top).
   if (data.bgImage) {
@@ -1313,13 +1318,15 @@ function buildCard(step, data, index, taskNo, ctx) {
     head.append(num, kind);
     body.appendChild(head);
 
-    if (data.title) {
+    // Mediation-board cards (Task 6/7) carry their own briefing inside the
+    // board's left column, so skip the generic title/intro here.
+    if (data.title && !data.board) {
       const title = document.createElement("h3");
       title.className = "taskcard__title";
       title.textContent = data.title;
       body.appendChild(title);
     }
-    if (data.intro) {
+    if (data.intro && !data.board) {
       const intro = document.createElement("p");
       intro.className = "taskcard__intro";
       intro.textContent = data.intro;
@@ -1349,10 +1356,17 @@ function buildCard(step, data, index, taskNo, ctx) {
     body.appendChild(buildTaskVideo(data.video));
   }
 
+  // Mediation-board cards (Task 6/7): the whole three-zone board — briefing,
+  // paper note and numbered prompts — replaces the generic body.
+  if (data.board) {
+    body.appendChild(buildMediationBoard(data, step, index, ctx));
+  }
+
   // Optional read-only realia to react to. `incoming.note` renders it as a
   // real paper note (host-mum's welcome note, Mama's shopping list); otherwise
   // it's the read-only message/ticket box (e.g. Writing "write the reply").
-  if (data.incoming) {
+  // (Board cards place their note inside the board, so skip it here.)
+  if (data.incoming && !data.board) {
     body.appendChild(
       data.incoming.note ? buildPaperNote(data.incoming) : buildReceivedEmail(data.incoming)
     );
@@ -1796,7 +1810,8 @@ function buildCard(step, data, index, taskNo, ctx) {
       break;
     }
     default:
-      appendWrittenBody(body, step, data, index, ctx);
+      // Board cards already rendered their body above (buildMediationBoard).
+      if (!data.board) appendWrittenBody(body, step, data, index, ctx);
   }
 
   // Unit-wide: the Check button belongs in the card's top-right corner rather
@@ -2284,62 +2299,82 @@ function buildReceivedEmail(email) {
   return art;
 }
 
+/** Escape HTML then wrap each `marks` phrase in a marker highlight. */
+function markPhrases(text, marks) {
+  let html = String(text).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  (marks ?? []).forEach((m) => {
+    const esc = String(m)
+      .replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]))
+      .replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    html = html.replace(new RegExp(esc, "g"), '<mark class="paper-note__mark">$&</mark>');
+  });
+  return html;
+}
+
 /**
- * Realia rendered as a real, physical paper note (mediation tasks). Two looks:
- *   note: "letter" — a handwritten note on a taped, ruled cream sheet
- *                    (the host-mum's welcome note). `subject` is the heading,
- *                    `body[]` the handwritten paragraphs.
- *   note: "list"   — a spiral shopping-list pad with hand-drawn checkboxes
- *                    (Mama's Zettel). `from` is the pad title, `subject` a
- *                    sub-caption, each `body[]` line a checkbox row.
- * @param {{note: string, from?: string, subject?: string, body: string[]}} note
+ * Realia rendered as a real, physical paper note taped to the card (mediation
+ * tasks). Two looks:
+ *   note: "letter" — a handwritten note torn from a spiral pad (holes + tape).
+ *                    `greeting[]` bold opener lines, `body[]` paragraphs (key
+ *                    words in `mark[]` get a marker highlight), `sign` + `heart`.
+ *   note: "list"   — a torn taped note: `heading` (+`heart`), an underlined
+ *                    `sign` (the sender), then `items[]` as a bullet list.
+ * @param {{note:string, greeting?:string[], body?:string[], mark?:string[],
+ *          heading?:string, sign?:string, heart?:string, items?:string[]}} note
  */
 function buildPaperNote(note) {
   const variant = note.note === "list" ? "list" : "letter";
   const art = document.createElement("article");
   art.className = `paper-note paper-note--${variant}`;
 
+  const tape = document.createElement("span");
+  tape.className = "paper-note__tape";
+  art.appendChild(tape);
+
   const sheet = document.createElement("div");
   sheet.className = "paper-note__sheet";
 
   if (variant === "letter") {
-    const tape = document.createElement("span");
-    tape.className = "paper-note__tape";
-    art.appendChild(tape);
-
-    if (note.subject) {
-      const title = document.createElement("h4");
-      title.className = "paper-note__title";
-      title.textContent = note.subject;
-      sheet.appendChild(title);
+    if (note.greeting?.length) {
+      const g = document.createElement("div");
+      g.className = "paper-note__greeting";
+      note.greeting.forEach((line) => {
+        const p = document.createElement("p");
+        p.textContent = line;
+        g.appendChild(p);
+      });
+      sheet.appendChild(g);
     }
-    const bodyEl = document.createElement("div");
-    bodyEl.className = "paper-note__body";
     (note.body ?? []).forEach((para) => {
       const p = document.createElement("p");
-      p.textContent = para;
-      bodyEl.appendChild(p);
+      p.className = "paper-note__para";
+      p.innerHTML = markPhrases(para, note.mark);
+      sheet.appendChild(p);
     });
-    sheet.appendChild(bodyEl);
-  } else {
-    if (note.from) {
-      const t = document.createElement("h4");
-      t.className = "paper-note__pad-title";
-      t.textContent = note.from;
-      sheet.appendChild(t);
-    }
-    if (note.subject) {
+    if (note.sign) {
       const s = document.createElement("p");
-      s.className = "paper-note__pad-sub";
-      s.textContent = note.subject;
+      s.className = "paper-note__sign";
+      s.textContent = note.heart ? `${note.sign} ${note.heart}` : note.sign;
+      sheet.appendChild(s);
+    }
+  } else {
+    if (note.heading) {
+      const h = document.createElement("h4");
+      h.className = "paper-note__head";
+      h.textContent = note.heart ? `${note.heading}  ${note.heart}` : note.heading;
+      sheet.appendChild(h);
+    }
+    if (note.sign) {
+      const s = document.createElement("p");
+      s.className = "paper-note__sign paper-note__sign--list";
+      s.textContent = note.sign;
       sheet.appendChild(s);
     }
     const ul = document.createElement("ul");
     ul.className = "paper-note__list";
-    (note.body ?? []).forEach((line) => {
+    (note.items ?? note.body ?? []).forEach((line) => {
       const li = document.createElement("li");
-      // Data lines may start with a "• " bullet — the checkbox replaces it.
-      li.textContent = String(line).replace(/^\s*[•\-–•]\s*/, "");
+      li.textContent = String(line).replace(/^\s*[•\-–]\s*/, "");
       ul.appendChild(li);
     });
     sheet.appendChild(ul);
@@ -2347,6 +2382,80 @@ function buildPaperNote(note) {
 
   art.appendChild(sheet);
   return art;
+}
+
+/**
+ * A three-zone "mediation board" (Vocabulary Task 6/7): the task briefing on
+ * the left, the handwritten realia note in the centre, and the numbered
+ * question-prompts (each with a write-in answer line) on the right — all over
+ * the card's scene photo. Prompt answers persist like the starter fields.
+ */
+function buildMediationBoard(data, step, index, ctx) {
+  const board = document.createElement("div");
+  board.className = "med-board";
+  if (data.promptBox) board.classList.add("med-board--boxed");
+
+  // Left — the briefing (lead sentence + the task in the accent colour).
+  const intro = document.createElement("div");
+  intro.className = "med-board__intro";
+  if (data.introLead) {
+    const p = document.createElement("p");
+    p.className = "med-board__lead";
+    p.textContent = data.introLead;
+    intro.appendChild(p);
+  }
+  if (data.introTask) {
+    const p = document.createElement("p");
+    p.className = "med-board__task";
+    p.textContent = data.introTask;
+    intro.appendChild(p);
+  }
+  board.appendChild(intro);
+
+  // Centre — the paper note.
+  const noteCol = document.createElement("div");
+  noteCol.className = "med-board__note";
+  if (data.incoming) noteCol.appendChild(buildPaperNote(data.incoming));
+  board.appendChild(noteCol);
+
+  // Right — numbered prompts, each with a write-in answer line.
+  const prompts = document.createElement("div");
+  prompts.className = `med-board__prompts med-board__prompts--${data.promptAccent || "slate"}`;
+  (data.prompts ?? []).forEach((q, k) => {
+    const row = document.createElement("div");
+    row.className = "med-prompt";
+    const num = document.createElement("span");
+    num.className = "med-prompt__n";
+    num.textContent = String(k + 1);
+    const bd = document.createElement("div");
+    bd.className = "med-prompt__body";
+    const qEl = document.createElement("div");
+    qEl.className = "med-prompt__q";
+    qEl.textContent = q;
+    const ans = document.createElement("div");
+    ans.className = "med-prompt__ans";
+    const arrow = document.createElement("span");
+    arrow.className = "med-prompt__arrow";
+    arrow.textContent = "→";
+    const input = document.createElement("input");
+    input.type = "text";
+    input.className = "med-prompt__input";
+    input.setAttribute("autocomplete", "off");
+    if (ctx) {
+      const key = `step${step.step}-task${index + 1}p${k + 1}`;
+      input.dataset.answerKey = key;
+      const saved = getAnswers(ctx.unitId, ctx.sectionId)[key];
+      if (saved) input.value = saved;
+      input.addEventListener("input", () => setAnswer(ctx.unitId, ctx.sectionId, key, input.value));
+    }
+    ans.append(arrow, input);
+    bd.append(qEl, ans);
+    row.append(num, bd);
+    prompts.appendChild(row);
+  });
+  board.appendChild(prompts);
+
+  return board;
 }
 
 /**

@@ -6006,6 +6006,29 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
   backdrop-filter: blur(7px) saturate(1.1);
 }
 
+/* Mediation-board cards (Task 6/7): the scene photo fills the card and sits to
+   the right so its objects clear the three content zones, under a stronger
+   left-to-centre navy scrim that keeps the briefing + prompts legible. */
+.journal[data-section="vocabulary"] .taskcard--sheet:not(.taskcard--video).taskcard--board::before {
+  background-image:
+    linear-gradient(103deg, rgba(9, 16, 30, 0.96) 34%, rgba(9, 16, 30, 0.74) 58%, rgba(9, 16, 30, 0.34) 100%),
+    linear-gradient(rgba(10, 18, 33, 0.34), rgba(10, 18, 33, 0.34)),
+    url("../../assets/vocab/unit1/nyc-shopping.png");
+  background-size: cover, cover, cover;
+  background-position: center, center, right center;
+}
+/* Task 6 swaps the shopping photo for the host-mum's kitchen (tea, heart bag,
+   keys). Placed after the board rule so it wins on the card that has both;
+   the extra .taskcard--sheet:not(...) beats the base vocab-scene selector. */
+.journal[data-section="vocabulary"] .taskcard--sheet:not(.taskcard--video).taskcard--scene-kitchen::before {
+  background-image:
+    linear-gradient(103deg, rgba(9, 16, 30, 0.96) 32%, rgba(9, 16, 30, 0.72) 56%, rgba(9, 16, 30, 0.3) 100%),
+    linear-gradient(rgba(10, 18, 33, 0.3), rgba(10, 18, 33, 0.3)),
+    url("../../assets/vocab/unit1/nyc-kitchen.png");
+  background-size: cover, cover, cover;
+  background-position: center, center, right center;
+}
+
 /* ===================================================================
    Essay "helping language" chips with a line icon (opt-in via chip.icon),
    and the dialogue-script editor (Vocabulary "A shopping dialogue").
