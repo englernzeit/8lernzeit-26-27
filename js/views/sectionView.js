@@ -1349,9 +1349,13 @@ function buildCard(step, data, index, taskNo, ctx) {
     body.appendChild(buildTaskVideo(data.video));
   }
 
-  // Optional read-only email to react to (e.g. Writing "write the reply").
+  // Optional read-only realia to react to. `incoming.note` renders it as a
+  // real paper note (host-mum's welcome note, Mama's shopping list); otherwise
+  // it's the read-only message/ticket box (e.g. Writing "write the reply").
   if (data.incoming) {
-    body.appendChild(buildReceivedEmail(data.incoming));
+    body.appendChild(
+      data.incoming.note ? buildPaperNote(data.incoming) : buildReceivedEmail(data.incoming)
+    );
   }
 
   switch (data.type) {
@@ -2277,6 +2281,71 @@ function buildReceivedEmail(email) {
   });
   art.appendChild(bodyEl);
 
+  return art;
+}
+
+/**
+ * Realia rendered as a real, physical paper note (mediation tasks). Two looks:
+ *   note: "letter" — a handwritten note on a taped, ruled cream sheet
+ *                    (the host-mum's welcome note). `subject` is the heading,
+ *                    `body[]` the handwritten paragraphs.
+ *   note: "list"   — a spiral shopping-list pad with hand-drawn checkboxes
+ *                    (Mama's Zettel). `from` is the pad title, `subject` a
+ *                    sub-caption, each `body[]` line a checkbox row.
+ * @param {{note: string, from?: string, subject?: string, body: string[]}} note
+ */
+function buildPaperNote(note) {
+  const variant = note.note === "list" ? "list" : "letter";
+  const art = document.createElement("article");
+  art.className = `paper-note paper-note--${variant}`;
+
+  const sheet = document.createElement("div");
+  sheet.className = "paper-note__sheet";
+
+  if (variant === "letter") {
+    const tape = document.createElement("span");
+    tape.className = "paper-note__tape";
+    art.appendChild(tape);
+
+    if (note.subject) {
+      const title = document.createElement("h4");
+      title.className = "paper-note__title";
+      title.textContent = note.subject;
+      sheet.appendChild(title);
+    }
+    const bodyEl = document.createElement("div");
+    bodyEl.className = "paper-note__body";
+    (note.body ?? []).forEach((para) => {
+      const p = document.createElement("p");
+      p.textContent = para;
+      bodyEl.appendChild(p);
+    });
+    sheet.appendChild(bodyEl);
+  } else {
+    if (note.from) {
+      const t = document.createElement("h4");
+      t.className = "paper-note__pad-title";
+      t.textContent = note.from;
+      sheet.appendChild(t);
+    }
+    if (note.subject) {
+      const s = document.createElement("p");
+      s.className = "paper-note__pad-sub";
+      s.textContent = note.subject;
+      sheet.appendChild(s);
+    }
+    const ul = document.createElement("ul");
+    ul.className = "paper-note__list";
+    (note.body ?? []).forEach((line) => {
+      const li = document.createElement("li");
+      // Data lines may start with a "• " bullet — the checkbox replaces it.
+      li.textContent = String(line).replace(/^\s*[•\-–•]\s*/, "");
+      ul.appendChild(li);
+    });
+    sheet.appendChild(ul);
+  }
+
+  art.appendChild(sheet);
   return art;
 }
 

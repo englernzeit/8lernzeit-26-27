@@ -405,6 +405,7 @@ export default {
           title: "The note from your host mum",
           intro: "Your American host mum left this note in English. Your mother is visiting and does not speak English. Explain the four most important points to her in German — you do not need to translate every word.",
           incoming: {
+            note: "letter",
             from: "🏠 Susan (host mum)",
             subject: "Welcome to New York!",
             body: [
@@ -425,6 +426,7 @@ export default {
           title: "At the store",
           intro: "Your mum gives you her shopping wishes in German. You are in a New York store. Tell the shop assistant in English what you are looking for — write three polite sentences.",
           incoming: {
+            note: "list",
             from: "🛍️ Mamas Zettel",
             subject: "auf Deutsch",
             body: ["• eine Hose in Größe 38", "• Turnschuhe für Papa", "• frag bitte, ob es die Hose auch in Blau gibt"],
