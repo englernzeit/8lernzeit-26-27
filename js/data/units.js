@@ -66,6 +66,9 @@ export const UNITS = [
     pinPos: { x: 70, y: 23 },
     cardPos: { x: 73.5, y: 19.0 },
     sections: competenceSections(),
+    // Temporarily locked so students focus on Unit 1 (In New York City).
+    // Flip `locked` to false to bring the unit back.
+    locked: true,
   },
   {
     id: "california",
@@ -78,6 +81,7 @@ export const UNITS = [
     pinPos: { x: 38, y: 70 },
     cardPos: { x: 42.0, y: 35.4 },
     sections: competenceSections(),
+    locked: true,
   },
   {
     id: "deep-south",
@@ -90,6 +94,7 @@ export const UNITS = [
     pinPos: { x: 63, y: 76 },
     cardPos: { x: 68.7, y: 49.0 },
     sections: competenceSections(),
+    locked: true,
   },
 ];
 

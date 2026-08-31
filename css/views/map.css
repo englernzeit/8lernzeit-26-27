@@ -153,6 +153,15 @@
   border-radius: 50%;
 }
 
+/* --- Temporarily locked units (display-only on the map) -------- */
+.map-pin--locked { cursor: default; }
+.map-pin--locked .map-pin__body {
+  animation: none;
+  opacity: 0.45;
+  filter: grayscale(0.55) drop-shadow(0 0 5px rgba(0, 0, 0, 0.45));
+}
+.map-pin--locked .map-pin__glow { opacity: 0.3; animation: none; filter: grayscale(0.6); }
+
 /* --- Glass unit cards ------------------------------------------ */
 
 .unit-card {
@@ -184,6 +193,23 @@
 .unit-card--u2 { --glass-tint: var(--unit2-rgb); --tint-text: var(--unit2-text); }
 .unit-card--u3 { --glass-tint: var(--unit3-rgb); --tint-text: var(--unit3-text); }
 .unit-card--u4 { --glass-tint: var(--unit4-rgb); --tint-text: var(--unit4-text); }
+
+/* Locked units: dimmed, non-interactive, with a "Coming soon" badge. */
+.unit-card--locked { cursor: default; opacity: 0.68; }
+.unit-card__lock {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45cqw;
+  margin-top: 0.75cqw;
+  padding: 0.3cqw 0.7cqw;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.09);
+  border: 1px solid rgba(var(--glass-tint), 0.45);
+  color: var(--text-body);
+  font: 600 0.72cqw/1 var(--font-ui);
+  letter-spacing: 0.03em;
+}
+.unit-card__lock svg { width: 0.9cqw; height: 0.9cqw; }
 
 .unit-card.is-active,
 .unit-card:focus-visible {

@@ -85,9 +85,14 @@ function buildPin(unit) {
   pin.className = `map-pin map-pin--u${unit.number}`;
   pin.style.setProperty("--x", `${unit.pinPos.x}%`);
   pin.style.setProperty("--y", `${unit.pinPos.y}%`);
-  pin.setAttribute("role", "button");
-  pin.tabIndex = 0;
-  pin.setAttribute("aria-label", `Open unit ${unit.number}: ${unit.label}`);
+  if (unit.locked) {
+    pin.classList.add("map-pin--locked");
+    pin.setAttribute("aria-label", `Unit ${unit.number}: ${unit.label} — coming soon`);
+  } else {
+    pin.setAttribute("role", "button");
+    pin.tabIndex = 0;
+    pin.setAttribute("aria-label", `Open unit ${unit.number}: ${unit.label}`);
+  }
 
   const glow = document.createElement("div");
   glow.className = "map-pin__glow";
@@ -108,9 +113,15 @@ function buildCard(unit) {
   card.className = `unit-card unit-card--u${unit.number}`;
   card.style.setProperty("--x", `${unit.cardPos.x}%`);
   card.style.setProperty("--y", `${unit.cardPos.y}%`);
-  card.tabIndex = 0;
-  card.setAttribute("role", "button");
-  card.setAttribute("aria-label", `Open unit ${unit.number}: ${unit.label}`);
+  if (unit.locked) {
+    card.classList.add("unit-card--locked");
+    card.setAttribute("aria-label", `Unit ${unit.number}: ${unit.label} — coming soon`);
+    card.setAttribute("aria-disabled", "true");
+  } else {
+    card.tabIndex = 0;
+    card.setAttribute("role", "button");
+    card.setAttribute("aria-label", `Open unit ${unit.number}: ${unit.label}`);
+  }
 
   const header = document.createElement("header");
   header.className = "unit-card__head";
@@ -141,6 +152,18 @@ function buildCard(unit) {
   desc.textContent = unit.desc;
 
   card.append(header, title, rule, desc);
+
+  // A locked unit shows a "coming soon" badge instead of being openable.
+  if (unit.locked) {
+    const badge = document.createElement("span");
+    badge.className = "unit-card__lock";
+    badge.innerHTML =
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" ' +
+      'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+      '<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>' +
+      "<span>Coming soon</span>";
+    card.appendChild(badge);
+  }
   return card;
 }
 
@@ -149,6 +172,9 @@ function buildCard(unit) {
  * or focusing either one highlights the pair so the link is readable.
  */
 function linkPair(unit, pin, card) {
+  // Locked units are display-only — no highlight, no navigation.
+  if (unit.locked) return;
+
   const open = () => {
     window.location.hash = `/unit/${unit.id}`;
   };

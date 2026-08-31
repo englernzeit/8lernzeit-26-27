@@ -39,7 +39,8 @@ const COMPETENCE_ICONS = {
  */
 export function renderUnitView(root, unitId) {
   const unit = getUnit(unitId);
-  if (!unit) {
+  // Unknown or temporarily locked units bounce back to the map.
+  if (!unit || unit.locked) {
     window.location.hash = "/";
     return;
   }

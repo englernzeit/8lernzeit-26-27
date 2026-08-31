@@ -156,7 +156,8 @@ function comingSoonContent() {
 export function renderSectionView(root, unitId, sectionId) {
   const unit = getUnit(unitId);
   const section = getSection(unitId, sectionId);
-  if (!unit || !section) {
+  // Unknown section, or a temporarily locked unit, bounces back to the map.
+  if (!unit || !section || unit.locked) {
     window.location.hash = "/";
     return;
   }
