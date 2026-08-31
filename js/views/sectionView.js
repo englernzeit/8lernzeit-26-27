@@ -39,6 +39,11 @@ import {
   createArgumentPick,
   createParagraphBuilder,
   createEssayEditor,
+  createChatMediation,
+  createMemorySubway,
+  createRewriteStudio,
+  createCallCompose,
+  createBlogFinale,
   createDialogueWrite,
   createEmailBuilder,
   createEmailFixer,
@@ -1273,6 +1278,8 @@ function buildCard(step, data, index, taskNo, ctx) {
   // scene swaps the page's default shopping photo for another (Task 6 kitchen).
   if (data.board) card.classList.add("taskcard--board");
   if (data.scene) card.classList.add(`taskcard--scene-${data.scene}`);
+  // The blog finale carries the faint NYC skyline backdrop.
+  if (data.type === "blog-finale") card.classList.add("taskcard--skyline");
 
   // Optional faded full-card background image (a picture behind the task, so
   // the picture costs no vertical space — the content sits on top).
@@ -1531,6 +1538,103 @@ function buildCard(step, data, index, taskNo, ctx) {
       );
       break;
     }
+    case "memory-subway": {
+      const base = `step${step.step}-task${index + 1}`;
+      const saved = ctx ? getAnswers(ctx.unitId, ctx.sectionId) : {};
+      const keyFor = (i) => `${base}-w${i + 1}`;
+      const subway = createMemorySubway({
+        stops: data.stops,
+        lead: data.lead,
+        leadMark: data.leadMark,
+        ready: data.ready,
+        readySub: data.readySub,
+        values: saved,
+        keyFor,
+        onChange: (i, v) => ctx && setAnswer(ctx.unitId, ctx.sectionId, keyFor(i), v),
+      });
+      // The MEMORY-MODE badge rides in the card header's top-right corner.
+      if (headEl && subway._badge) headEl.appendChild(subway._badge);
+      body.appendChild(subway);
+      break;
+    }
+    case "blog-finale": {
+      const key = `step${step.step}-task${index + 1}-essay`;
+      const saved = ctx ? getAnswers(ctx.unitId, ctx.sectionId) : {};
+      body.appendChild(
+        createBlogFinale({
+          rail: data.rail,
+          activeRail: data.activeRail,
+          blocks: data.blocks,
+          replyTo: data.replyTo,
+          min: data.min,
+          max: data.max,
+          placeholder: data.placeholder,
+          checklist: data.checklist,
+          tip: data.tip,
+          value: saved[key] ?? "",
+          answerKey: key,
+          onChange: (v) => ctx && setAnswer(ctx.unitId, ctx.sectionId, key, v),
+        }),
+      );
+      break;
+    }
+    case "call-compose": {
+      const key = `step${step.step}-task${index + 1}-essay`;
+      const saved = ctx ? getAnswers(ctx.unitId, ctx.sectionId) : {};
+      body.appendChild(
+        createCallCompose({
+          notes: data.notes,
+          notesHead: data.notesHead,
+          notesSub: data.notesSub,
+          notesFooter: data.notesFooter,
+          contact: data.contact,
+          tips: data.tips,
+          min: data.min,
+          max: data.max,
+          placeholder: data.placeholder,
+          value: saved[key] ?? "",
+          answerKey: key,
+          onChange: (v) => ctx && setAnswer(ctx.unitId, ctx.sectionId, key, v),
+        }),
+      );
+      break;
+    }
+    case "rewrite-studio": {
+      const key = `step${step.step}-task${index + 1}-essay`;
+      const saved = ctx ? getAnswers(ctx.unitId, ctx.sectionId) : {};
+      body.appendChild(
+        createRewriteStudio({
+          robot: data.robot,
+          robotWarn: data.robotWarn,
+          contact: data.contact,
+          chips: data.chips,
+          tips: data.tips,
+          min: data.min,
+          max: data.max,
+          placeholder: data.placeholder,
+          value: saved[key] ?? "",
+          answerKey: key,
+          onChange: (v) => ctx && setAnswer(ctx.unitId, ctx.sectionId, key, v),
+        }),
+      );
+      break;
+    }
+    case "chat-mediation": {
+      const key = `step${step.step}-task${index + 1}-essay`;
+      const saved = ctx ? getAnswers(ctx.unitId, ctx.sectionId) : {};
+      body.appendChild(
+        createChatMediation({
+          source: data.source,
+          host: data.host,
+          min: data.min,
+          max: data.max,
+          value: saved[key] ?? "",
+          answerKey: key,
+          onChange: (v) => ctx && setAnswer(ctx.unitId, ctx.sectionId, key, v),
+        }),
+      );
+      break;
+    }
     case "dialogue-write": {
       const base = `step${step.step}-task${index + 1}`;
       const saved = ctx ? getAnswers(ctx.unitId, ctx.sectionId) : {};
@@ -1688,13 +1792,16 @@ function buildCard(step, data, index, taskNo, ctx) {
     }
     case "call-game": {
       const key = `step${step.step}-task${index + 1}-game`;
-      body.appendChild(
-        createCallGame({
-          contact: data.contact,
-          turns: data.turns,
-          onResult: (summary) => ctx && setAnswer(ctx.unitId, ctx.sectionId, key, summary),
-        }),
-      );
+      const call = createCallGame({
+        contact: data.contact,
+        turns: data.turns,
+        badge: data.badge,
+        legend: data.legend,
+        legendNote: data.legendNote,
+        onResult: (summary) => ctx && setAnswer(ctx.unitId, ctx.sectionId, key, summary),
+      });
+      if (headEl && call._badge) headEl.appendChild(call._badge);
+      body.appendChild(call);
       break;
     }
     case "quizshow-game": {

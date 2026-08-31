@@ -185,11 +185,13 @@ export default {
       layout: "slide",
       cards: [
         {
-          type: "written",
+          type: "memory-subway",
+          scene: "subway",
           kind: "Aufwärmen",
           title: "Before you start",
-          intro: "Do you know one word that Americans say differently from the British? Write it down — or write: „No, not yet.“",
-          answer: true,
+          intro: "Welche drei englischen Wörter aus dieser Unit weißt du noch?",
+          lead: "Three words. That's all. Let's wake up your English.",
+          leadMark: "wake up",
         },
         {
           type: "tap-match",
@@ -323,11 +325,13 @@ export default {
       layout: "spread",
       cards: [
         {
-          type: "written",
+          type: "memory-subway",
+          scene: "subway",
           kind: "Aufwärmen",
           title: "Before you start",
-          intro: "Why is it useful to know both British and American words? Write down one reason.",
-          answer: true,
+          intro: "Welche drei amerikanischen Wörter aus New York kennst du schon?",
+          lead: "Three words to warm up — then off we go.",
+          leadMark: "warm up",
         },
         {
           type: "tap-match",
@@ -479,11 +483,13 @@ export default {
       layout: "spread",
       cards: [
         {
-          type: "written",
+          type: "memory-subway",
+          scene: "subway",
           kind: "Aufwärmen",
           title: "Before you start",
-          intro: "„Mediation“ does not mean word-for-word translation. What do you think it means to mediate between two languages? Write one sentence.",
-          answer: true,
+          intro: "Welche drei Wörter aus dieser Unit findest du am nützlichsten?",
+          lead: "Three words. Recall, connect, remember.",
+          leadMark: "remember",
         },
         {
           type: "tap-match",
@@ -563,24 +569,31 @@ export default {
           ],
         },
         {
-          type: "essay-editor",
+          type: "chat-mediation",
           kind: "Mediation · Übung 3",
           title: "A message from home",
           intro: "Your aunt in Germany sends this message. You are staying with a host family in New York. Convey her two wishes to your host family in English (3–4 sentences). Do not translate word-for-word — pass on what she needs.",
-          incoming: {
-            from: "💬 Tante Karin",
-            subject: "auf Deutsch",
-            body: [
-              "„Hallo! Wie schön, dass du in New York bist! Ich hätte zwei Bitten: Könntest du mir ein typisch amerikanisches Souvenir mitbringen – aber bitte nichts Kitschiges?",
-              "Und finde bitte heraus, ob man die Freiheitsstatue auch ohne lange Wartezeit besichtigen kann und was das kostet. Frag am besten deine Gastfamilie. Liebe Grüße, Tante Karin“",
+          source: {
+            name: "Tante Karin",
+            avatar: "T",
+            when: "Today, 10:24 AM",
+            lines: [
+              "Hallo! Wie schön, dass du in New York bist!",
+              "Ich hätte zwei Bitten: Könntest du mir ein typisch amerikanisches Souvenir mitbringen – aber bitte nichts Kitschiges?",
+              "Und finde bitte heraus, ob man die Freiheitsstatue auch ohne lange Wartezeit besichtigen kann und was das kostet.",
+              "Frag am besten deine Gastfamilie.",
             ],
+            sign: "Liebe Grüße, Tante Karin ❤️",
+          },
+          host: {
+            name: "Host Mum",
+            avatar: "M",
+            status: "Online",
+            reply: "Sure, I can help with that.",
+            placeholder: "Hi! My aunt asked me to check two things with you …",
           },
           min: 35,
           max: 75,
-          fill: true,
-          placeholder: "My aunt in Germany has two wishes. First, she would like …",
-          chips: ["a typical American souvenir", "nothing too kitschy", "the Statue of Liberty without a long wait?", "how much does it cost?", "Could you help me find out …?"],
-          checklist: ["Both wishes passed on?", "In your own words (not word-for-word)?", "3–4 clear sentences?"],
         },
         {
           type: "written",

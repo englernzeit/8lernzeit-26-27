@@ -4819,7 +4819,7 @@ export function createBridgeGame({ spans, stops, onResult }) {
  *   onResult: (summary: string) => void,
  * }} opts
  */
-export function createCallGame({ contact = {}, turns, onResult }) {
+export function createCallGame({ contact = {}, turns, onResult, badge, legend, legendNote }) {
   const name = contact.name ?? "Sam";
   const sub = contact.sub ?? "New York City";
   const avatar = contact.avatar ?? "🗽";
@@ -4885,11 +4885,17 @@ export function createCallGame({ contact = {}, turns, onResult }) {
     const opts = document.createElement("div");
     opts.className = "exo-call__opts";
     let locked = false;
-    shuffledCopy(t.options.map((label, oi) => ({ label, oi }))).forEach(({ label, oi }) => {
+    shuffledCopy(t.options.map((label, oi) => ({ label, oi }))).forEach(({ label, oi }, di) => {
       const b = document.createElement("button");
       b.type = "button";
       b.className = "exo-call__opt";
-      b.textContent = label;
+      const nEl = document.createElement("span");
+      nEl.className = "exo-call__opt-n";
+      nEl.textContent = String(di + 1);
+      const tEl = document.createElement("span");
+      tEl.className = "exo-call__opt-t";
+      tEl.textContent = label;
+      b.append(nEl, tEl);
       b.addEventListener("click", () => {
         if (locked || b.disabled) return;
         if (oi === t.correct) {
@@ -4943,8 +4949,850 @@ export function createCallGame({ contact = {}, turns, onResult }) {
     panel.appendChild(again);
   };
 
-  wrap.append(phone, panel);
+  // Two columns: the phone (left) and the reply panel (right); a time-zone
+  // legend runs underneath. The EXTRA-CHALLENGE badge rides in the header.
+  const cols = document.createElement("div");
+  cols.className = "exo-call__cols";
+  cols.append(phone, panel);
+  wrap.appendChild(cols);
+
+  if (legend?.length) {
+    const leg = document.createElement("div");
+    leg.className = "exo-call__legend";
+    legend.forEach((it) => {
+      const item = document.createElement("span");
+      item.className = "exo-call__leg";
+      item.innerHTML = `<b>${it.k}</b> → ${it.v}`;
+      leg.appendChild(item);
+    });
+    if (legendNote) {
+      const n = document.createElement("span");
+      n.className = "exo-call__leg-note";
+      n.textContent = legendNote;
+      leg.appendChild(n);
+    }
+    wrap.appendChild(leg);
+  }
+
+  if (badge) {
+    const b = document.createElement("div");
+    b.className = "exo-call__badge";
+    b.innerHTML = `<span class="exo-call__badge-star">★</span> ${badge}`;
+    wrap._badge = b;
+  }
+
   showTurn();
+  return wrap;
+}
+
+/**
+ * Two-panel chat mediation (Vocabulary "A message from home"). The read-only
+ * source message sits on the left (the aunt's German note); on the right the
+ * learner types an English mediation into a chat with the host family. What
+ * they type mirrors live into the outgoing bubble, and the host's canned reply
+ * + typing dots make it feel like a real conversation. Persists via answerKey.
+ *
+ * @param {{
+ *   source?: { name?: string, avatar?: string, when?: string, lines?: string[], sign?: string },
+ *   host?: { name?: string, avatar?: string, status?: string, reply?: string, placeholder?: string },
+ *   min?: number, max?: number, value?: string, answerKey?: string,
+ *   onChange?: (v: string) => void,
+ * }} opts
+ */
+export function createChatMediation({ source = {}, host = {}, min = 35, max = 75, value, answerKey, onChange }) {
+  const wrap = document.createElement("div");
+  wrap.className = "exo exo-chatmed";
+
+  const CHAT_IC =
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" ' +
+    'stroke-linejoin="round" aria-hidden="true"><path d="M20 11.5a7 7 0 0 1-10 6.3L4.5 19l1.2-3.7A7 7 0 1 1 20 11.5z"/></svg>';
+  const SEND_IC =
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" ' +
+    'stroke-linejoin="round" aria-hidden="true"><path d="M4.5 12l15-7-4.5 15-3.5-5.5L4.5 12z"/><path d="M11 14.5L19.5 5"/></svg>';
+
+  const avatarEl = (a, mono) => {
+    const el = document.createElement("span");
+    el.className = "exo-chatmed__avatar";
+    if (a && /\.(png|jpe?g|webp|svg|gif)$/i.test(a)) {
+      const img = document.createElement("img");
+      img.src = a;
+      img.alt = "";
+      el.appendChild(img);
+    } else {
+      el.textContent = a || "•";
+      if (mono) el.classList.add("exo-chatmed__avatar--mono");
+    }
+    return el;
+  };
+
+  const makePanel = (label) => {
+    const p = document.createElement("div");
+    p.className = "exo-chatmed__panel";
+    const h = document.createElement("div");
+    h.className = "exo-chatmed__panel-head";
+    h.innerHTML = `<span class="exo-chatmed__panel-ic">${CHAT_IC}</span><span>${label}</span>`;
+    p.appendChild(h);
+    return p;
+  };
+
+  const contactRow = (av, name, metaHtml) => {
+    const row = document.createElement("div");
+    row.className = "exo-chatmed__contact";
+    row.appendChild(av);
+    const who = document.createElement("div");
+    who.className = "exo-chatmed__who";
+    who.innerHTML = `<span class="exo-chatmed__name">${name ?? ""}</span>${metaHtml}`;
+    row.appendChild(who);
+    return row;
+  };
+
+  // ---- Left: the source message (read-only) ----
+  const left = makePanel(`Message from ${source.name ?? "home"}`);
+  left.appendChild(
+    contactRow(avatarEl(source.avatar, true), source.name, `<span class="exo-chatmed__meta">${source.when ?? ""}</span>`),
+  );
+  const inBubble = document.createElement("div");
+  inBubble.className = "exo-chatmed__bubble exo-chatmed__bubble--in";
+  (source.lines ?? []).forEach((line) => {
+    const p = document.createElement("p");
+    p.textContent = line;
+    inBubble.appendChild(p);
+  });
+  if (source.sign) {
+    const s = document.createElement("p");
+    s.className = "exo-chatmed__sign";
+    s.textContent = source.sign;
+    inBubble.appendChild(s);
+  }
+  left.appendChild(inBubble);
+  if (source.when) {
+    const stamp = document.createElement("span");
+    stamp.className = "exo-chatmed__stamp";
+    stamp.textContent = source.when.includes(",") ? source.when.split(",").pop().trim() : source.when;
+    left.appendChild(stamp);
+  }
+
+  // ---- Right: the live chat with the host family ----
+  const right = makePanel(`Chat with ${host.name ?? "Host"}`);
+  right.appendChild(
+    contactRow(
+      avatarEl(host.avatar, false),
+      host.name,
+      `<span class="exo-chatmed__status">${host.status ?? "Online"}</span>`,
+    ),
+  );
+
+  const thread = document.createElement("div");
+  thread.className = "exo-chatmed__thread";
+
+  const outBubble = document.createElement("div");
+  outBubble.className = "exo-chatmed__bubble exo-chatmed__bubble--out exo-chatmed__bubble--empty";
+  const outText = document.createElement("p");
+  outText.className = "exo-chatmed__out-text";
+  const outStamp = document.createElement("span");
+  outStamp.className = "exo-chatmed__out-stamp";
+  outStamp.innerHTML = '10:26&nbsp;AM <span class="exo-chatmed__ticks">✓✓</span>';
+  outBubble.append(outText, outStamp);
+  thread.appendChild(outBubble);
+
+  if (host.reply) {
+    const rb = document.createElement("div");
+    rb.className = "exo-chatmed__bubble exo-chatmed__bubble--in exo-chatmed__bubble--reply";
+    rb.textContent = host.reply;
+    thread.appendChild(rb);
+    const dots = document.createElement("div");
+    dots.className = "exo-chatmed__typing";
+    dots.innerHTML = "<span></span><span></span><span></span>";
+    thread.appendChild(dots);
+  }
+  right.appendChild(thread);
+
+  // Composer — the real input; mirrors into the outgoing bubble above.
+  const bar = document.createElement("div");
+  bar.className = "exo-chatmed__bar";
+  const emoji = document.createElement("span");
+  emoji.className = "exo-chatmed__emoji";
+  emoji.textContent = "🙂";
+  const field = document.createElement("textarea");
+  field.className = "exo-chatmed__input";
+  field.rows = 1;
+  field.placeholder = "Type your message…";
+  field.dataset.answerKey = answerKey;
+  field.value = value ?? "";
+  const count = document.createElement("span");
+  count.className = "exo-chatmed__count";
+  const send = document.createElement("span");
+  send.className = "exo-chatmed__send";
+  send.innerHTML = SEND_IC;
+  bar.append(emoji, field, count, send);
+
+  const wordsOf = (s) => (s.trim() ? s.trim().split(/\s+/).length : 0);
+  const sync = () => {
+    const v = field.value;
+    const has = v.trim().length > 0;
+    outText.textContent = has ? v : host.placeholder ?? "Your message will appear here…";
+    outBubble.classList.toggle("exo-chatmed__bubble--empty", !has);
+    const n = wordsOf(v);
+    count.textContent = `${n} / ${max}`;
+    count.classList.toggle("exo-chatmed__count--over", n > max);
+    count.classList.toggle("exo-chatmed__count--ok", n >= min && n <= max);
+  };
+  field.addEventListener("input", () => {
+    sync();
+    onChange?.(field.value);
+  });
+  sync();
+
+  right.appendChild(bar);
+
+  wrap.append(left, right);
+  return wrap;
+}
+
+/**
+ * "Your New York blog" finale (Revision): a WARM-UP→FINALE progress rail, the
+ * required "blocks", a blog-comment composer (with a live word meter) on the
+ * left, and a tappable SELF-CHECK panel + a TIP on the right. The blog entry
+ * persists via answerKey; the self-check toggles are per-session UI.
+ *
+ * @param {{
+ *   rail?: string[], activeRail?: number,
+ *   blocks?: Array<{n?:string,star?:boolean,text:string}>,
+ *   replyTo?: string, min?: number, max?: number, placeholder?: string,
+ *   checklist?: string[], tip?: string,
+ *   value?: string, answerKey?: string, onChange?: (v:string)=>void,
+ * }} opts
+ */
+export function createBlogFinale({ rail = [], activeRail, blocks = [], replyTo, min = 80, max = 100, placeholder, checklist = [], tip, value, answerKey, onChange }) {
+  const svg = (p) =>
+    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
+  const ICON = {
+    pencil: svg('<path d="M4 20h4L18.5 9.5a2 2 0 0 0-2.8-2.8L5 17.2 4 20z"/><path d="M13.5 8.2l2.3 2.3"/>'),
+    chat: svg('<path d="M20 11.5a7 7 0 0 1-10 6.3L4.5 19l1.2-3.7A7 7 0 1 1 20 11.5z"/>'),
+    bulb: svg('<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.8 10.6c.6.6 1 1.3 1.1 2.4h5.4c.1-1.1.5-1.8 1.1-2.4A6 6 0 0 0 12 3z"/>'),
+    star: svg('<path d="M12 3.5l2.4 5 5.4.6-4 3.7 1.1 5.3L12 20.4l-4.9 2.7 1.1-5.3-4-3.7 5.4-.6z"/>'),
+  };
+
+  const wrap = document.createElement("div");
+  wrap.className = "exo exo-blog";
+
+  // --- Progress rail ---
+  if (rail.length) {
+    const active = activeRail == null ? rail.length - 1 : activeRail;
+    const railEl = document.createElement("div");
+    railEl.className = "exo-blog__rail";
+    rail.forEach((label, i) => {
+      if (i > 0) {
+        const seg = document.createElement("span");
+        seg.className = "exo-blog__rail-seg" + (i <= active ? " exo-blog__rail-seg--done" : "");
+        railEl.appendChild(seg);
+      }
+      const stop = document.createElement("div");
+      stop.className =
+        "exo-blog__rail-stop" +
+        (i < active ? " exo-blog__rail-stop--done" : i === active ? " exo-blog__rail-stop--on" : "");
+      stop.innerHTML = `<span class="exo-blog__rail-dot"></span><span class="exo-blog__rail-label">${label}</span>`;
+      railEl.appendChild(stop);
+    });
+    const flag = document.createElement("span");
+    flag.className = "exo-blog__rail-flag";
+    flag.textContent = "🏁";
+    railEl.appendChild(flag);
+    wrap.appendChild(railEl);
+  }
+
+  // --- Blocks ---
+  if (blocks.length) {
+    const blocksEl = document.createElement("div");
+    blocksEl.className = "exo-blog__blocks";
+    blocks.forEach((b) => {
+      const chip = document.createElement("span");
+      chip.className = "exo-blog__block" + (b.star ? " exo-blog__block--bonus" : "");
+      const mark = document.createElement("span");
+      mark.className = "exo-blog__block-n";
+      if (b.star) mark.innerHTML = ICON.star;
+      else mark.textContent = b.n ?? "";
+      const t = document.createElement("span");
+      t.textContent = b.text;
+      chip.append(mark, t);
+      blocksEl.appendChild(chip);
+    });
+    wrap.appendChild(blocksEl);
+  }
+
+  // --- Two columns: composer (left) + side (right) ---
+  const cols = document.createElement("div");
+  cols.className = "exo-blog__cols";
+
+  const compose = document.createElement("div");
+  compose.className = "exo-blog__compose";
+  const cHead = document.createElement("div");
+  cHead.className = "exo-blog__compose-head";
+  cHead.innerHTML =
+    `<span class="exo-blog__compose-ic">${ICON.chat}</span>` +
+    `<span><b>Add a public comment</b>${replyTo ? ` on: <i>“${replyTo}”</i>` : ""}</span>`;
+  compose.appendChild(cHead);
+
+  const editRow = document.createElement("div");
+  editRow.className = "exo-blog__edit";
+  const av = document.createElement("span");
+  av.className = "exo-blog__avatar";
+  av.innerHTML = ICON.pencil;
+  const area = document.createElement("textarea");
+  area.className = "exo-blog__area";
+  area.placeholder = placeholder ?? "Your blog entry…";
+  area.dataset.answerKey = answerKey;
+  area.value = value ?? "";
+  editRow.append(av, area);
+  compose.appendChild(editRow);
+
+  const meter = document.createElement("div");
+  meter.className = "exo-blog__meter";
+  const mTop = document.createElement("div");
+  mTop.className = "exo-blog__meter-top";
+  const words = document.createElement("span");
+  words.className = "exo-blog__words";
+  const status = document.createElement("span");
+  status.className = "exo-blog__status";
+  mTop.append(words, status);
+  const barWrap = document.createElement("div");
+  barWrap.className = "exo-blog__bar";
+  const bar = document.createElement("span");
+  bar.className = "exo-blog__bar-fill";
+  barWrap.appendChild(bar);
+  const target = document.createElement("span");
+  target.className = "exo-blog__target";
+  target.textContent = `Target: ${min}–${max} words`;
+  meter.append(mTop, barWrap, target);
+  compose.appendChild(meter);
+  cols.appendChild(compose);
+
+  // Side: self-check + tip
+  const side = document.createElement("div");
+  side.className = "exo-blog__side";
+
+  const check = document.createElement("div");
+  check.className = "exo-blog__check";
+  const chkHead = document.createElement("div");
+  chkHead.className = "exo-blog__check-head";
+  const chkCount = document.createElement("span");
+  chkCount.className = "exo-blog__check-count";
+  chkHead.innerHTML = `<span>SELF-CHECK</span>`;
+  chkHead.appendChild(chkCount);
+  check.appendChild(chkHead);
+  const items = [];
+  checklist.forEach((c) => {
+    const row = document.createElement("button");
+    row.type = "button";
+    row.className = "exo-blog__chk";
+    const box = document.createElement("span");
+    box.className = "exo-blog__chk-box";
+    const lab = document.createElement("span");
+    lab.textContent = c;
+    row.append(box, lab);
+    row.addEventListener("click", () => {
+      row.classList.toggle("exo-blog__chk--on");
+      updateCount();
+    });
+    items.push(row);
+    check.appendChild(row);
+  });
+  const updateCount = () => {
+    const done = items.filter((r) => r.classList.contains("exo-blog__chk--on")).length;
+    chkCount.textContent = `${done}/${items.length}`;
+    chkCount.classList.toggle("exo-blog__check-count--full", done === items.length && items.length > 0);
+  };
+  updateCount();
+  side.appendChild(check);
+
+  if (tip) {
+    const tipEl = document.createElement("div");
+    tipEl.className = "exo-blog__tip";
+    tipEl.innerHTML =
+      `<span class="exo-blog__tip-ic">${ICON.bulb}</span>` +
+      `<span class="exo-blog__tip-txt"><b>TIP</b><i></i></span>`;
+    tipEl.querySelector("i").textContent = tip;
+    side.appendChild(tipEl);
+  }
+  cols.appendChild(side);
+  wrap.appendChild(cols);
+
+  // Word meter logic
+  const wordsOf = (s) => (s.trim() ? s.trim().split(/\s+/).length : 0);
+  const sync = () => {
+    const n = wordsOf(area.value);
+    words.textContent = `${n} words`;
+    const pct = Math.min(100, Math.round((n / max) * 100));
+    bar.style.width = `${pct}%`;
+    const inRange = n >= min && n <= max;
+    bar.classList.toggle("exo-blog__bar-fill--ok", inRange);
+    bar.classList.toggle("exo-blog__bar-fill--over", n > max);
+    status.textContent = n === 0 ? "" : inRange ? "Perfect! ✓" : n > max ? "A bit long" : "Keep going…";
+    status.classList.toggle("exo-blog__status--ok", inRange);
+  };
+  area.addEventListener("input", () => {
+    sync();
+    onChange?.(area.value);
+  });
+  sync();
+
+  return wrap;
+}
+
+/**
+ * "Your phone call to Sam" composer (Speaking finale): a notes timeline
+ * (Yesterday · Now · Tomorrow) on the left, and a live "Call with Sam" on the
+ * right where the learner writes their one-minute call (speak-from-notes).
+ * Tips run underneath. The written call persists via answerKey.
+ *
+ * @param {{
+ *   notes?: Array<{tone?:string,icon?:string,label:string,prompt:string,hint?:string}>,
+ *   notesHead?: string, notesSub?: string, notesFooter?: string,
+ *   contact?: { name?: string, avatar?: string, greeting?: string, when?: string },
+ *   tips?: Array<{icon?:string,title:string,desc:string}>,
+ *   min?: number, max?: number, placeholder?: string,
+ *   value?: string, answerKey?: string, onChange?: (v:string)=>void,
+ * }} opts
+ */
+export function createCallCompose({ notes = [], notesHead = "What you want to tell Sam", notesSub = "Your notes · timeline", notesFooter, contact = {}, tips = [], min = 45, max = 120, placeholder, value, answerKey, onChange }) {
+  const svg = (p) =>
+    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
+  const ICON = {
+    clock: svg('<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>'),
+    now: svg('<circle cx="12" cy="12" r="2.2"/><path d="M8 8a5.5 5.5 0 0 0 0 8M16 8a5.5 5.5 0 0 1 0 8M5.5 5.5a9 9 0 0 0 0 13M18.5 5.5a9 9 0 0 1 0 13"/>'),
+    calendar: svg('<rect x="4" y="5" width="16" height="16" rx="2"/><path d="M4 9.5h16M8.5 3v4M15.5 3v4"/>'),
+    globe: svg('<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/>'),
+    chat: svg('<path d="M20 11.5a7 7 0 0 1-10 6.3L4.5 19l1.2-3.7A7 7 0 1 1 20 11.5z"/>'),
+    speak: svg('<circle cx="9" cy="8" r="3"/><path d="M4 19a5 5 0 0 1 10 0"/><path d="M16.5 8.5a3.5 3.5 0 0 1 0 7"/>'),
+    mic: svg('<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>'),
+    phone: svg('<path d="M6.5 3.5l2 4-2 1.6a12 12 0 0 0 6 6l1.6-2 4 2-1 3.4a2 2 0 0 1-2.2 1.4A16 16 0 0 1 4.7 8.9 2 2 0 0 1 6 6.7z"/>'),
+    sparkle: svg('<path d="M12 3l1.4 4.6L18 9l-4.6 1.4L12 15l-1.4-4.6L6 9l4.6-1.4L12 3z"/>'),
+  };
+
+  const wrap = document.createElement("div");
+  wrap.className = "exo exo-callc";
+
+  const stage = document.createElement("div");
+  stage.className = "exo-callc__stage";
+
+  // --- Left: notes timeline ---
+  const left = document.createElement("div");
+  left.className = "exo-callc__notes";
+  const nHead = document.createElement("div");
+  nHead.className = "exo-callc__notes-head";
+  nHead.innerHTML =
+    `<span class="exo-callc__notes-ic">${svg('<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 3.5V6h6V3.5M9 11h6M9 15h4"/>')}</span>` +
+    `<span><b>${notesHead}</b><i>${notesSub}</i></span>`;
+  left.appendChild(nHead);
+
+  const timeline = document.createElement("div");
+  timeline.className = "exo-callc__timeline";
+  notes.forEach((n) => {
+    const row = document.createElement("div");
+    row.className = `exo-callc__tl exo-callc__tl--${n.tone || "now"}`;
+    const dot = document.createElement("span");
+    dot.className = "exo-callc__tl-dot";
+    dot.innerHTML = ICON[n.icon] ?? ICON.now;
+    const body = document.createElement("div");
+    body.className = "exo-callc__tl-body";
+    const lab = document.createElement("span");
+    lab.className = "exo-callc__tl-label";
+    lab.textContent = n.label;
+    const pr = document.createElement("span");
+    pr.className = "exo-callc__tl-prompt";
+    pr.textContent = n.prompt;
+    body.append(lab, pr);
+    if (n.hint) {
+      const h = document.createElement("span");
+      h.className = "exo-callc__tl-hint";
+      h.textContent = n.hint;
+      body.appendChild(h);
+    }
+    row.append(dot, body);
+    timeline.appendChild(row);
+  });
+  left.appendChild(timeline);
+
+  if (notesFooter) {
+    const nf = document.createElement("div");
+    nf.className = "exo-callc__notes-foot";
+    nf.innerHTML = `<span class="exo-callc__notes-foot-ic">${ICON.sparkle}</span><span>${notesFooter}</span>`;
+    left.appendChild(nf);
+  }
+
+  // --- Right: the call ---
+  const right = document.createElement("div");
+  right.className = "exo-callc__call";
+  const cHead = document.createElement("div");
+  cHead.className = "exo-callc__call-head";
+  const bars = Array.from({ length: 13 }, () => `<span></span>`).join("");
+  cHead.innerHTML =
+    `<span class="exo-callc__call-ic">${ICON.phone}</span>` +
+    `<div class="exo-callc__call-who"><span class="exo-callc__call-name">Call with ${contact.name ?? "Sam"}</span>` +
+    `<span class="exo-callc__call-status">${contact.name ?? "Sam"} is online</span></div>` +
+    `<span class="exo-callc__wave">${bars}</span><span class="exo-callc__call-timer">00:08</span>` +
+    `<span class="exo-callc__hang">${ICON.phone}</span>`;
+  right.appendChild(cHead);
+
+  if (contact.greeting) {
+    const bubbleRow = document.createElement("div");
+    bubbleRow.className = "exo-callc__in-row";
+    const av = document.createElement("span");
+    av.className = "exo-callc__avatar";
+    av.textContent = contact.avatar ?? "😎";
+    const b = document.createElement("div");
+    b.className = "exo-callc__in";
+    const bt = document.createElement("span");
+    bt.textContent = contact.greeting;
+    b.appendChild(bt);
+    if (contact.when) {
+      const w = document.createElement("span");
+      w.className = "exo-callc__in-when";
+      w.textContent = contact.when;
+      b.appendChild(w);
+    }
+    bubbleRow.append(av, b);
+    right.appendChild(bubbleRow);
+  }
+
+  const label = document.createElement("div");
+  label.className = "exo-callc__label";
+  label.textContent = "Your message to Sam (speak from notes)";
+  right.appendChild(label);
+
+  const composer = document.createElement("div");
+  composer.className = "exo-callc__composer";
+  const area = document.createElement("textarea");
+  area.className = "exo-callc__area";
+  area.placeholder = placeholder ?? "Write your call here…";
+  area.dataset.answerKey = answerKey;
+  area.value = value ?? "";
+  const foot = document.createElement("div");
+  foot.className = "exo-callc__foot";
+  const mic = document.createElement("span");
+  mic.className = "exo-callc__mic";
+  mic.innerHTML = ICON.mic;
+  const count = document.createElement("span");
+  count.className = "exo-callc__count";
+  const send = document.createElement("span");
+  send.className = "exo-callc__send";
+  send.innerHTML = `${ICON.phone}<i>Send call</i>`;
+  foot.append(mic, count, send);
+  composer.append(area, foot);
+  right.appendChild(composer);
+
+  stage.append(left, right);
+  wrap.appendChild(stage);
+
+  // --- Tips ---
+  if (tips.length) {
+    const tipsEl = document.createElement("div");
+    tipsEl.className = "exo-callc__tips";
+    tips.forEach((t) => {
+      const item = document.createElement("div");
+      item.className = "exo-callc__tip";
+      const ic = document.createElement("span");
+      ic.className = "exo-callc__tip-ic";
+      ic.innerHTML = ICON[t.icon] ?? ICON.chat;
+      const txt = document.createElement("span");
+      txt.className = "exo-callc__tip-txt";
+      const b = document.createElement("b");
+      b.textContent = t.title;
+      const i = document.createElement("i");
+      i.textContent = t.desc;
+      txt.append(b, i);
+      item.append(ic, txt);
+      tipsEl.appendChild(item);
+    });
+    wrap.appendChild(tipsEl);
+  }
+
+  const wordsOf = (s) => (s.trim() ? s.trim().split(/\s+/).length : 0);
+  const sync = () => {
+    const n = wordsOf(area.value);
+    count.textContent = `${n} / ${max} words`;
+    count.classList.toggle("exo-callc__count--ok", n >= min && n <= max);
+    count.classList.toggle("exo-callc__count--over", n > max);
+  };
+  area.addEventListener("input", () => {
+    sync();
+    onChange?.(area.value);
+  });
+  sync();
+
+  return wrap;
+}
+
+/**
+ * "From robot to real person" rewrite studio (Speaking): a robotic source text
+ * in a terminal on the left, a "make it sound like you" arrow, and a "Sam on
+ * call" panel on the right where the learner rewrites it naturally (Caveat
+ * handwriting). Numbered filler chips sit above the panel; four tips run below.
+ *
+ * @param {{
+ *   robot?: string[], robotWarn?: string,
+ *   contact?: { name?: string, avatar?: string, status?: string },
+ *   chips?: string[], tips?: Array<{icon?:string,title:string,desc:string}>,
+ *   min?: number, max?: number, placeholder?: string,
+ *   value?: string, answerKey?: string, onChange?: (v:string)=>void,
+ * }} opts
+ */
+export function createRewriteStudio({ robot = [], robotWarn = "TOO ROBOTIC. TOO PERFECT.", contact = {}, chips = [], tips = [], min = 40, max = 90, placeholder, value, answerKey, onChange }) {
+  const svg = (p) =>
+    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
+  const ICON = {
+    mic: svg('<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>'),
+    hang: svg('<path d="M3 11c6-5 12-5 18 0l-2.2 2.6-3.3-1v-2a9 9 0 0 0-7 0v2l-3.3 1L3 11z"/>'),
+    speaker: svg('<path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/>'),
+    pencil: svg('<path d="M4 20h4L18.5 9.5a2 2 0 0 0-2.8-2.8L5 17.2 4 20z"/><path d="M13.5 8.2l2.3 2.3"/>'),
+    chat: svg('<path d="M20 11.5a7 7 0 0 1-10 6.3L4.5 19l1.2-3.7A7 7 0 1 1 20 11.5z"/>'),
+    filler: svg('<path d="M3 12c2-4 4-4 6 0s4 4 6 0 4-4 6 0"/>'),
+    heart: svg('<path d="M12 20s-7-4.6-7-9.7A4.3 4.3 0 0 1 12 7a4.3 4.3 0 0 1 7 3.3C19 15.4 12 20 12 20z"/>'),
+    clock: svg('<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>'),
+    arrow: svg('<path d="M3 15c5-7 11-9 17-8"/><path d="M15 3.5l5 3.5-4.5 2.6"/>'),
+  };
+
+  const wrap = document.createElement("div");
+  wrap.className = "exo exo-rewrite";
+
+  const stage = document.createElement("div");
+  stage.className = "exo-rewrite__stage";
+
+  // --- Robot terminal (source) ---
+  const robotEl = document.createElement("div");
+  robotEl.className = "exo-rewrite__robot";
+  const rHead = document.createElement("div");
+  rHead.className = "exo-rewrite__robot-head";
+  rHead.innerHTML = `<span class="exo-rewrite__robot-ic">🤖</span> ROBOT VERSION`;
+  const screen = document.createElement("div");
+  screen.className = "exo-rewrite__screen";
+  robot.forEach((line) => {
+    const p = document.createElement("p");
+    p.textContent = line;
+    screen.appendChild(p);
+  });
+  const warn = document.createElement("div");
+  warn.className = "exo-rewrite__warn";
+  const warnT = document.createElement("span");
+  warnT.textContent = robotWarn;
+  warn.append(document.createTextNode("⚠ "), warnT);
+  robotEl.append(rHead, screen, warn);
+
+  // --- Arrow ---
+  const arrow = document.createElement("div");
+  arrow.className = "exo-rewrite__arrow";
+  arrow.innerHTML =
+    `<span class="exo-rewrite__arrow-ic">${ICON.arrow}</span>` +
+    `<span class="exo-rewrite__arrow-txt">Make it sound like <b>you!</b></span>` +
+    `<span class="exo-rewrite__arrow-heart">♥</span>`;
+
+  // --- Right column: chips + Sam-on-call rewrite panel ---
+  const right = document.createElement("div");
+  right.className = "exo-rewrite__right";
+
+  if (chips.length) {
+    const chipRow = document.createElement("div");
+    chipRow.className = "exo-rewrite__chips";
+    chips.forEach((c, i) => {
+      const chip = document.createElement("span");
+      chip.className = "exo-rewrite__chip";
+      const n = document.createElement("span");
+      n.className = "exo-rewrite__chip-n";
+      n.textContent = String(i + 1).padStart(2, "0");
+      const t = document.createElement("span");
+      t.textContent = c;
+      chip.append(n, t);
+      chipRow.appendChild(chip);
+    });
+    right.appendChild(chipRow);
+  }
+
+  const panel = document.createElement("div");
+  panel.className = "exo-rewrite__panel";
+  const pHead = document.createElement("div");
+  pHead.className = "exo-rewrite__panel-head";
+  pHead.innerHTML =
+    `<span class="exo-rewrite__avatar">${contact.avatar ?? "😎"}</span>` +
+    `<div class="exo-rewrite__who"><span class="exo-rewrite__name">${contact.name ?? "Sam"}</span>` +
+    `<span class="exo-rewrite__oncall">${contact.status ?? "ON CALL"}</span></div>` +
+    `<span class="exo-rewrite__calls"><span class="exo-rewrite__cbtn">${ICON.mic}</span>` +
+    `<span class="exo-rewrite__cbtn exo-rewrite__cbtn--hang">${ICON.hang}</span>` +
+    `<span class="exo-rewrite__cbtn">${ICON.speaker}</span></span>`;
+  const label = document.createElement("div");
+  label.className = "exo-rewrite__label";
+  label.innerHTML = 'Rewrite it like a <b>real teenager</b> (4–5 sentences)';
+  const composer = document.createElement("div");
+  composer.className = "exo-rewrite__composer";
+  const area = document.createElement("textarea");
+  area.className = "exo-rewrite__area";
+  area.placeholder = placeholder ?? "Hey Sam! …";
+  area.dataset.answerKey = answerKey;
+  area.value = value ?? "";
+  const foot = document.createElement("div");
+  foot.className = "exo-rewrite__foot";
+  const count = document.createElement("span");
+  count.className = "exo-rewrite__count";
+  const pencil = document.createElement("span");
+  pencil.className = "exo-rewrite__pencil";
+  pencil.innerHTML = ICON.pencil;
+  foot.append(count, pencil);
+  composer.append(area, foot);
+  panel.append(pHead, label, composer);
+  right.appendChild(panel);
+
+  stage.append(robotEl, arrow, right);
+  wrap.appendChild(stage);
+
+  // --- Tips ---
+  if (tips.length) {
+    const tipsEl = document.createElement("div");
+    tipsEl.className = "exo-rewrite__tips";
+    tips.forEach((t) => {
+      const item = document.createElement("div");
+      item.className = "exo-rewrite__tip";
+      const ic = document.createElement("span");
+      ic.className = "exo-rewrite__tip-ic";
+      ic.innerHTML = ICON[t.icon] ?? ICON.chat;
+      const txt = document.createElement("span");
+      txt.className = "exo-rewrite__tip-txt";
+      const b = document.createElement("b");
+      b.textContent = t.title;
+      const i = document.createElement("i");
+      i.textContent = t.desc;
+      txt.append(b, i);
+      item.append(ic, txt);
+      tipsEl.appendChild(item);
+    });
+    wrap.appendChild(tipsEl);
+  }
+
+  const wordsOf = (s) => (s.trim() ? s.trim().split(/\s+/).length : 0);
+  const sync = () => {
+    const n = wordsOf(area.value);
+    count.textContent = `${n} words`;
+    count.classList.toggle("exo-rewrite__count--ok", n >= min && n <= max);
+    count.classList.toggle("exo-rewrite__count--over", n > max);
+  };
+  area.addEventListener("input", () => {
+    sync();
+    onChange?.(area.value);
+  });
+  sync();
+
+  return wrap;
+}
+
+/**
+ * "Memory Subway" warm-up (the "Before you start" recall cards): a glowing
+ * metro line from the M-station through N word-recall stops to a "Ready for
+ * the test" terminus. Each stop is a numbered input the learner fills with a
+ * word they remember. A MEMORY-MODE badge rides in the card header (exposed as
+ * `wrap._badge`, appended to the header like the tap-match corner).
+ *
+ * @param {{
+ *   stops?: number, lead?: string, leadMark?: string,
+ *   ready?: string, readySub?: string,
+ *   values?: Record<string,string>, keyFor: (i:number)=>string,
+ *   onChange?: (i:number, v:string)=>void,
+ * }} opts
+ */
+export function createMemorySubway({ stops = 3, lead, leadMark, ready = "Ready", readySub = "for the test", values = {}, keyFor, onChange }) {
+  const wrap = document.createElement("div");
+  wrap.className = "exo exo-subway";
+
+  const BRAIN_IC =
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" ' +
+    'stroke-linejoin="round" aria-hidden="true"><path d="M9 3a3 3 0 0 0-3 3 3 3 0 0 0-1.5 5.6A3 3 0 0 0 6 17a3 3 0 0 0 3 3V3z"/>' +
+    '<path d="M15 3a3 3 0 0 1 3 3 3 3 0 0 1 1.5 5.6A3 3 0 0 1 18 17a3 3 0 0 1-3 3V3z"/></svg>';
+  const FLAG_IC =
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" ' +
+    'stroke-linejoin="round" aria-hidden="true"><path d="M6 21V4h11l-1.5 3.5L17 11H6"/></svg>';
+
+  // MEMORY MODE badge → rides in the card header (top-right).
+  const badge = document.createElement("div");
+  badge.className = "exo-subway__mode";
+  badge.innerHTML =
+    `<span class="exo-subway__mode-ic">${BRAIN_IC}</span>` +
+    `<span class="exo-subway__mode-txt"><b>MEMORY MODE</b><span>Recall. Connect. Remember.</span></span>`;
+  wrap._badge = badge;
+
+  // Star lead line, with an optional highlighted phrase.
+  if (lead) {
+    const l = document.createElement("p");
+    l.className = "exo-subway__lead";
+    let inner = lead.replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
+    if (leadMark) {
+      const m = leadMark.replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
+      inner = inner.replace(m, `<b class="exo-subway__hi">${m}</b>`);
+    }
+    l.innerHTML = `<span class="exo-subway__star">★</span> ${inner}`;
+    wrap.appendChild(l);
+  }
+
+  // The metro line.
+  const line = document.createElement("div");
+  line.className = "exo-subway__line";
+
+  const station = (label, sub, kind, iconHtml) => {
+    const st = document.createElement("div");
+    st.className = `exo-subway__station exo-subway__station--${kind}`;
+    const dot = document.createElement("span");
+    dot.className = "exo-subway__dot";
+    dot.innerHTML = iconHtml ?? label;
+    const lbl = document.createElement("span");
+    lbl.className = "exo-subway__st-label";
+    lbl.innerHTML = sub;
+    st.append(dot, lbl);
+    return st;
+  };
+
+  const seg = (tone) => {
+    const s = document.createElement("span");
+    s.className = `exo-subway__seg exo-subway__seg--${tone}`;
+    return s;
+  };
+
+  const tones = ["recall", "connect", "remember", "ready"];
+  line.appendChild(station("M", "MEMORY&nbsp;SUBWAY", "start"));
+  for (let i = 0; i < stops; i += 1) {
+    line.appendChild(seg(tones[Math.min(i, tones.length - 1)]));
+    const stop = document.createElement("div");
+    stop.className = "exo-subway__stop";
+    const num = document.createElement("span");
+    num.className = "exo-subway__num";
+    num.textContent = String(i + 1);
+    const input = document.createElement("input");
+    input.type = "text";
+    input.className = "exo-subway__input";
+    input.setAttribute("autocomplete", "off");
+    input.placeholder = `Word ${i + 1}`;
+    if (keyFor) {
+      const key = keyFor(i);
+      input.dataset.answerKey = key;
+      input.value = values[key] ?? "";
+      input.addEventListener("input", () => onChange?.(i, input.value));
+    }
+    stop.append(num, input);
+    line.appendChild(stop);
+  }
+  line.appendChild(seg("ready"));
+  line.appendChild(station("", `<b>${ready}</b>${readySub ? `<i>${readySub}</i>` : ""}`, "end", FLAG_IC));
+  wrap.appendChild(line);
+
+  // Foot: stop count + the line legend.
+  const foot = document.createElement("div");
+  foot.className = "exo-subway__foot";
+  const count = document.createElement("div");
+  count.className = "exo-subway__count";
+  count.innerHTML = `<span class="exo-subway__count-ic">🚇</span><span><b>${stops} STOPS</b><i>${stops} words to recall</i></span>`;
+  const legend = document.createElement("div");
+  legend.className = "exo-subway__legend";
+  legend.innerHTML = ["recall", "connect", "remember", "ready"]
+    .map((t, i) => `<span class="exo-subway__leg exo-subway__leg--${t}">${["Recall", "Connect", "Remember", "Ready"][i]}</span>`)
+    .join("");
+  foot.append(count, legend);
+  wrap.appendChild(foot);
+
   return wrap;
 }
 
