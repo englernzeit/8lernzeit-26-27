@@ -225,14 +225,14 @@ export function renderSectionView(root, unitId, sectionId) {
 
   root.appendChild(view);
 
-  // Full-screen vertical pager on every competence page: group the intro
-  // (header + vocab hub + theory) into one "cover" page, then shrink any
-  // over-full page so a single swipe up lands cleanly on the next full screen.
-  if (content.steps && content.steps.length) {
-    buildCoverPage(view);
-    const pager = buildVerticalPager(view);
-    fitUniformCards(view, pager);
-  }
+  // The competence page is a normally-scrolling column (header → theory →
+  // one Step section per step). Each Step is a horizontal one-card-at-a-time
+  // carousel whose stage grows to the active card's own height (see
+  // journalCarousel.js); a card taller than the screen simply scrolls the
+  // page. No fixed-size cards, no shrink-to-fit, no vertical page-pager — so a
+  // card is never clipped or padded with empty space. (buildCoverPage,
+  // buildVerticalPager and fitUniformCards are kept below but intentionally
+  // unused; flip them back on to restore the full-screen paged model.)
 }
 
 /**

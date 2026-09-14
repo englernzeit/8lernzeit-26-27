@@ -55,7 +55,6 @@ export function createJournalCarousel({ mode, accent, cards }) {
   const go = (index) => {
     active = wraps ? (index + n) % n : Math.max(0, Math.min(n - 1, index));
     render();
-    centerActive(); // keep the new card centred so the page never "jumps"
   };
 
   // Blob arrows on the stage sides

@@ -221,9 +221,14 @@
    card carousel: a JS transform, not native scroll. Screen 0 is the
    "cover" (title, name, PDF, vocabulary hub, theory); every Step is one
    full screen after it. One vertical swipe animates exactly one page in.
-   See buildVerticalPager() / buildCoverPage() in sectionView.js. */
+   See buildVerticalPager() / buildCoverPage() in sectionView.js.
+
+   DISABLED: the page now scrolls natively (class-9 flowing model). The base
+   `.journal { overflow-y: auto }` above owns motion; the pager is not built.
+   The .rpager / .journal__cover rules below are dead (no such elements). */
 .journal {
-  overflow: hidden; /* the pager owns motion; no native page scroll */
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .rpager {
@@ -341,21 +346,18 @@
   margin-top: 0.5rem;
 }
 
-/* Step sections become one full screen with the card group centred. */
+/* Step sections flow one under another down the scrolling page; each holds a
+   horizontal one-card-at-a-time carousel (its stage grows to the active card).
+   No forced full-viewport height — a short card is short, a tall card scrolls. */
 .journal .journal__section:has(.jcar) {
-  min-height: var(--app-vh, 100svh);
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  margin-top: 0;
 }
-/* Over a fit card, single-finger pans go to JS (H = card flip, V = page flip);
-   two fingers still pinch-zoom natively. The single (game) stage keeps the
-   default pan-y so the one scrollable page can be dragged to scroll. */
-.journal .jcar--slide .jcar__stage,
-.journal .jcar--spread .jcar__stage {
-  touch-action: pinch-zoom;
-}
+/* The stage keeps the base `touch-action: pan-y pinch-zoom` (see
+   journal-carousel.css): single-finger vertical drags scroll the page, the
+   carousel's own pointer handler turns a clearly horizontal swipe into a card
+   flip, and two fingers pinch-zoom. (No pinch-zoom-only override any more —
+   that blocked vertical scrolling of a tall card.) */
 
 /* Reading passages: tighten so the text fits its card at full scale and fills
    the whole width — no shrink-to-fit that leaves the text small and narrow. */
@@ -871,26 +873,32 @@
   flex-direction: column;
   justify-content: center;
 }
+/* Fixed track for the template image (~440px), so the left column always keeps
+   the rest. A definite flex-basis is essential: with `flex: 0 1 auto` the right
+   column's base size was driven by the image's 1024px intrinsic width, which
+   starved the left column down to ~0 and made the card thousands of px tall. */
 .taskcard__col--right {
-  flex: 0 1 auto;
+  flex: 0 1 27.5rem;
+  min-width: 0;
   min-height: 0;
   display: flex;
   align-items: center;
   justify-content: center;
 }
-/* The image fills the card height on the right (its overlays are % of the
-   image, so they follow); width keeps the aspect ratio. */
+/* The template image sits on the right at a fixed, readable width; its height
+   (and therefore the card's) follows the image's aspect ratio. The overlaid
+   writing field is positioned in % of the image, so it tracks at every size.
+   (It used to be height:100% to fill the old fixed --card-h; with natural-
+   height cards that resolved to the image's huge intrinsic pixel height.) */
 .taskcard__col--right .taskcard__frame {
-  width: auto;
-  height: 100%;
-  max-width: 100%;
-  margin: 0;
-  display: flex;
+  width: min(100%, 440px);
+  height: auto;
+  margin: 0 auto;
+  display: block;
 }
 .taskcard__col--right .taskcard__frame-img {
-  height: 100%;
-  width: auto;
-  max-width: 100%;
+  width: 100%;
+  height: auto;
 }
 
 /* --- Dialogue split: compact directions + audio left, dialogue right ---- */
@@ -949,6 +957,14 @@
   .taskcard--split .taskcard__fit .taskcard__cols {
     flex-direction: column;
     gap: 0.6rem;
+  }
+  /* Both columns take their natural height when stacked. Essential: the
+     landscape `flex: 0 1 27.5rem` on the right column is a WIDTH basis in the
+     row layout, but in this column layout it becomes a HEIGHT cap (440px), so
+     the taller template image overflowed up onto the directions. */
+  .taskcard--split .taskcard__col--left,
+  .taskcard--split .taskcard__col--right {
+    flex: 0 0 auto;
   }
   .taskcard__col--right .taskcard__frame {
     width: min(100%, 440px);
@@ -1352,12 +1368,9 @@
 
 @media (orientation: portrait) {
   .journal {
-    /* Keep the pager a fixed one-screen canvas in portrait too. Letting the
-       page scroll (overflow-y: visible + the bottom pad) gave the document a
-       scrollable overflow that iPad Safari scrolls to reveal a focused field —
-       which shifted the whole card when the keyboard opened. */
-    overflow: hidden;
-    padding-bottom: 0;
+    /* Portrait scrolls natively like landscape (class-9 flowing model). */
+    overflow-y: auto;
+    overflow-x: hidden;
   }
 
   .journal-passage {
