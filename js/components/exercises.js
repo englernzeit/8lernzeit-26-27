@@ -2317,9 +2317,27 @@ export function createChecklist({ items, title }) {
  *
  * @param {{ items: Array<{ hint?: string, segments: Array<string|{answer:string, accept?:string[], size?:number}> }> }} data
  */
-export function createGapFill({ items, columns }) {
+export function createGapFill({ items, columns, bank, bankCap }) {
   const wrap = document.createElement("div");
   wrap.className = "exo exo-gap";
+
+  // Optional word box above the gaps (the LE sheets always give one). Reuses
+  // the inline-choice bank styling so every word box on the site looks alike.
+  if (bank?.length) {
+    const box = document.createElement("div");
+    box.className = "exo-inline__bank";
+    const cap = document.createElement("span");
+    cap.className = "exo-inline__bank-cap";
+    cap.textContent = bankCap ?? "Word box";
+    box.appendChild(cap);
+    bank.forEach((w) => {
+      const pill = document.createElement("span");
+      pill.className = "exo-inline__bank-pill";
+      pill.textContent = w;
+      box.appendChild(pill);
+    });
+    wrap.appendChild(box);
+  }
 
   // A wide dialogue can flow its rows in two balanced columns so it fills the
   // card instead of stacking into one over-tall strip. The rows live in their

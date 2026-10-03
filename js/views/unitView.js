@@ -31,6 +31,9 @@ const COMPETENCE_ICONS = {
     "M8 12h20v13H16l-6 5v-5H8zM20 29h16v11h-6l-5 4v-4h-5z",
   revision:
     "M34 22a12 12 0 1 1-4-9M34 11v6h-6M16 22l4 5 9-10",
+  // Mediation: two voices, and the exchange between them.
+  mediation:
+    "M5 9h15v11h-9l-4 4v-4H5zM39 9H24v11h9l4 4v-4h2zM12 31h20M15 28l-3 3 3 3M29 28l3 3-3 3",
 };
 
 /**

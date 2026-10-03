@@ -36,10 +36,20 @@ const COMPETENCES = [
   { id: "revision", label: "Revision" },
 ];
 
+/**
+ * Competences that only some units have. Mediation is a full competence in
+ * Unit 2 (its own worksheet per level); Unit 1 folded its mediation tasks into
+ * Vocabulary instead, so it is not part of the shared seven.
+ */
+const MEDIATION = { id: "mediation", label: "Mediation" };
+
 const competenceSections = (...first) => [
   ...first.map((id) => COMPETENCES.find((c) => c.id === id)),
   ...COMPETENCES.filter((c) => !first.includes(c.id)),
 ];
+
+/** `competenceSections`, with extra unit-specific competences appended. */
+const competenceSectionsPlus = (extras, ...first) => [...competenceSections(...first), ...extras];
 
 export const UNITS = [
   {
@@ -65,10 +75,9 @@ export const UNITS = [
     pin: "assets/svg/pin-02.svg",
     pinPos: { x: 70, y: 23 },
     cardPos: { x: 73.5, y: 19.0 },
-    sections: competenceSections(),
-    // Temporarily locked so students focus on Unit 1 (In New York City).
-    // Flip `locked` to false to bring the unit back.
-    locked: true,
+    // Grammar (the -ing form) is the unit's focus, so it leads. Mediation is an
+    // extra competence in this unit — it has its own worksheet per level.
+    sections: competenceSectionsPlus([MEDIATION], "grammar"),
   },
   {
     id: "california",

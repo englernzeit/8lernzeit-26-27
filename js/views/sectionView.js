@@ -1440,7 +1440,7 @@ function buildCard(step, data, index, taskNo, ctx) {
       body.appendChild(createSentenceBuild({ sentences: data.sentences }));
       break;
     case "gap-fill": {
-      const gap = createGapFill({ items: data.items, columns: data.columns });
+      const gap = createGapFill({ items: data.items, columns: data.columns, bank: data.bank, bankCap: data.bankCap });
       body.appendChild(gap);
       // A wide 2-column dialogue is laid out at a generous design width (so the
       // lines wrap like the mockup, not into tall 4-line panels) and then the

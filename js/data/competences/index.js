@@ -21,6 +21,8 @@ import nycVocabulary from "./new-york-city-vocabulary.js";
 import nycSpeaking from "./new-york-city-speaking.js";
 import nycRevision from "./new-york-city-revision.js";
 
+import bdGrammar from "./best-days-grammar.js";
+
 const CONTENT = {
   "new-york-city/grammar": nycGrammar,
   "new-york-city/writing": nycWriting,
@@ -29,6 +31,8 @@ const CONTENT = {
   "new-york-city/vocabulary": nycVocabulary,
   "new-york-city/speaking": nycSpeaking,
   "new-york-city/revision": nycRevision,
+
+  "best-days/grammar": bdGrammar,
 };
 
 /**
