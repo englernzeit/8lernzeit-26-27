@@ -6083,7 +6083,7 @@ export function createQuizShowGame({ host = {}, rounds, marquee: marqueeText, on
  *          chips?: Array, checklist?: string[], value?: string,
  *          answerKey: string, onChange?: (v: string) => void}} cfg
  */
-export function createEmailCompose({ img, min, max, placeholder, chips, checklist, value, answerKey, onChange }) {
+export function createEmailCompose({ img, to, subject, min, max, placeholder, chips, checklist, value, answerKey, onChange }) {
   const wrap = document.createElement("div");
   wrap.className = "exo exo-mailc";
 
@@ -6105,6 +6105,21 @@ export function createEmailCompose({ img, min, max, placeholder, chips, checklis
   const screen = document.createElement("div");
   screen.className = "exo-mailc__screen";
   right.append(shot, screen);
+
+  // The header fields of the mockup, filled in. `to` also masks the blurred
+  // placeholder bar baked into the picture (it carries the field's own colour).
+  if (to) {
+    const toEl = document.createElement("span");
+    toEl.className = "exo-mailc__to";
+    toEl.textContent = to;
+    right.appendChild(toEl);
+  }
+  if (subject) {
+    const subEl = document.createElement("span");
+    subEl.className = "exo-mailc__subject";
+    subEl.textContent = subject;
+    right.appendChild(subEl);
+  }
 
   cols.append(left, right);
   wrap.appendChild(cols);

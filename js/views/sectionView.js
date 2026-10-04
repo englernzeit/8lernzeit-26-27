@@ -1527,6 +1527,8 @@ function buildCard(step, data, index, taskNo, ctx) {
       body.appendChild(
         createEmailCompose({
           img: data.img,
+          to: data.to,
+          subject: data.subject,
           min: data.min,
           max: data.max,
           placeholder: data.placeholder,

@@ -7232,6 +7232,36 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
   mask-image: linear-gradient(180deg, #000 86%, transparent 100%);
 }
 .exo-mailc__screen::-webkit-scrollbar { width: 0; height: 0; }
+
+/* The two header fields, positioned over the mockup. The To chip carries the
+   field's own background colour so it covers the blurred placeholder bar that
+   is baked into the photo. */
+.exo-mailc__to,
+.exo-mailc__subject {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  font-family: var(--font-script);
+  font-size: 0.82rem;
+  line-height: 1;
+  color: #dfe7f5;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.exo-mailc__to {
+  left: 27.6%;
+  top: 20.1%;
+  width: 33%;
+  height: 4.1%;
+  padding-left: 0.15rem;
+  background: rgb(30, 30, 32);
+}
+.exo-mailc__subject {
+  left: 32.2%;
+  top: 26.5%;
+  width: 44%;
+  height: 4.1%;
+}
 .exo-mailc__screen--empty::before {
   content: "Your email appears here as you write…";
   color: rgba(214, 226, 247, 0.38);
