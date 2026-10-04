@@ -7118,26 +7118,39 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
 
 /* ============================================================
    Unit 2 (The best days of your life) — per-page scene photos.
-   Same recipe as Unit 1: a navy scrim fades left-to-right over a
-   warm still life anchored bottom-right, so the task text always
-   sits on the dark, empty side of the picture.
+
+   Every page gets the same treatment and differs only by its picture:
+   the photo fills the WHOLE card and is then masked by TWO pools of
+   light — a strong one just off the bottom-right corner and a gentler
+   one at the top right. The mask layers union, so each pool reveals the
+   picture on its own and the navy card shows through everywhere else.
+   The card therefore reads as one photograph that the light only
+   reaches in the corners, never as a picture pasted into a corner.
+
+   Dials:
+     --scene-lo   how much shows in the main bottom-right pool
+     --scene-hi   how much shows in the softer top-right pool
+     --scene-img  the picture for this page
+   The photos themselves are left sharp (only slightly desaturated);
+   the pools alone keep them off the text.
    ============================================================ */
-.journal[data-unit="best-days"][data-section="vocabulary"] .taskcard--sheet:not(.taskcard--video)::before {
+.journal[data-unit="best-days"][data-section="grammar"]    { --scene-img: url("../../assets/scenes/unit2/classroom.jpg"); }
+.journal[data-unit="best-days"][data-section="reading"]    { --scene-img: url("../../assets/scenes/unit2/newsroom.jpg"); }
+.journal[data-unit="best-days"][data-section="vocabulary"] { --scene-img: url("../../assets/scenes/unit2/locker.jpg"); }
+.journal[data-unit="best-days"][data-section="mediation"]  { --scene-img: url("../../assets/scenes/unit2/noticeboard.jpg"); }
+.journal[data-unit="best-days"][data-section="writing"]    { --scene-img: url("../../assets/scenes/unit2/desk-letter.jpg"); }
+.journal[data-unit="best-days"][data-section="listening"]  { --scene-img: url("../../assets/scenes/unit2/loudspeaker.jpg"); }
+.journal[data-unit="best-days"][data-section="speaking"]   { --scene-img: url("../../assets/scenes/unit2/camera.jpg"); }
+.journal[data-unit="best-days"][data-section="revision"]   { --scene-img: url("../../assets/scenes/unit2/revision.jpg"); }
+
+.journal[data-unit="best-days"] .taskcard--sheet:not(.taskcard--video)::before {
   content: "";
   position: absolute;
   inset: 0;
   z-index: 0;
-  /* The photo fills the WHOLE card and is then masked by TWO pools of light,
-     so the card reads as one photograph that the light only reaches in the
-     corners. The mask layers union, so each pool reveals the picture on its
-     own; everywhere else the navy card shows through.
-       --scene-lo  how much shows in the main bottom-right pool
-       --scene-hi  how much shows in the softer top-right pool
-     The photo itself is left sharp; the pools alone keep it off the text.
-     Raise either to reveal more of the picture, lower it to fade it away. */
   --scene-lo: 0.86;
   --scene-hi: 0.30;
-  background: url("../../assets/scenes/unit2/locker.jpg") right bottom / cover no-repeat;
+  background: var(--scene-img) right bottom / cover no-repeat;
   -webkit-mask-image:
     radial-gradient(102% 90% at 103% 106%,
       rgba(0, 0, 0, var(--scene-lo)) 0%,
@@ -7163,9 +7176,8 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
       rgba(0, 0, 0, calc(var(--scene-hi) * 0.18)) 54%,
       transparent 76%);
 }
-
 /* Lift the card's own content above the scene layer (as Unit 1 does). */
-.journal[data-unit="best-days"][data-section="vocabulary"] .taskcard--sheet:not(.taskcard--video) > * {
+.journal[data-unit="best-days"] .taskcard--sheet:not(.taskcard--video) > * {
   position: relative;
   z-index: 1;
 }
