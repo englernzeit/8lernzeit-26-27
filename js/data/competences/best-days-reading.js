@@ -337,6 +337,11 @@ export default {
           blog: {
             author: "Maya Reyes · News editor",
             date: "March issue · Boston West High School",
+            hero: {
+              src: "assets/images/unit2/lion-hero.jpg",
+              alt: "The new food-sharing table in the school cafeteria",
+              caption: "The food-sharing table that Maya's article started.",
+            },
             about: {
               title: "About The Lion",
               bio: "Seven students, one room, one motto: “By students, for students.” The Lion has been the voice of Boston West High School since 1998.",
