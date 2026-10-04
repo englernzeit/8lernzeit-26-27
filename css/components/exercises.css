@@ -5372,8 +5372,8 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
 /* Speaking: every task card carries the desk-by-the-window scene (phone + cup +
    skyline) in the bottom-right, under a left-to-centre navy scrim that keeps the
    content legible. Scoped to the page (like the Vocabulary shopping scene). */
-.journal[data-section="speaking"] .taskcard--sheet:not(.taskcard--video) { overflow: hidden; }
-.journal[data-section="speaking"] .taskcard--sheet:not(.taskcard--video)::before {
+.journal[data-unit="new-york-city"][data-section="speaking"] .taskcard--sheet:not(.taskcard--video) { overflow: hidden; }
+.journal[data-unit="new-york-city"][data-section="speaking"] .taskcard--sheet:not(.taskcard--video)::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -5386,9 +5386,9 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
   background-position: center, center, right bottom;
   background-repeat: no-repeat;
 }
-.journal[data-section="speaking"] .taskcard--sheet:not(.taskcard--video) > * { position: relative; z-index: 1; }
+.journal[data-unit="new-york-city"][data-section="speaking"] .taskcard--sheet:not(.taskcard--video) > * { position: relative; z-index: 1; }
 /* The "Sam is Calling!" card wants the desk a touch brighter (it's the star). */
-.journal[data-section="speaking"] .taskcard--sheet:not(.taskcard--video).taskcard--scene-desk::before {
+.journal[data-unit="new-york-city"][data-section="speaking"] .taskcard--sheet:not(.taskcard--video).taskcard--scene-desk::before {
   background-image:
     linear-gradient(103deg, rgba(9, 16, 30, 0.95) 30%, rgba(9, 16, 30, 0.72) 55%, rgba(9, 16, 30, 0.34) 100%),
     linear-gradient(rgba(10, 18, 33, 0.36), rgba(10, 18, 33, 0.36)),
@@ -5595,24 +5595,24 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
    fit-scaler still shrinks any card that would overflow, so this only grows
    the ones with room. Scoped to the Writing page via [data-section].
    =================================================================== */
-.journal[data-section="writing"] .taskcard__intro { font-size: 1.32rem; }
+.journal[data-unit="new-york-city"][data-section="writing"] .taskcard__intro { font-size: 1.32rem; }
 /* Multiple-choice ("Good comment or bad comment?" etc.) */
-.journal[data-section="writing"] .exo-mc__prompt { font-size: 1.3rem; }
-.journal[data-section="writing"] .exo-mc__opt { font-size: 1.18rem; padding: 0.4rem 1rem; }
+.journal[data-unit="new-york-city"][data-section="writing"] .exo-mc__prompt { font-size: 1.3rem; }
+.journal[data-unit="new-york-city"][data-section="writing"] .exo-mc__opt { font-size: 1.18rem; padding: 0.4rem 1rem; }
 /* Sentence-starter writing tasks ("Your opinion", "Make it polite!", …) */
-.journal[data-section="writing"] .taskcard__starter-label { font-size: 1.5rem; }
-.journal[data-section="writing"] .taskcard__starter-input { font-size: 1.45rem; }
+.journal[data-unit="new-york-city"][data-section="writing"] .taskcard__starter-label { font-size: 1.5rem; }
+.journal[data-unit="new-york-city"][data-section="writing"] .taskcard__starter-input { font-size: 1.45rem; }
 /* Sort-into-blocks phrase chips + block labels */
-.journal[data-section="writing"] .exo-sort__chip { font-size: 1.16rem; }
-.journal[data-section="writing"] .exo-sort__bin-label { font-size: 1.28rem; }
+.journal[data-unit="new-york-city"][data-section="writing"] .exo-sort__chip { font-size: 1.16rem; }
+.journal[data-unit="new-york-city"][data-section="writing"] .exo-sort__bin-label { font-size: 1.28rem; }
 
 /* Portrait: a couple of writing tasks pair a long nowrap prompt with a wide
    answer line, which together overrun the narrow width (they were being scaled
    down to compensate). Let the prompt wrap and drop the answer line onto its own
    full-width row so the whole thing fits left-to-right at full size. */
 @media (orientation: portrait) {
-  .journal[data-section="writing"] .taskcard__starter-label { white-space: normal; }
-  .journal[data-section="writing"] .taskcard__starter-input { flex-basis: 100%; min-width: 0; }
+  .journal[data-unit="new-york-city"][data-section="writing"] .taskcard__starter-label { white-space: normal; }
+  .journal[data-unit="new-york-city"][data-section="writing"] .taskcard__starter-input { flex-basis: 100%; min-width: 0; }
 }
 
 /* ===================================================================
@@ -5625,13 +5625,13 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
    =================================================================== */
 /* Blog-post (article) cards keep their own reading layout — the busy photo
    behind dense text would hurt readability — so they are excluded below. */
-.journal[data-section="writing"] .taskcard--sheet:not(.taskcard--blog):not(.taskcard--video) {
+.journal[data-unit="new-york-city"][data-section="writing"] .taskcard--sheet:not(.taskcard--blog):not(.taskcard--video) {
   overflow: hidden; /* clip the photo to the card's rounded corners */
   /* Translucent glass fills — the photo shows through the task panels. */
   --j-paper-2: rgba(20, 34, 56, 0.5);
   --j-panel: rgba(212, 226, 246, 0.09);
 }
-.journal[data-section="writing"] .taskcard--sheet:not(.taskcard--blog):not(.taskcard--video)::before {
+.journal[data-unit="new-york-city"][data-section="writing"] .taskcard--sheet:not(.taskcard--blog):not(.taskcard--video)::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -5646,9 +5646,9 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
 }
 /* Lift all real content above the photo layer (the floating blog chip and
    checklist keep their own absolute placement, so exclude them here). */
-.journal[data-section="writing"] .taskcard--sheet:not(.taskcard--blog):not(.taskcard--video) > *:not(.taskcard__blogchip):not(.taskcard__checklist) { position: relative; z-index: 1; }
+.journal[data-unit="new-york-city"][data-section="writing"] .taskcard--sheet:not(.taskcard--blog):not(.taskcard--video) > *:not(.taskcard__blogchip):not(.taskcard__checklist) { position: relative; z-index: 1; }
 /* Frost the task panels so text stays legible over the photo. */
-.journal[data-section="writing"] .taskcard--sheet:not(.taskcard--blog):not(.taskcard--video) :is(
+.journal[data-unit="new-york-city"][data-section="writing"] .taskcard--sheet:not(.taskcard--blog):not(.taskcard--video) :is(
   .exo-mc__opt, .exo-sort__chip, .exo-sort__bin-drop, .exo-sort__bin,
   .exo-inline__bank, .exo-args__row, .exo-essay__area, .exo-clab__comment,
   .exo-rw__tile, .exo-gap__item, .exo-match__left, .exo-match__right
@@ -5664,7 +5664,7 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
    violet "Available phrases" label with a hand-drawn arrow. Matches the
    supplied draft. Scoped so the group-sort in other sections is untouched.
    =================================================================== */
-.journal[data-section="writing"] .taskcard--sheet .exo-sort {
+.journal[data-unit="new-york-city"][data-section="writing"] .taskcard--sheet .exo-sort {
   display: grid;
   grid-template-columns: minmax(0, 1.04fr) minmax(0, 0.96fr);
   column-gap: 2.2rem;
@@ -5672,14 +5672,14 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
 }
 
 /* --- Left column: the five block bins, one per row --------------- */
-.journal[data-section="writing"] .taskcard--sheet .exo-sort__bins {
+.journal[data-unit="new-york-city"][data-section="writing"] .taskcard--sheet .exo-sort__bins {
   grid-column: 1;
   grid-row: 1;
   display: flex;
   flex-direction: column;
   gap: 0.55rem;
 }
-.journal[data-section="writing"] .exo-sort__bin--detail {
+.journal[data-unit="new-york-city"][data-section="writing"] .exo-sort__bin--detail {
   flex-direction: row;
   align-items: stretch;
   gap: 0.6rem;
@@ -5703,7 +5703,7 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
   font-size: 1.3rem;
   color: var(--j-olive);
 }
-.journal[data-section="writing"] .exo-sort__bin-name {
+.journal[data-unit="new-york-city"][data-section="writing"] .exo-sort__bin-name {
   font-family: var(--j-font-display);
   font-weight: 700;
   font-size: 1.5rem;
@@ -5718,7 +5718,7 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
 /* Per-block drop target. Fixed height so the block is exactly as tall empty
    as it is full — placing phrases can never grow it and push the blocks below
    off the (fixed-height, clipped) card. Empty state shows the placeholder. */
-.journal[data-section="writing"] .exo-sort__bin--detail .exo-sort__bin-drop {
+.journal[data-unit="new-york-city"][data-section="writing"] .exo-sort__bin--detail .exo-sort__bin-drop {
   flex: 1 1 auto;
   height: 3.9rem;
   min-height: 0;
@@ -5734,7 +5734,7 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
   border: 2px dashed rgba(140, 164, 196, 0.4);
   background: rgba(10, 19, 34, 0.26);
 }
-.journal[data-section="writing"] .exo-sort__bin-drop:empty::before {
+.journal[data-unit="new-york-city"][data-section="writing"] .exo-sort__bin-drop:empty::before {
   content: "Drop a phrase here";
   align-self: center;
   font-size: 1.02rem;
@@ -5744,7 +5744,7 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
 /* Placed phrases shrink right down (and clamp to two lines) so up to two fit
    inside the block's fixed slot without ever growing it. Tap one to send it
    back to the tray, where it returns to full size. */
-.journal[data-section="writing"] .exo-sort__bin-drop .exo-sort__chip {
+.journal[data-unit="new-york-city"][data-section="writing"] .exo-sort__bin-drop .exo-sort__chip {
   flex: 0 0 auto; /* don't let flex shrink the chip and clip its text */
   font-size: 0.66rem;
   line-height: 1.1;
@@ -5761,7 +5761,7 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
 }
 
 /* --- Right column: the loose phrases over the window ------------- */
-.journal[data-section="writing"] .taskcard--sheet .exo-sort__tray--labelled {
+.journal[data-unit="new-york-city"][data-section="writing"] .taskcard--sheet .exo-sort__tray--labelled {
   grid-column: 2;
   grid-row: 1;
   display: grid;
@@ -5789,7 +5789,7 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
 }
 .exo-sort__tray-arrow { width: 2.1rem; height: 1.7rem; margin-top: 0.35rem; flex: 0 0 auto; }
 /* Phrase tiles: frosted glass over the skyline (backdrop-blur added above). */
-.journal[data-section="writing"] .exo-sort__tray--labelled .exo-sort__chip {
+.journal[data-unit="new-york-city"][data-section="writing"] .exo-sort__tray--labelled .exo-sort__chip {
   border-radius: 15px;
   padding: 0.72rem 1rem;
   text-align: left;
@@ -5798,23 +5798,23 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
   border: 1px solid rgba(184, 194, 234, 0.24);
   box-shadow: 0 8px 22px rgba(7, 14, 26, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
-.journal[data-section="writing"] .exo-sort__tray--labelled .exo-sort__chip--sel {
+.journal[data-unit="new-york-city"][data-section="writing"] .exo-sort__tray--labelled .exo-sort__chip--sel {
   border-color: var(--j-teal);
 }
 
 @media (orientation: portrait) {
   /* Portrait is tall + narrow: stack the phrases under the blocks. */
-  .journal[data-section="writing"] .taskcard--sheet .exo-sort {
+  .journal[data-unit="new-york-city"][data-section="writing"] .taskcard--sheet .exo-sort {
     grid-template-columns: 1fr;
   }
-  .journal[data-section="writing"] .taskcard--sheet .exo-sort__bins { grid-column: 1; grid-row: 1; }
-  .journal[data-section="writing"] .taskcard--sheet .exo-sort__tray--labelled {
+  .journal[data-unit="new-york-city"][data-section="writing"] .taskcard--sheet .exo-sort__bins { grid-column: 1; grid-row: 1; }
+  .journal[data-unit="new-york-city"][data-section="writing"] .taskcard--sheet .exo-sort__tray--labelled {
     grid-column: 1;
     grid-row: 2;
     margin-top: 0.5rem;
   }
   .exo-sort__tray-label { margin-top: 0; }
-  .journal[data-section="writing"] .exo-sort__bin-label--detail { flex-basis: 44%; }
+  .journal[data-unit="new-york-city"][data-section="writing"] .exo-sort__bin-label--detail { flex-basis: 44%; }
 }
 
 /* ===================================================================
@@ -6071,12 +6071,12 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
    shopping photo anchored bottom-right (bags, coffee cup, shopping list) and
    the content sitting over a navy scrim on the left. Scoped to the page.
    =================================================================== */
-.journal[data-section="vocabulary"] .taskcard--sheet:not(.taskcard--video) {
+.journal[data-unit="new-york-city"][data-section="vocabulary"] .taskcard--sheet:not(.taskcard--video) {
   overflow: hidden;
   --j-paper-2: rgba(20, 34, 56, 0.5);
   --j-panel: rgba(212, 226, 246, 0.09);
 }
-.journal[data-section="vocabulary"] .taskcard--sheet:not(.taskcard--video)::before {
+.journal[data-unit="new-york-city"][data-section="vocabulary"] .taskcard--sheet:not(.taskcard--video)::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -6092,8 +6092,8 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
   background-position: center, center, right bottom;
   background-repeat: no-repeat;
 }
-.journal[data-section="vocabulary"] .taskcard--sheet:not(.taskcard--video) > * { position: relative; z-index: 1; }
-.journal[data-section="vocabulary"] .taskcard--sheet:not(.taskcard--video) :is(
+.journal[data-unit="new-york-city"][data-section="vocabulary"] .taskcard--sheet:not(.taskcard--video) > * { position: relative; z-index: 1; }
+.journal[data-unit="new-york-city"][data-section="vocabulary"] .taskcard--sheet:not(.taskcard--video) :is(
   .exo-mc__opt, .exo-sort__chip, .exo-sort__bin-drop, .exo-match__left, .exo-match__right,
   .exo-inline__bank, .exo-gap__item, .exo-tap__item, .exo-args__row, .exo-rw__tile,
   .exo-clab__comment, .exo-essay__area, .exo-essay__chip, .exo-essay__dlg, .exo-essay__mail,
@@ -6106,7 +6106,7 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
 /* Mediation-board cards (Task 6/7): the scene photo fills the card and sits to
    the right so its objects clear the three content zones, under a stronger
    left-to-centre navy scrim that keeps the briefing + prompts legible. */
-.journal[data-section="vocabulary"] .taskcard--sheet:not(.taskcard--video).taskcard--board::before {
+.journal[data-unit="new-york-city"][data-section="vocabulary"] .taskcard--sheet:not(.taskcard--video).taskcard--board::before {
   background-image:
     linear-gradient(103deg, rgba(9, 16, 30, 0.96) 34%, rgba(9, 16, 30, 0.74) 58%, rgba(9, 16, 30, 0.34) 100%),
     linear-gradient(rgba(10, 18, 33, 0.34), rgba(10, 18, 33, 0.34)),
@@ -6117,7 +6117,7 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
 /* Task 6 swaps the shopping photo for the host-mum's kitchen (tea, heart bag,
    keys). Placed after the board rule so it wins on the card that has both;
    the extra .taskcard--sheet:not(...) beats the base vocab-scene selector. */
-.journal[data-section="vocabulary"] .taskcard--sheet:not(.taskcard--video).taskcard--scene-kitchen::before {
+.journal[data-unit="new-york-city"][data-section="vocabulary"] .taskcard--sheet:not(.taskcard--video).taskcard--scene-kitchen::before {
   background-image:
     linear-gradient(103deg, rgba(9, 16, 30, 0.96) 32%, rgba(9, 16, 30, 0.72) 56%, rgba(9, 16, 30, 0.3) 100%),
     linear-gradient(rgba(10, 18, 33, 0.3), rgba(10, 18, 33, 0.3)),
@@ -6127,7 +6127,7 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
 }
 /* Memory Subway warm-up: a night subway platform sits along the bottom/right,
    under a heavier scrim so the glowing metro line and word stops stay clear. */
-.journal[data-section="vocabulary"] .taskcard--sheet:not(.taskcard--video).taskcard--scene-subway::before {
+.journal[data-unit="new-york-city"][data-section="vocabulary"] .taskcard--sheet:not(.taskcard--video).taskcard--scene-subway::before {
   background-image:
     linear-gradient(180deg, rgba(9, 16, 30, 0.9) 22%, rgba(9, 16, 30, 0.6) 60%, rgba(9, 16, 30, 0.7) 100%),
     linear-gradient(rgba(9, 15, 28, 0.4), rgba(9, 15, 28, 0.4)),

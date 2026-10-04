@@ -22,6 +22,13 @@ import nycSpeaking from "./new-york-city-speaking.js";
 import nycRevision from "./new-york-city-revision.js";
 
 import bdGrammar from "./best-days-grammar.js";
+import bdReading from "./best-days-reading.js";
+import bdVocabulary from "./best-days-vocabulary.js";
+import bdMediation from "./best-days-mediation.js";
+import bdWriting from "./best-days-writing.js";
+import bdSpeaking from "./best-days-speaking.js";
+import bdRevision from "./best-days-revision.js";
+import bdListening from "./best-days-listening.js";
 
 const CONTENT = {
   "new-york-city/grammar": nycGrammar,
@@ -33,6 +40,13 @@ const CONTENT = {
   "new-york-city/revision": nycRevision,
 
   "best-days/grammar": bdGrammar,
+  "best-days/reading": bdReading,
+  "best-days/vocabulary": bdVocabulary,
+  "best-days/mediation": bdMediation,
+  "best-days/writing": bdWriting,
+  "best-days/speaking": bdSpeaking,
+  "best-days/revision": bdRevision,
+  "best-days/listening": bdListening,
 };
 
 /**

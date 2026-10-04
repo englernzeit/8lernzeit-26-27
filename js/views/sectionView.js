@@ -174,6 +174,7 @@ export function renderSectionView(root, unitId, sectionId) {
   const view = document.createElement("div");
   view.className = "view journal";
   view.dataset.section = sectionId; // lets CSS target one competence page
+  view.dataset.unit = unitId; // ...and one unit, so Unit 1 scenes stay in Unit 1
 
   // --- Header ---------------------------------------------------
   const header = document.createElement("header");
@@ -1811,6 +1812,7 @@ function buildCard(step, data, index, taskNo, ctx) {
         createQuizShowGame({
           host: data.host,
           rounds: data.rounds,
+          marquee: data.marquee,
           onResult: (summary) => ctx && setAnswer(ctx.unitId, ctx.sectionId, key, summary),
         }),
       );

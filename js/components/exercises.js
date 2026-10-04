@@ -5898,7 +5898,7 @@ export function createCommentFill({ user, when, segments, values, keyFor, onChan
  *   onResult?: (summary: string) => void,
  * }} opts
  */
-export function createQuizShowGame({ host = {}, rounds, onResult }) {
+export function createQuizShowGame({ host = {}, rounds, marquee: marqueeText, onResult }) {
   const hostName = host.name ?? "Liberty Lou";
   const hostAvatar = host.avatar ?? "🎤";
   const hostSub = host.sub ?? "your quiz host";
@@ -5916,7 +5916,7 @@ export function createQuizShowGame({ host = {}, rounds, onResult }) {
   marquee.className = "exo-quiz__marquee";
   marquee.innerHTML =
     `<span class="exo-quiz__bulbs">💡💡💡</span>` +
-    `<span class="exo-quiz__show">THE BIG APPLE QUIZ SHOW</span>` +
+    `<span class="exo-quiz__show">${marqueeText ?? "THE BIG APPLE QUIZ SHOW"}</span>` +
     `<span class="exo-quiz__bulbs">💡💡💡</span>`;
 
   const stage = document.createElement("div");
