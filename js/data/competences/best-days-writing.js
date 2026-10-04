@@ -117,12 +117,10 @@ export default {
           sections: PHRASE_SECTIONS,
         },
         {
-          type: "essay-editor",
+          type: "email-compose",
           kind: "Schreiben",
           title: "Step 3 — Write your email",
-          split: true,
-          image: "assets/images/unit2/email.jpg",
-          imageAlt: "An empty email on a phone, ready to write in",
+          img: "assets/images/unit2/email.jpg",
           intro:
             "The beginning is already there — read it, then go on from where it stops. Write 60–80 words altogether.",
           incoming: {
@@ -200,12 +198,10 @@ export default {
           sections: PHRASE_SECTIONS,
         },
         {
-          type: "essay-editor",
+          type: "email-compose",
           kind: "Schreiben",
           title: "Step 3 — Write your email",
-          split: true,
-          image: "assets/images/unit2/email.jpg",
-          imageAlt: "An empty email on a phone, ready to write in",
+          img: "assets/images/unit2/email.jpg",
           intro: "Write your email (about 100 words). Use your notes from Step 1.",
           help: "Schreibe deine E-Mail (ca. 100 Wörter).",
           min: 80,
@@ -257,12 +253,10 @@ export default {
           sections: PHRASE_SECTIONS,
         },
         {
-          type: "essay-editor",
+          type: "email-compose",
           kind: "Schreiben",
           title: "Step 3 — Write your email",
-          split: true,
-          image: "assets/images/unit2/email.jpg",
-          imageAlt: "An empty email on a phone, ready to write in",
+          img: "assets/images/unit2/email.jpg",
           intro:
             "Write your email (about 120 words). Cover all four content points without writing a list, and vary your sentence openings.",
           min: 95,

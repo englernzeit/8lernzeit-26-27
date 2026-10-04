@@ -6068,3 +6068,56 @@ export function createQuizShowGame({ host = {}, rounds, marquee: marqueeText, on
   showQ();
   return wrap;
 }
+
+/* ---------- Email compose (editor + live phone preview) ---------- */
+
+/**
+ * A writing task that looks like a real email: the full essay editor on the
+ * left (requirement chips, word meter, tickable self-check) and a phone on the
+ * right whose screen mirrors what the learner types, live.
+ *
+ * It wraps createEssayEditor rather than reimplementing it, and keeps that
+ * editor's answer key, so saved work and the PDF export are unchanged.
+ *
+ * @param {{img: string, min?: number, max?: number, placeholder?: string,
+ *          chips?: Array, checklist?: string[], value?: string,
+ *          answerKey: string, onChange?: (v: string) => void}} cfg
+ */
+export function createEmailCompose({ img, min, max, placeholder, chips, checklist, value, answerKey, onChange }) {
+  const wrap = document.createElement("div");
+  wrap.className = "exo exo-mailc";
+
+  const cols = document.createElement("div");
+  cols.className = "exo-mailc__cols";
+
+  const left = document.createElement("div");
+  left.className = "exo-mailc__write";
+  const editor = createEssayEditor({ min, max, placeholder, chips, checklist, value, answerKey, onChange });
+  left.appendChild(editor);
+
+  const right = document.createElement("div");
+  right.className = "exo-mailc__phone";
+  const shot = document.createElement("img");
+  shot.className = "exo-mailc__img";
+  shot.src = img;
+  shot.alt = "";
+  shot.loading = "lazy";
+  const screen = document.createElement("div");
+  screen.className = "exo-mailc__screen";
+  right.append(shot, screen);
+
+  cols.append(left, right);
+  wrap.appendChild(cols);
+
+  // Mirror the editor onto the phone screen as the learner types.
+  const area = editor.querySelector(".exo-essay__area");
+  const paint = () => {
+    const text = (area?.value ?? "").trim();
+    screen.textContent = text;
+    screen.classList.toggle("exo-mailc__screen--empty", !text);
+  };
+  if (area) area.addEventListener("input", paint);
+  paint();
+
+  return wrap;
+}

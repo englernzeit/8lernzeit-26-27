@@ -39,6 +39,7 @@ import {
   createArgumentPick,
   createParagraphBuilder,
   createEssayEditor,
+  createEmailCompose,
   createChatMediation,
   createMemorySubway,
   createRewriteStudio,
@@ -815,7 +816,7 @@ function downloadAnswerSheet(view, unit, section, content, name) {
             answer: answers[`${base}-para-s${k}`] ?? "",
           }));
         }
-        if (card.type === "essay-editor") {
+        if (card.type === "essay-editor" || card.type === "email-compose") {
           return [{ label: card.title, answer: answers[`${base}-essay`] ?? "" }];
         }
         // Join any extra ruled writing lines (answerLines) into one answer.
@@ -1513,6 +1514,27 @@ function buildCard(step, data, index, taskNo, ctx) {
           values: saved,
           keyFor,
           onChange: (k, v) => ctx && setAnswer(ctx.unitId, ctx.sectionId, keyFor(k), v),
+        }),
+      );
+      break;
+    }
+    case "email-compose": {
+      // Same answer key as essay-editor on purpose: the card can be switched
+      // between the two without losing saved work or dropping out of the PDF.
+      const base = `step${step.step}-task${index + 1}`;
+      const key = `${base}-essay`;
+      const saved = ctx ? getAnswers(ctx.unitId, ctx.sectionId) : {};
+      body.appendChild(
+        createEmailCompose({
+          img: data.img,
+          min: data.min,
+          max: data.max,
+          placeholder: data.placeholder,
+          chips: data.chips,
+          checklist: data.checklist,
+          value: saved[key] ?? "",
+          answerKey: key,
+          onChange: (v) => ctx && setAnswer(ctx.unitId, ctx.sectionId, key, v),
         }),
       );
       break;

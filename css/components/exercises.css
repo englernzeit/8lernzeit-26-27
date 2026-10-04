@@ -7181,3 +7181,60 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
   position: relative;
   z-index: 1;
 }
+
+/* ============================================================
+   Email compose — the essay editor with a live phone preview.
+   The screen box is positioned in % of the phone picture, so the
+   mirrored text stays inside the empty message area at any size.
+   ============================================================ */
+.exo-mailc__cols {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+}
+.exo-mailc__write {
+  flex: 1 1 0;
+  min-width: 0;
+}
+.exo-mailc__phone {
+  flex: 0 0 min(46%, 22rem);
+  min-width: 0;
+  position: relative;
+  align-self: center;
+}
+.exo-mailc__img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 16px;
+}
+/* The empty message area of assets/images/unit2/email.jpg, in % of the image. */
+.exo-mailc__screen {
+  position: absolute;
+  left: 22%;
+  top: 34.5%;
+  width: 54.5%;
+  height: 48.5%;
+  overflow: hidden;
+  font-family: var(--j-font-body);
+  font-size: 0.55rem;
+  line-height: 1.45;
+  color: #e9eefb;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.exo-mailc__screen--empty::before {
+  content: "Your email appears here as you write…";
+  color: rgba(214, 226, 247, 0.38);
+  font-style: italic;
+}
+
+@media (orientation: portrait) {
+  .exo-mailc__cols { flex-direction: column; }
+  .exo-mailc__phone {
+    flex: 0 0 auto;
+    width: min(100%, 20rem);
+    align-self: center;
+  }
+  .exo-mailc__screen { font-size: 0.6rem; }
+}
