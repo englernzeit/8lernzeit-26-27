@@ -7133,6 +7133,7 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
      own; everywhere else the navy card shows through.
        --scene-lo  how much shows in the main bottom-right pool
        --scene-hi  how much shows in the softer top-right pool
+     The photo itself is left sharp; the pools alone keep it off the text.
      Raise either to reveal more of the picture, lower it to fade it away. */
   --scene-lo: 0.86;
   --scene-hi: 0.30;
