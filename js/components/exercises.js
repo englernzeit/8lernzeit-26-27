@@ -6115,6 +6115,8 @@ export function createEmailCompose({ img, min, max, placeholder, chips, checklis
     const text = (area?.value ?? "").trim();
     screen.textContent = text;
     screen.classList.toggle("exo-mailc__screen--empty", !text);
+    // Follow the writing, like a real compose field.
+    screen.scrollTop = screen.scrollHeight;
   };
   if (area) area.addEventListener("input", paint);
   paint();

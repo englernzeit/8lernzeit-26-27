@@ -7197,7 +7197,7 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
   min-width: 0;
 }
 .exo-mailc__phone {
-  flex: 0 0 min(46%, 22rem);
+  flex: 0 0 min(48%, 24rem);
   min-width: 0;
   position: relative;
   align-self: center;
@@ -7215,14 +7215,23 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
   top: 34.5%;
   width: 54.5%;
   height: 48.5%;
-  overflow: hidden;
-  font-family: var(--j-font-body);
-  font-size: 0.55rem;
-  line-height: 1.45;
-  color: #e9eefb;
+  /* The handwritten voice the site uses whenever a learner's own words land on
+     a device (as Unit 1 does on its messenger and blog templates). Caveat is
+     bundled, so it never flashes a fallback. */
+  font-family: var(--font-script);
+  font-size: 0.95rem;
+  line-height: 1.3;
+  color: #f2f6ff;
   white-space: pre-wrap;
   word-break: break-word;
+  /* A long email scrolls inside the screen and follows the caret (see paint()
+     in createEmailCompose); the last line fades out rather than being cut. */
+  overflow-y: auto;
+  scrollbar-width: none;
+  -webkit-mask-image: linear-gradient(180deg, #000 86%, transparent 100%);
+  mask-image: linear-gradient(180deg, #000 86%, transparent 100%);
 }
+.exo-mailc__screen::-webkit-scrollbar { width: 0; height: 0; }
 .exo-mailc__screen--empty::before {
   content: "Your email appears here as you write…";
   color: rgba(214, 226, 247, 0.38);
@@ -7236,5 +7245,5 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
     width: min(100%, 20rem);
     align-self: center;
   }
-  .exo-mailc__screen { font-size: 0.6rem; }
+  .exo-mailc__screen { font-size: 1rem; }
 }
