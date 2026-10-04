@@ -1267,11 +1267,17 @@ function buildCard(step, data, index, taskNo, ctx) {
   const isBlog = data.type === "text" && Boolean(data.blog);
   if (isBlog) card.classList.add("taskcard--blog");
 
-  // The Listening page carries a faint NYC skyline rising from the bottom of
-  // every task card — except the Step-4 ★ game. A card can instead run a
+  // Unit 1's Listening page carries a faint NYC skyline rising from the bottom
+  // of every task card — except the Step-4 ★ game. A card can instead run a
   // subway-line footer (data.subway); the wide dialogue (dlgwide) carries its
-  // own faint subway map, so it opts out of both.
-  if (ctx?.sectionId === "listening" && step.step !== 4 && data.type !== "game") {
+  // own faint subway map, so it opts out of both. This is New York chrome, so
+  // it is gated on the unit — other units bring their own scene art.
+  if (
+    ctx?.unitId === "new-york-city" &&
+    ctx?.sectionId === "listening" &&
+    step.step !== 4 &&
+    data.type !== "game"
+  ) {
     const isDlgWide = data.type === "gap-fill" && data.columns >= 2;
     if (data.subway) card.classList.add("taskcard--subway");
     else if (!isDlgWide) card.classList.add("taskcard--skyline");
@@ -1455,10 +1461,13 @@ function buildCard(step, data, index, taskNo, ctx) {
         // scaled down small. See .taskcard--dlg3 in journal-carousel.css.
         if (data.columns >= 3) card.classList.add("taskcard--dlg3");
         // Faint NYC subway map behind the dialogue (screen-blended card chrome).
-        const map = document.createElement("div");
-        map.className = "taskcard__submap";
-        map.setAttribute("aria-hidden", "true");
-        card.appendChild(map);
+        // New York chrome again, so only in that unit.
+        if (ctx?.unitId === "new-york-city") {
+          const map = document.createElement("div");
+          map.className = "taskcard__submap";
+          map.setAttribute("aria-hidden", "true");
+          card.appendChild(map);
+        }
         // Lift the Check bar out of the flow into the card's top-right corner so
         // the dialogue owns the whole height and reads bigger.
         const bar = gap.querySelector(".exo__checkbar");

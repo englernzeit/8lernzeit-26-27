@@ -16,9 +16,13 @@
  */
 
 const AUDIO = "assets/audio/unit2";
-const A_LE = `${AUDIO}/announcements-le.mp3`;
-const A_GK = `${AUDIO}/announcements-gk.mp3`;
-const A_EK = `${AUDIO}/announcements-ek.mp3`;
+/** One recording of Mr Okonkwo's four announcements serves all three levels;
+ *  the levels differ in what the learner has to get out of it, not in what
+ *  they hear. */
+const ANNOUNCEMENTS = `${AUDIO}/announcements.mp3`;
+const A_LE = ANNOUNCEMENTS;
+const A_GK = ANNOUNCEMENTS;
+const A_EK = ANNOUNCEMENTS;
 
 /** The four announcements, used for the note-taking table at every level. */
 const TABLE_ROWS = [
