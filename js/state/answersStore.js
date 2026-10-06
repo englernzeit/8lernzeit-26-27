@@ -101,3 +101,55 @@ export function setWordMasterScore(unitId, sectionId, course, score) {
     /* storage unavailable */
   }
 }
+
+/* --- Word Master answers (what the learner actually typed) ------ */
+/* The score alone is not enough to resume a drill: reopening it used to
+   rebuild an empty sheet. These keep the typed text per item, so a drill
+   can be restored exactly as it was left. Items are keyed by a hash of the
+   sentence (see itemKey in wordMaster.js), never by position — the drill
+   reshuffles on every open. */
+
+function wordMasterAnswersKey(unitId, sectionId, course = "") {
+  return `explorer:wordmaster-answers:${unitId}:${sectionId}${course ? `:${course}` : ""}`;
+}
+
+/**
+ * @param {string} unitId
+ * @param {string} sectionId
+ * @param {string} [course]
+ * @returns {Record<string, string>} itemKey → the text the learner typed
+ */
+export function getWordMasterAnswers(unitId, sectionId, course = "") {
+  try {
+    return JSON.parse(localStorage.getItem(wordMasterAnswersKey(unitId, sectionId, course)) ?? "{}");
+  } catch {
+    return {};
+  }
+}
+
+/**
+ * @param {string} unitId
+ * @param {string} sectionId
+ * @param {string} course
+ * @param {string} itemKey
+ * @param {string} value
+ */
+export function setWordMasterAnswer(unitId, sectionId, course, itemKey, value) {
+  const all = getWordMasterAnswers(unitId, sectionId, course);
+  if (value) all[itemKey] = value;
+  else delete all[itemKey];
+  try {
+    localStorage.setItem(wordMasterAnswersKey(unitId, sectionId, course), JSON.stringify(all));
+  } catch {
+    /* storage unavailable */
+  }
+}
+
+/** Wipe one course's typed answers (the drill's "Reset all answers"). */
+export function clearWordMasterAnswers(unitId, sectionId, course = "") {
+  try {
+    localStorage.removeItem(wordMasterAnswersKey(unitId, sectionId, course));
+  } catch {
+    /* storage unavailable */
+  }
+}

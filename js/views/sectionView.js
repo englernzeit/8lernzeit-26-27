@@ -72,6 +72,9 @@ import {
   setAnswer,
   getWordMasterScore,
   setWordMasterScore,
+  getWordMasterAnswers,
+  setWordMasterAnswer,
+  clearWordMasterAnswers,
 } from "../state/answersStore.js";
 import { createWordMaster } from "../components/wordMaster.js";
 import { createPictureVocab } from "../components/pictureVocab.js";
@@ -1087,6 +1090,12 @@ function buildVocabHub(content, ctx, { showWordMaster = false } = {}) {
       const overlay = createWordMaster({
         title: "Word Master",
         courses: wmCourses,
+        // Resume where the learner left off: the drill restores what was typed
+        // (keyed per item, so the reshuffle doesn't matter) and saves on change.
+        getSaved: (courseKey) => getWordMasterAnswers(ctx.unitId, ctx.sectionId, courseKey),
+        onAnswer: (courseKey, key, value) =>
+          setWordMasterAnswer(ctx.unitId, ctx.sectionId, courseKey, key, value),
+        onReset: (courseKey) => clearWordMasterAnswers(ctx.unitId, ctx.sectionId, courseKey),
         onScore: (courseKey, correct, total) => {
           setWordMasterScore(ctx.unitId, ctx.sectionId, courseKey, { correct, total });
         },

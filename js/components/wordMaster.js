@@ -20,12 +20,15 @@
  *     key: string, name: string, tag: string, subtitle?: string,
  *     items: Array<{ de: string, en: string, answer: string, accept?: string[] }>,
  *   }>,
+ *   getSaved?: (courseKey: string) => Record<string, string>,
+ *   onAnswer?: (courseKey: string, itemKey: string, value: string) => void,
+ *   onReset?: (courseKey: string) => void,
  *   onScore?: (courseKey: string, correct: number, total: number) => void,
  *   onClose?: () => void,
  * }} config
  * @returns {HTMLElement}
  */
-export function createWordMaster({ title = "Word Master", courses, onScore, onClose }) {
+export function createWordMaster({ title = "Word Master", courses, getSaved, onAnswer, onReset, onScore, onClose }) {
   const overlay = document.createElement("div");
   overlay.className = "wordmaster";
   overlay.tabIndex = -1;
@@ -108,8 +111,10 @@ export function createWordMaster({ title = "Word Master", courses, onScore, onCl
     sheet.appendChild(list);
 
     // Shuffle the item order on every open so the drill isn't memorised
-    // by position — the words appear in a fresh order each time.
+    // by position — the words appear in a fresh order each time. Saved
+    // answers are keyed by sentence, not position, so they survive this.
     const items = shuffle(course.items.slice());
+    const saved = getSaved?.(course.key) ?? {};
     const solved = new Set();
     const total = items.length;
 
@@ -136,10 +141,17 @@ export function createWordMaster({ title = "Word Master", courses, onScore, onCl
 
       const en = document.createElement("p");
       en.className = "wordmaster__en";
-      buildGap(en, item, () => {
-        solved.add(i);
-        updateScore();
-      });
+      const key = itemKey(item);
+      buildGap(
+        en,
+        item,
+        () => {
+          solved.add(i);
+          updateScore();
+        },
+        saved[key],
+        (value) => onAnswer?.(course.key, key, value),
+      );
 
       body.append(de, en);
       li.append(num, body);
@@ -158,6 +170,7 @@ export function createWordMaster({ title = "Word Master", courses, onScore, onCl
         el.disabled = false;
         el.classList.remove("wordmaster__gap--right");
       });
+      onReset?.(course.key);
       updateScore();
     });
     footer.appendChild(reset);
@@ -221,7 +234,7 @@ function renderBold(el, text) {
  * Split an English sentence on the "___" gap and insert a self-checking
  * input. Returns the input element.
  */
-function buildGap(el, item, onSolved) {
+function buildGap(el, item, onSolved, savedValue, onChange) {
   const [before, after = ""] = item.en.split("___");
   const accepted = [item.answer, ...(item.accept ?? [])].map(norm);
 
@@ -243,8 +256,17 @@ function buildGap(el, item, onSolved) {
       onSolved();
     }
   };
-  input.addEventListener("input", check);
+  input.addEventListener("input", () => {
+    onChange?.(input.value);
+    check();
+  });
   input.addEventListener("blur", check);
+
+  // Restore what was typed last time, and re-lock it if it was already right.
+  if (savedValue) {
+    input.value = savedValue;
+    check();
+  }
 
   el.appendChild(input);
   el.appendChild(document.createTextNode(after));
@@ -260,4 +282,16 @@ function shuffle(arr) {
     [arr[i], arr[j]] = [arr[j], arr[i]];
   }
   return arr;
+}
+
+/**
+ * A stable id for a drill item, independent of its shuffled position: a djb2
+ * hash of the sentence and its answer. Saving by index would restore answers
+ * onto the wrong rows, because the drill reshuffles on every open.
+ */
+function itemKey(item) {
+  const basis = `${item.en}|${item.answer}`;
+  let h = 5381;
+  for (let i = 0; i < basis.length; i += 1) h = ((h << 5) + h + basis.charCodeAt(i)) >>> 0;
+  return h.toString(36);
 }
