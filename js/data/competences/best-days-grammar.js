@@ -63,8 +63,112 @@ const REWRITE_QUESTIONS = [
 const PROBLEM_SHORT =
   "THE PROBLEM: Half of your class wants to play football every afternoon with the six American guests. The others think that is boring. The guests arrive on Monday and nobody can agree.";
 
+/**
+ * The opening comic — "Gerunds in Action", the 15-slide presentation cut into
+ * swipeable cards. It runs BEFORE the rule box and the tasks: the class
+ * predicts, the comic answers, and the last slides collect the three rules
+ * again. One picture per slide in assets/images/unit2/deck/.
+ */
+const DECK_SLIDES = [
+  {
+    src: "assets/images/unit2/deck/01.jpg",
+    kind: "Cover",
+    cap: "A Tale of Two Cities, Issue #1: The Gerund. Two friends, two cities — and one grammar form that tells their story.",
+  },
+  {
+    src: "assets/images/unit2/deck/02.jpg",
+    kind: "The two friends",
+    cap: "Anuar is new at Boston West High. Ben is on the ferry in New York. Both of them need the same grammar trick.",
+  },
+  {
+    src: "assets/images/unit2/deck/03.jpg",
+    kind: "Prediction",
+    cap: "Before you swipe on: how do you turn an action (a verb) into a thing (a noun)?",
+    de: "Überlege erst selbst: Wie wird aus einem Verb ein Nomen?",
+  },
+  {
+    src: "assets/images/unit2/deck/04.jpg",
+    kind: "The answer",
+    cap: "Take a verb, add -ing — and you have built a gerund: a verb that acts like a noun. play → playing",
+    de: "Verb + -ing = Gerundium. Es verhält sich wie ein Nomen.",
+  },
+  {
+    src: "assets/images/unit2/deck/05.jpg",
+    kind: "Prediction",
+    cap: "If the -ing form is the star of the sentence (the subject), where does it usually go?",
+    de: "Wo steht die -ing-Form, wenn sie das Subjekt des Satzes ist?",
+  },
+  {
+    src: "assets/images/unit2/deck/06.jpg",
+    kind: "Rule 1 · Subject",
+    cap: "Rule 1 — the -ing form as the SUBJECT. It opens the sentence: Starting at a new school can be a little intimidating.",
+    de: "Regel 1: Als Subjekt steht die -ing-Form am Satzanfang.",
+  },
+  {
+    src: "assets/images/unit2/deck/07.jpg",
+    kind: "Prediction",
+    cap: "What happens after verbs that show strong feelings — love, hate or enjoy?",
+    de: "Was kommt nach Gefühlsverben wie love, hate, enjoy?",
+  },
+  {
+    src: "assets/images/unit2/deck/08.jpg",
+    kind: "Rule 2 · Object",
+    cap: "Rule 2 — the -ing form as the OBJECT. It comes straight after the feeling verb: I love listening to the saxophone.",
+    de: "Regel 2: Direkt nach like, love, enjoy, hate, don’t mind, start, stop, keep steht die -ing-Form.",
+  },
+  {
+    src: "assets/images/unit2/deck/09.jpg",
+    kind: "Prediction",
+    cap: "And what do you do when you hit a ‘bridge word’ — a preposition like to, at, about or of?",
+    de: "Was passiert nach einer Präposition wie to, at, about, of?",
+  },
+  {
+    src: "assets/images/unit2/deck/10.jpg",
+    kind: "Rule 3 · Preposition",
+    cap: "Rule 3 — always use the -ing form after a preposition: I look forward to playing. I dream of discovering new places.",
+    de: "Regel 3: Nach einer Präposition steht IMMER die -ing-Form — nie der Infinitiv mit to.",
+  },
+  {
+    src: "assets/images/unit2/deck/11.jpg",
+    kind: "Prediction",
+    cap: "System failure! Which preposition goes with which feeling? Connect the wires in your head before you swipe on.",
+    de: "Welche Präposition gehört zu welchem Ausdruck? Rate zuerst.",
+  },
+  {
+    src: "assets/images/unit2/deck/12.jpg",
+    kind: "The pairs",
+    cap: "Power restored. These are the pairs to learn by heart: good at · terrible at · dream of · nervous about · look forward to · get used to · interested in.",
+    de: "Diese Paare musst du auswendig können.",
+  },
+  {
+    src: "assets/images/unit2/deck/13.jpg",
+    kind: "Summary",
+    cap: "The Gerund Survival Guide — the three places you need the -ing form: the star, the target and the bridge.",
+    de: "Die drei Stellen auf einen Blick: Subjekt · nach Gefühlsverben · nach Präpositionen.",
+  },
+  {
+    src: "assets/images/unit2/deck/14.jpg",
+    kind: "Your turn",
+    cap: "Final boss! Say the three missing -ing forms out loud first — the answer line is at the bottom of the slide.",
+    de: "Sag die drei fehlenden -ing-Formen laut, bevor du die Lösung liest.",
+  },
+  {
+    src: "assets/images/unit2/deck/15.jpg",
+    kind: "The end",
+    cap: "Learning the gerund is easy. Using it to tell your story is even better. Now it is your turn — start with Step 1.",
+  },
+];
+
 export default {
   title: "The -ing form",
+
+  /* ============ The opening comic (before the theory) ============ */
+  deck: {
+    label: "The Comic",
+    subtitle: "Gerunds in Action — swipe through the story, then read the rule",
+    accent: "ochre",
+    slides: DECK_SLIDES,
+  },
 
   /* ============ Shared reference — the three rules ============ */
   guide: {

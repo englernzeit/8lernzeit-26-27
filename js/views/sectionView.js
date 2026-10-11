@@ -218,6 +218,13 @@ export function renderSectionView(root, unitId, sectionId) {
     view.appendChild(buildPassage(content.passage));
   }
 
+  // --- Slide deck (optional) --------------------------------------
+  // A presentation cut into swipeable cards. It sits in front of the theory
+  // and the tasks, so the story runs first and the rule box sums it up.
+  if (content.deck?.slides?.length) {
+    view.appendChild(buildDeckSection(content.deck));
+  }
+
   // --- Grammar guide (optional) ----------------------------------
   if (content.guide) {
     view.appendChild(buildGuideSection(content.guide));
@@ -871,6 +878,103 @@ function downloadAnswerSheet(view, unit, section, content, name) {
 
   const safe = (s) => s.replace(/[^\p{L}\p{N}]+/gu, "-").replace(/^-+|-+$/g, "");
   downloadPdf(blob, `${safe(section.label)}_${safe(name)}.pdf`);
+}
+
+/* ================= Slide deck ================================== */
+
+/**
+ * A presentation turned into swipeable cards — one card per slide, driven by
+ * the same carousel the task steps use (arrows, numbered dots, swipe). Each
+ * card is a thin head row, the slide itself, and a one-line caption that says
+ * in plain words what the slide teaches.
+ *
+ * The pictures are big, so they are not all fetched at once: a slide keeps its
+ * URL in `data-src` until it is the active card or one of its neighbours, and
+ * the carousel's onChange hook promotes it then. The CSS aspect-ratio holds
+ * the right height before a picture arrives, so the stage never jumps.
+ *
+ * @param {{ label?: string, subtitle?: string, accent?: string,
+ *           slides: Array<{ src: string, kind?: string, cap?: string,
+ *                           de?: string, alt?: string }> }} deck
+ */
+function buildDeckSection(deck) {
+  const accent = deck.accent ?? "ochre";
+  const total = deck.slides.length;
+  const section = sectionShell(accent, deck.label ?? "The Story", deck.subtitle ?? "");
+  section.classList.add("journal__section--deck");
+
+  /** @type {HTMLImageElement[]} */
+  const pics = [];
+
+  const cards = deck.slides.map((slide, i) => {
+    const card = document.createElement("article");
+    card.className = `taskcard taskcard--deck taskcard--${accent}`;
+
+    const body = document.createElement("div");
+    body.className = "taskcard__body";
+    card.appendChild(body);
+
+    const head = document.createElement("div");
+    head.className = "taskcard__head";
+    const num = document.createElement("span");
+    num.className = "taskcard__num";
+    num.textContent = `${i + 1} / ${total}`;
+    const kind = document.createElement("span");
+    kind.className = "taskcard__kind";
+    kind.textContent = slide.kind ?? "";
+    head.append(num, kind);
+    body.appendChild(head);
+
+    const figure = document.createElement("figure");
+    figure.className = "deckslide";
+    const img = document.createElement("img");
+    img.className = "deckslide__img";
+    img.alt = slide.alt ?? slide.cap ?? "";
+    img.decoding = "async";
+    img.dataset.src = slide.src;
+    pics.push(img);
+    figure.appendChild(img);
+
+    if (slide.cap) {
+      const cap = document.createElement("figcaption");
+      cap.className = "deckslide__cap";
+      cap.textContent = slide.cap;
+      figure.appendChild(cap);
+    }
+    body.appendChild(figure);
+
+    if (slide.de) {
+      const de = document.createElement("p");
+      de.className = "taskcard__help deckslide__de";
+      de.textContent = slide.de;
+      body.appendChild(de);
+    }
+
+    return card;
+  });
+
+  /** Give a slide its real src the first time it comes within reach. */
+  const load = (i) => {
+    const img = pics[i];
+    if (!img || !img.dataset.src) return;
+    img.src = img.dataset.src;
+    delete img.dataset.src;
+  };
+
+  const carousel = createJournalCarousel({
+    mode: "slide",
+    accent,
+    cards,
+    onChange: (active) => {
+      load(active);
+      load(active - 1);
+      load(active + 1);
+    },
+  });
+  carousel.classList.add("jcar--deck");
+  section.appendChild(carousel);
+
+  return section;
 }
 
 /* ================= Grammar guide =============================== */

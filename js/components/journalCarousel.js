@@ -23,10 +23,11 @@ const TRANSITION = `transform ${SPEED_MS}ms ${EASING}, opacity ${SPEED_MS}ms eas
  *   mode: "stack" | "slide" | "spread",
  *   accent: string,               // accent key, e.g. "coral" — colors the dots
  *   cards: HTMLElement[],
+ *   onChange?: (active: number) => void,  // fires on build and on every card change
  * }} config
  * @returns {HTMLElement}
  */
-export function createJournalCarousel({ mode, accent, cards }) {
+export function createJournalCarousel({ mode, accent, cards, onChange }) {
   const root = document.createElement("div");
   root.className = `jcar jcar--${mode}`;
 
@@ -49,6 +50,7 @@ export function createJournalCarousel({ mode, accent, cards }) {
 
   if (n <= 1) {
     if (holders[0]) applyTransform(holders[0], mode, 0, n);
+    onChange?.(0);
     return root;
   }
 
@@ -128,6 +130,9 @@ export function createJournalCarousel({ mode, accent, cards }) {
       prev.disabled = active === 0;
       next.disabled = active === n - 1;
     }
+    // Lets a caller react to the card change — the slide deck uses it to
+    // load the neighbouring pictures just before they are needed.
+    onChange?.(active);
     measure();
   }
 

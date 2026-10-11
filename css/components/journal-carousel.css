@@ -887,6 +887,77 @@
 .taskcard--slate .taskcard__help { color: var(--j-slate); }
 .taskcard--ochre .taskcard__help { color: var(--j-ochre); }
 
+/* --- Slide-deck cards --------------------------------------------
+   A presentation cut into swipeable cards. The card is almost all
+   picture: a thin head row, the slide, and one line of plain-words
+   caption under it. Deliberately NOT .taskcard--sheet, so the unit's
+   corner-light scene photo does not paint underneath the slide.
+   ------------------------------------------------------------------ */
+
+.taskcard--deck {
+  display: flex;
+  flex-direction: column;
+  background: var(--j-paper-1);
+  border-radius: 16px 30px 18px 32px / 30px 16px 34px 18px;
+}
+
+.taskcard--deck .taskcard__body {
+  padding: 0.7rem 0.9rem 0.9rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* A smaller number here than on a task card — the slide is the hero. */
+.taskcard--deck .taskcard__num { font-size: 1.25rem; }
+
+.deckslide {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.deckslide__img {
+  display: block;
+  width: 100%;
+  height: auto;
+  /* Holds the slide's height before the picture arrives, so the carousel
+     stage measures correctly and never jumps as slides load. */
+  aspect-ratio: 1376 / 768;
+  object-fit: cover;
+  border-radius: 10px;
+  background: rgba(7, 14, 26, 0.28);
+  box-shadow: 0 8px 22px rgba(7, 14, 26, 0.35);
+}
+
+.deckslide__cap {
+  margin: 0;
+  font-size: 1.1rem;
+  line-height: 1.3;
+  color: var(--j-secondary);
+}
+
+.taskcard--deck .deckslide__de {
+  margin-top: 0;
+  padding-top: 0.45rem;
+  font-size: 1.15rem;
+}
+
+/* 15 numbered dots need a second row on a narrow screen. */
+.jcar--deck .jcar__dots { flex-wrap: wrap; gap: 0.55rem; }
+.jcar--deck .jcar__dot { width: 1.8rem; height: 1.8rem; font-size: 1.05rem; }
+
+/* The arrows sit over bright comic artwork, so give them a dark pane. */
+.jcar--deck .jcar__arrow {
+  background: rgba(10, 18, 32, 0.45);
+  border-color: rgba(255, 255, 255, 0.45);
+}
+.jcar--deck .jcar__arrow:hover,
+.jcar--deck .jcar__arrow:focus-visible {
+  background: rgba(10, 18, 32, 0.62);
+}
+
 /* --- Portrait / narrow ------------------------------------------ */
 
 @media (orientation: portrait) {
