@@ -1639,7 +1639,7 @@ function buildCard(step, data, index, taskNo, ctx) {
       break;
     }
     case "phrase-reference":
-      body.appendChild(createPhraseReference({ sections: data.sections }));
+      body.appendChild(createPhraseReference({ sections: data.sections, reveal: data.reveal }));
       break;
     case "match-up":
       body.appendChild(createMatchUp({ options: data.options, items: data.items }));

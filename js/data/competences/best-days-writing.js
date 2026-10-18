@@ -195,7 +195,9 @@ export default {
           type: "phrase-reference",
           kind: "Wortschatz",
           title: "The words of this lesson",
-          intro: "Eight words for getting ready. Tap a word to see what it means.",
+          intro:
+            "Eight words for getting ready. Say what each one means before you look.",
+          reveal: true,
           sections: WORDS,
         },
         {
@@ -310,7 +312,9 @@ export default {
           type: "phrase-reference",
           kind: "Wortschatz",
           title: "The words of this lesson",
-          intro: "Eight words for getting ready. Tap a word to see what it means.",
+          intro:
+            "Eight words for getting ready. Say what each one means before you look.",
+          reveal: true,
           sections: WORDS,
         },
         {
@@ -383,7 +387,9 @@ export default {
           type: "phrase-reference",
           kind: "Wortschatz",
           title: "The words of this lesson",
-          intro: "Eight words for getting ready. Tap a word to see what it means.",
+          intro:
+            "Eight words for getting ready. Say what each one means before you look.",
+          reveal: true,
           sections: WORDS,
         },
         {

@@ -316,7 +316,9 @@ export default {
           type: "phrase-reference",
           kind: "Wortschatz",
           title: "Tom's first day — the words",
-          intro: "These eight words tell Tom's story. Tap a word to see what it means.",
+          intro:
+            "These eight words tell Tom's story. Say what each one means before you look.",
+          reveal: true,
           sections: LE_WORDS,
         },
         {

@@ -225,7 +225,9 @@ export default {
           type: "phrase-reference",
           kind: "Wortschatz",
           title: "The words of this lesson",
-          intro: "Eight words from Tom's story. Tap a word to see what it means.",
+          intro:
+            "Eight words from Tom's story. Say what each one means before you look.",
+          reveal: true,
           sections: LE_WORDS,
         },
         {
