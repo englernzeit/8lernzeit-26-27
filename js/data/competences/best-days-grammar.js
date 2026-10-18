@@ -107,21 +107,38 @@ const REWRITE_QUESTIONS = [
 
 /* ============ The problems ============ */
 
-const LE_PROBLEM =
-  "THE PROBLEM: Tom's locker is in the hallway, but his next lesson is in the gym — and he has only four minutes.";
-const LE_IDEAS = [
-  "1 — He runs through the crowd.",
-  "2 — He takes his sports bag with him in the morning.",
-  "3 — He always comes late.",
-];
+const LE_PROBLEM = {
+  problem:
+    "Tom's locker is in the hallway, but his next lesson is in the gym — and he has only four minutes.",
+  problemDe:
+    "Toms Schließfach ist im Flur, seine nächste Stunde in der Turnhalle — und er hat nur vier Minuten.",
+  ideas: [
+    "He runs through the crowd.",
+    "He takes his sports bag with him in the morning.",
+    "He always comes late.",
+  ],
+};
 
-const GK_PROBLEM =
-  "THE PROBLEM: Six guests from Boston are at your school for one week. Half of your class wants to play football every afternoon. The others say that is boring.";
-const GK_IDEAS = [
-  "1 — Ask the guests what they like doing.",
-  "2 — Play football every afternoon.",
-  "3 — Plan something different for every afternoon.",
-];
+const LE_BANK =
+  "he doesn't need his locker · he is never late · it is easy · nobody has to run";
+
+const LE_NOTE =
+  "Richtig ist Idee 2. Idee 1 löst nichts, Idee 3 geht nicht jedes Mal. Beispiellösung: Idea 2 is best, because then he doesn't need his locker before sport.";
+
+const GK_PROBLEM = {
+  problem:
+    "Six guests from Boston are at your school for one week. Half of your class wants to play football every afternoon. The others say that is boring.",
+  problemDe:
+    "Sechs Gäste aus Boston sind eine Woche an eurer Schule. Die Hälfte der Klasse will jeden Nachmittag Fußball spielen, die anderen finden das langweilig.",
+  ideas: [
+    "Ask the guests what they like doing.",
+    "Play football every afternoon.",
+    "Plan something different for every afternoon.",
+  ],
+};
+
+const GK_NOTE =
+  "Es gibt keine einzig richtige Idee — bewertet wird die Begründung. Idee 1 (die Gäste fragen) und Idee 3 (jeden Tag etwas anderes) sind gut begründbar. Idee 2 ist die schwächste, weil sie genau die Hälfte der Klasse übergeht — wer sie wählt, braucht ein starkes Argument. Beispiellösung: Idea 3 is best, because everybody gets one afternoon they like. Then nobody has to do something boring for a whole week.";
 
 /* ============ The word game (Unit 1's Monster's Lunch) ============ */
 
@@ -339,21 +356,14 @@ export default {
           starters: ["I like …", "I hate …", "I am good at …"],
         },
         {
-          type: "multiple-choice",
+          type: "problem-solve",
           kind: "Problem lösen",
           title: "Which idea is best?",
-          intro: LE_PROBLEM + " Which idea helps most?",
-          help: "Welche Idee ist am besten? Wähle eine aus.",
-          shuffle: false,
-          questions: [{ q: "Which idea is best?", options: LE_IDEAS, correct: 1 }],
-        },
-        {
-          type: "written",
-          kind: "Problem lösen",
-          title: "Say why",
-          intro: "Now finish the sentence. Say why your idea is the best one.",
-          help: "You can use: he doesn't need his locker · he is never late · it is easy · nobody has to run",
-          starters: ["Idea 2 is best, because …"],
+          ...LE_PROBLEM,
+          best: 1,
+          bank: LE_BANK,
+          note: LE_NOTE,
+          help: "Tippe eine Idee an und ergänze dann den Satz.",
         },
         {
           type: "game",
@@ -429,17 +439,12 @@ export default {
           ],
         },
         {
-          type: "written",
+          type: "problem-solve",
           kind: "Problem lösen",
           title: "Which idea is best?",
-          intro:
-            GK_PROBLEM +
-            " Which idea is best — 1, 2 or 3? " +
-            GK_IDEAS.join("  ") +
-            " Write two sentences. There is no single right answer — what counts is your reason.",
-          help: "Beispiel (anderes Problem): „Idea 2 is best, because a pen box helps everybody and costs nothing.“",
-          answerLines: 2,
-          questions: [{ q: "Which idea is best, and why?", starter: "Idea ___ is best, because …" }],
+          ...GK_PROBLEM,
+          note: GK_NOTE,
+          help: "Es gibt keine einzig richtige Idee — bewertet wird deine Begründung.",
         },
         {
           type: "game",
@@ -526,20 +531,13 @@ export default {
           ],
         },
         {
-          type: "written",
+          type: "problem-solve",
           kind: "Problem lösen · Challenge",
           title: "Which idea is best?",
-          intro:
-            GK_PROBLEM +
-            " Which idea is best — 1, 2 or 3? " +
-            GK_IDEAS.join("  ") +
-            " Write two sentences: one for your choice, one against another idea.",
-          help: "Idee 2 ist die schwächste — sie übergeht genau die Hälfte der Klasse. Wer sie wählt, braucht ein starkes Argument.",
-          answerLines: 2,
-          questions: [
-            { q: "Which idea is best, and why?", starter: "Idea ___ is best, because …" },
-            { q: "Why is another idea not as good?", starter: "Idea ___ is worse, because …" },
-          ],
+          ...GK_PROBLEM,
+          objection: true,
+          note: GK_NOTE,
+          help: "Zwei Sätze: einer für deine Wahl, einer gegen eine andere Idee.",
         },
         {
           type: "game",

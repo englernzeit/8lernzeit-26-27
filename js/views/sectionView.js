@@ -37,6 +37,7 @@ import {
   createMatchUp,
   createTapMatch,
   createArgumentPick,
+  createProblemSolve,
   createParagraphBuilder,
   createEssayEditor,
   createEmailCompose,
@@ -738,6 +739,22 @@ function downloadAnswerSheet(view, unit, section, content, name) {
               label: `${card.title} — Panel ${panel.n ?? k + 1}, bubble ${j + 1}`,
               answer: answers[`${base}-comicx-p${k}-b${j}`] ?? "",
             })),
+          );
+        }
+        if (card.type === "problem-solve") {
+          // Print the sentences the way the sheet asks for them, so the
+          // teacher reads "Idea 2 is best, because …" and not two fragments.
+          const line = (part, word) => {
+            const n = (answers[`${base}-ps-${part}`] ?? "").trim();
+            const why = (answers[`${base}-ps-${part}Why`] ?? "").trim();
+            if (!n && !why) return null;
+            return {
+              label: card.title,
+              answer: `Idea ${n || "___"} is ${word}, because ${why || "…"}`,
+            };
+          };
+          return [line("best", "best"), card.objection ? line("worse", "worse") : null].filter(
+            Boolean,
           );
         }
         if (card.type === "multiple-choice" && card.lineRef) {
@@ -1638,6 +1655,29 @@ function buildCard(step, data, index, taskNo, ctx) {
     case "argument-pick":
       body.appendChild(createArgumentPick({ args: data.args, lead: data.lead, labels: data.labels }));
       break;
+    case "problem-solve": {
+      // The unit's recurring "choose an idea and say why" task. The choice is
+      // one saved value per round; the reasons are ordinary answer fields, so
+      // the PDF collects them like any other written answer.
+      const base = `step${step.step}-task${index + 1}`;
+      const saved = ctx ? getAnswers(ctx.unitId, ctx.sectionId) : {};
+      const keyFor = (part) => `${base}-ps-${part}`;
+      body.appendChild(
+        createProblemSolve({
+          problem: data.problem,
+          problemDe: data.problemDe,
+          ideas: data.ideas,
+          best: data.best,
+          objection: data.objection,
+          bank: data.bank,
+          note: data.note,
+          values: saved,
+          keyFor,
+          onChange: (part, v) => ctx && setAnswer(ctx.unitId, ctx.sectionId, keyFor(part), v),
+        }),
+      );
+      break;
+    }
     case "paragraph-builder": {
       const base = `step${step.step}-task${index + 1}`;
       const saved = ctx ? getAnswers(ctx.unitId, ctx.sectionId) : {};

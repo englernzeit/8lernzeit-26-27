@@ -7277,3 +7277,287 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
   }
   .exo-mailc__screen { font-size: 1rem; }
 }
+
+/* ============================================================
+   Problem Solving — the unit's recurring "choose an idea" task.
+   A torn amber notice holds the problem, three numbered tiles
+   hold the ideas, and the sentence frame underneath fills in
+   the number you tapped. See createProblemSolve().
+   ============================================================ */
+
+.exo-ps {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+/* --- The problem, on a torn notice ------------------------------ */
+
+.exo-ps__problem {
+  position: relative;
+  background: linear-gradient(180deg, rgba(245, 185, 74, 0.16), rgba(245, 185, 74, 0.07));
+  border: 1.5px solid rgba(245, 185, 74, 0.42);
+  border-radius: 12px 18px 12px 20px / 18px 12px 20px 12px;
+  padding: 1.15rem 1.1rem 0.85rem;
+  transform: rotate(-0.35deg);
+}
+
+.exo-ps__tag {
+  position: absolute;
+  top: -0.72rem;
+  left: 1rem;
+  font-family: var(--j-font-display);
+  font-weight: 700;
+  font-size: 1.05rem;
+  letter-spacing: 0.5px;
+  color: var(--j-paper-1);
+  background: var(--j-ochre);
+  border-radius: 999px;
+  padding: 0.08rem 0.75rem 0.14rem;
+  box-shadow: 0 2px 8px rgba(7, 14, 26, 0.35);
+}
+
+.exo-ps__ptext {
+  margin: 0;
+  font-size: 1.1rem;
+  line-height: 1.35;
+  color: var(--j-ink);
+}
+
+.exo-ps__pde {
+  margin: 0.4rem 0 0;
+  font-family: var(--j-font-display);
+  font-size: 1.15rem;
+  line-height: 1.25;
+  color: var(--j-ochre);
+}
+
+/* --- One round: the question, the tiles, the sentence ----------- */
+
+.exo-ps__round {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.exo-ps__round--worse {
+  padding-top: 0.85rem;
+  border-top: 2px dashed rgba(126, 150, 176, 0.3);
+}
+
+.exo-ps__ask {
+  margin: 0;
+  font-family: var(--j-font-display);
+  font-size: 1.25rem;
+  color: var(--j-secondary);
+}
+
+.exo-ps__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.7rem;
+}
+
+/* --- An idea tile ------------------------------------------------ */
+
+.exo-ps__idea {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+  text-align: left;
+  background: var(--j-panel);
+  border: 1.5px solid rgba(126, 150, 176, 0.26);
+  border-radius: 14px;
+  padding: 0.75rem 0.8rem 0.85rem;
+  color: var(--j-ink);
+  font-family: var(--j-font-body);
+  font-size: 1.02rem;
+  line-height: 1.3;
+  cursor: pointer;
+  transition: transform 0.16s, border-color 0.16s, background 0.16s, box-shadow 0.16s;
+}
+
+.exo-ps__num {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.9rem;
+  height: 1.9rem;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  font-family: var(--j-font-display);
+  font-weight: 700;
+  font-size: 1.15rem;
+  color: var(--j-secondary);
+  background: rgba(7, 14, 26, 0.4);
+  border: 1.5px solid rgba(126, 150, 176, 0.35);
+  transition: color 0.16s, background 0.16s, border-color 0.16s;
+}
+
+.exo-ps__text { display: block; }
+
+/* Hover / keyboard focus. Kept at the same weight as the state classes
+   below (one class + one pseudo-class) so the chosen, right and wrong
+   states — which come after it — always win the cascade. */
+.exo-ps__idea:hover,
+.exo-ps__idea:focus-visible {
+  transform: translateY(-2px);
+  border-color: rgba(164, 108, 245, 0.55);
+  background: rgba(164, 108, 245, 0.1);
+}
+
+/* Taken by the other round — you cannot call one idea best AND worse.
+   Also covers the locked tiles after a correct Check. */
+.exo-ps__idea:disabled {
+  cursor: default;
+  transform: none;
+  border-color: rgba(126, 150, 176, 0.26);
+  background: var(--j-panel);
+}
+.exo-ps__idea--out { opacity: 0.38; }
+
+/* Chosen. Two classes, so it beats :hover and :disabled above. */
+.exo-ps__idea.exo-ps__idea--on {
+  border-color: var(--j-coral);
+  background: rgba(164, 108, 245, 0.18);
+  box-shadow: 0 0 0 1.5px rgba(164, 108, 245, 0.5), 0 8px 18px -10px rgba(7, 14, 26, 0.7);
+}
+.exo-ps__idea.exo-ps__idea--on .exo-ps__num {
+  color: var(--j-paper-1);
+  background: var(--j-coral);
+  border-color: var(--j-coral);
+}
+/* A tick in the corner, so the choice reads without relying on colour. */
+.exo-ps__idea.exo-ps__idea--on::after {
+  content: "✓";
+  position: absolute;
+  top: 0.45rem;
+  right: 0.6rem;
+  font-size: 1.05rem;
+  line-height: 1;
+  color: var(--j-coral);
+}
+
+/* Checked (LE only — the sheet names a right idea there) */
+.exo-ps__idea.exo-ps__idea--right {
+  border-color: var(--j-olive);
+  background: rgba(90, 217, 143, 0.18);
+  box-shadow: 0 0 0 1.5px rgba(90, 217, 143, 0.55);
+}
+.exo-ps__idea.exo-ps__idea--right .exo-ps__num {
+  color: var(--j-paper-1);
+  background: var(--j-olive);
+  border-color: var(--j-olive);
+}
+.exo-ps__idea.exo-ps__idea--right::after { color: var(--j-olive); }
+
+.exo-ps__idea.exo-ps__idea--wrong {
+  border-color: #ef6d7a;
+  background: rgba(239, 109, 122, 0.15);
+  box-shadow: 0 0 0 1.5px rgba(239, 109, 122, 0.5);
+}
+.exo-ps__idea.exo-ps__idea--wrong .exo-ps__num {
+  color: var(--j-paper-1);
+  background: #ef6d7a;
+  border-color: #ef6d7a;
+}
+.exo-ps__idea.exo-ps__idea--wrong::after { content: "✕"; color: #ef6d7a; }
+
+/* --- The sentence frame ------------------------------------------ */
+
+.exo-ps__frame {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.1rem 0.5rem;
+  background: var(--j-field);
+  border: 1.5px solid rgba(126, 150, 176, 0.26);
+  border-radius: 11px;
+  padding: 0.6rem 0.8rem 0.65rem;
+  opacity: 0.55;
+  transition: opacity 0.2s, border-color 0.2s;
+}
+.exo-ps__frame--ready {
+  opacity: 1;
+  border-color: rgba(164, 108, 245, 0.42);
+}
+
+.exo-ps__lead {
+  font-family: var(--j-font-display);
+  font-size: 1.3rem;
+  color: var(--j-ink);
+  white-space: nowrap;
+}
+
+.exo-ps__pick {
+  display: inline-block;
+  min-width: 1.4rem;
+  text-align: center;
+  color: var(--j-coral);
+}
+
+.exo-ps__why {
+  flex: 1 1 14rem;
+  min-width: 0;
+  background: transparent;
+  border: none;
+  border-bottom: 2px dotted rgba(126, 150, 176, 0.55);
+  color: var(--j-ink);
+  font-family: var(--j-font-display);
+  font-size: 1.3rem;
+  padding: 0.1rem 0.2rem 0.15rem;
+}
+.exo-ps__why:focus {
+  outline: none;
+  border-bottom-color: var(--j-coral);
+}
+
+/* --- Phrase pills ------------------------------------------------ */
+
+.exo-ps__bank { margin: 0; }
+
+/* --- The teacher's note, locked until a reason is written -------- */
+
+.exo-ps__notebtn {
+  align-self: flex-start;
+  font-family: var(--j-font-body);
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--j-secondary);
+  background: var(--j-panel);
+  border: 1.5px solid rgba(126, 150, 176, 0.28);
+  border-radius: 999px;
+  padding: 0.35rem 0.95rem;
+  cursor: pointer;
+  transition: color 0.16s, border-color 0.16s, opacity 0.16s;
+}
+.exo-ps__notebtn:hover:not(:disabled) {
+  color: var(--j-ink);
+  border-color: rgba(95, 180, 245, 0.55);
+}
+.exo-ps__notebtn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.exo-ps__note {
+  background: rgba(95, 180, 245, 0.1);
+  border: 1.5px solid rgba(95, 180, 245, 0.32);
+  border-left-width: 4px;
+  border-radius: 10px;
+  padding: 0.7rem 0.9rem;
+  font-size: 1rem;
+  line-height: 1.4;
+  color: var(--j-secondary);
+}
+
+/* --- Portrait / narrow ------------------------------------------- */
+
+@media (orientation: portrait) {
+  .exo-ps__grid { grid-template-columns: 1fr; }
+  .exo-ps__idea { flex-direction: row; align-items: center; }
+  .exo-ps__lead { font-size: 1.2rem; }
+  .exo-ps__why { font-size: 1.2rem; flex-basis: 100%; }
+}

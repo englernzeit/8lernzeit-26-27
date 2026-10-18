@@ -148,13 +148,26 @@ const DE_EN = [
 
 /* ============ The problem ============ */
 
-const PROBLEM =
-  "THE PROBLEM: The class test is in four days. You keep making the same mistake: after good at and look forward to you write the infinitive. You have twenty minutes a day.";
-const IDEAS = [
-  "1 — We read the whole unit again from the beginning.",
-  "2 — We write three example sentences with these phrases every day.",
-  "3 — We do nothing — the mistake is small.",
-];
+const PROBLEM = {
+  problem:
+    "The class test is in four days. You keep making the same mistake: after good at and look forward to you write the infinitive. You have twenty minutes a day.",
+  problemDe:
+    "In vier Tagen ist die Klassenarbeit. Du machst immer denselben Fehler: nach good at und look forward to schreibst du den Infinitiv. Du hast zwanzig Minuten am Tag.",
+  ideas: [
+    "We read the whole unit again from the beginning.",
+    "We write three example sentences with these phrases every day.",
+    "We do nothing — the mistake is small.",
+  ],
+};
+
+const LE_BANK =
+  "twenty minutes is short · you practise the mistake · the whole unit is too much · the mistake comes back";
+
+const LE_NOTE =
+  "Richtig ist Idee 2. Die ganze Unit ist in zwanzig Minuten nicht zu schaffen, und nichts zu tun lässt den Fehler stehen. Beispiellösung: Idea 2 is best, because you practise the mistake.";
+
+const GK_NOTE =
+  "Bewertet wird die Begründung, nicht die Wahl. Idee 2 ist am stärksten: Sie übt genau den Fehler und passt in zwanzig Minuten. Idee 1 ist in vier Tagen nicht zu schaffen und übt zu 90 % Dinge, die schon sitzen. Idee 3 lässt den Fehler genau so stehen, wie er ist. Beispiellösung: Idea 2 is best, because I practise exactly the mistake I make, and three sentences take five minutes.";
 
 /* ============ The word game ============ */
 
@@ -298,21 +311,14 @@ export default {
           ],
         },
         {
-          type: "multiple-choice",
+          type: "problem-solve",
           kind: "Problem lösen",
           title: "Which idea is best?",
-          intro: PROBLEM + " Which idea helps most?",
-          help: "Welche Idee ist am besten? Wähle eine aus.",
-          shuffle: false,
-          questions: [{ q: "Which idea is best?", options: IDEAS, correct: 1 }],
-        },
-        {
-          type: "written",
-          kind: "Problem lösen",
-          title: "Say why",
-          intro: "Now finish the sentence. Say why your idea is the best one.",
-          help: "You can use: twenty minutes is short · you practise the mistake · the whole unit is too much · the mistake comes back",
-          starters: ["Idea 2 is best, because …"],
+          ...PROBLEM,
+          best: 1,
+          bank: LE_BANK,
+          note: LE_NOTE,
+          help: "Tippe eine Idee an und ergänze dann den Satz.",
         },
         {
           type: "game",
@@ -409,17 +415,12 @@ export default {
           ],
         },
         {
-          type: "written",
+          type: "problem-solve",
           kind: "Problem lösen",
           title: "Which idea is best?",
-          intro:
-            PROBLEM +
-            " Which idea is best — 1, 2 or 3? " +
-            IDEAS.join("  ") +
-            " Write two sentences. There is no single right answer — what counts is your reason.",
-          help: "Tipp: Die ganze Unit ist in vier Tagen nicht zu schaffen.",
-          answerLines: 2,
-          questions: [{ q: "Which idea is best, and why?", starter: "Idea ___ is best, because …" }],
+          ...PROBLEM,
+          note: GK_NOTE,
+          help: "Es gibt keine einzig richtige Idee — bewertet wird deine Begründung.",
         },
         {
           type: "game",
@@ -515,20 +516,13 @@ export default {
           ],
         },
         {
-          type: "written",
+          type: "problem-solve",
           kind: "Problem lösen · Challenge",
           title: "Which idea is best?",
-          intro:
-            PROBLEM +
-            " Which idea is best — 1, 2 or 3? " +
-            IDEAS.join("  ") +
-            " Write two sentences: one for your choice, one against another idea.",
-          help: "Tipp: Idee 1 übt zu 90 % Dinge, die schon sitzen.",
-          answerLines: 2,
-          questions: [
-            { q: "Which idea is best, and why?", starter: "Idea ___ is best, because …" },
-            { q: "Why is another idea not as good?", starter: "Idea ___ is worse, because …" },
-          ],
+          ...PROBLEM,
+          objection: true,
+          note: GK_NOTE,
+          help: "Zwei Sätze: einer für deine Wahl, einer gegen eine andere Idee.",
         },
         {
           type: "game",

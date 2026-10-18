@@ -6138,3 +6138,253 @@ export function createEmailCompose({ img, to, subject, min, max, placeholder, ch
 
   return wrap;
 }
+
+/* ================= Problem Solving (choose an idea) ==============
+ * The unit's recurring task, as its own card: the problem on a torn
+ * notice, three numbered ideas as tappable tiles, and a sentence frame
+ * that fills in the number you picked ("Idea 2 is best, because …").
+ *
+ * Two modes, straight from the answer sheets:
+ *   `best` is a number  — the sheet names a right idea (LE), so the card
+ *                         self-checks: the tile you picked goes green or
+ *                         red, and nothing else is ever revealed.
+ *   `best` is undefined — the sheet says the REASON is what counts
+ *                         (G-Kurs · E-Kurs), so there is no Check at all.
+ * `objection: true` adds the E-Kurs second round ("Idea … is worse,
+ * because …"); the idea you called best is locked out of it.
+ *
+ * An optional `note` carries the teacher's commentary from the solution
+ * sheet. It stays locked until a real reason has been written, so it can
+ * never be used as a shortcut.
+ * ============================================================ */
+
+/**
+ * @param {{
+ *   problem: string,
+ *   problemDe?: string,
+ *   ideas: string[],
+ *   best?: number,                 // 0-based; present → self-checking
+ *   objection?: boolean,
+ *   bank?: string,                 // "a · b · c" → phrase pills
+ *   note?: string,                 // teacher's note, behind a reveal
+ *   values?: Record<string, string>,
+ *   keyFor?: (part: string) => string,
+ *   onChange?: (part: string, value: string) => void,
+ * }} opts
+ */
+export function createProblemSolve({
+  problem,
+  problemDe,
+  ideas,
+  best,
+  objection = false,
+  bank,
+  note,
+  values = {},
+  keyFor = (p) => p,
+  onChange,
+}) {
+  const wrap = document.createElement("div");
+  wrap.className = "exo exo-ps";
+  const selfChecks = Number.isInteger(best);
+
+  /* ----- The problem, on a torn notice ----- */
+  const panel = document.createElement("div");
+  panel.className = "exo-ps__problem";
+  const tag = document.createElement("span");
+  tag.className = "exo-ps__tag";
+  tag.textContent = "The problem";
+  const ptext = document.createElement("p");
+  ptext.className = "exo-ps__ptext";
+  ptext.textContent = problem;
+  panel.append(tag, ptext);
+  if (problemDe) {
+    const de = document.createElement("p");
+    de.className = "exo-ps__pde";
+    de.textContent = problemDe;
+    panel.appendChild(de);
+  }
+  wrap.appendChild(panel);
+
+  /** Both rounds live here so neither can take the other's idea. */
+  const rounds = {};
+  let refreshNote = () => {};
+
+  /**
+   * One round of the task: the three tiles plus its sentence frame.
+   * @param {"best"|"worse"} part
+   */
+  function buildRound(part) {
+    const round = document.createElement("div");
+    round.className = `exo-ps__round exo-ps__round--${part}`;
+
+    const ask = document.createElement("p");
+    ask.className = "exo-ps__ask";
+    ask.textContent =
+      part === "best"
+        ? "Which idea is best? Tap one."
+        : "And one more: which of the other ideas is worse? Tap one.";
+    round.appendChild(ask);
+
+    const grid = document.createElement("div");
+    grid.className = "exo-ps__grid";
+    round.appendChild(grid);
+
+    const tiles = ideas.map((text, i) => {
+      const tile = document.createElement("button");
+      tile.type = "button";
+      tile.className = "exo-ps__idea";
+      const num = document.createElement("span");
+      num.className = "exo-ps__num";
+      num.textContent = String(i + 1);
+      const label = document.createElement("span");
+      label.className = "exo-ps__text";
+      label.textContent = text;
+      tile.append(num, label);
+      grid.appendChild(tile);
+      return tile;
+    });
+
+    const frame = document.createElement("div");
+    frame.className = "exo-ps__frame";
+    const lead = document.createElement("span");
+    lead.className = "exo-ps__lead";
+    const pick = document.createElement("b");
+    pick.className = "exo-ps__pick";
+    pick.textContent = "__";
+    lead.append(
+      document.createTextNode("Idea "),
+      pick,
+      document.createTextNode(part === "best" ? " is best, because" : " is worse, because"),
+    );
+    const why = document.createElement("input");
+    why.type = "text";
+    why.className = "exo-ps__why";
+    why.setAttribute("autocomplete", "off");
+    why.dataset.answerKey = keyFor(`${part}Why`);
+    why.value = values[keyFor(`${part}Why`)] ?? "";
+    why.addEventListener("input", () => {
+      onChange?.(`${part}Why`, why.value);
+      refreshNote();
+    });
+    frame.append(lead, why);
+    round.appendChild(frame);
+
+    const state = { tiles, pick, why, chosen: null, locked: false };
+
+    const select = (i, fromSaved = false) => {
+      if (state.locked) return;
+      state.chosen = i;
+      tiles.forEach((t, k) => {
+        t.classList.toggle("exo-ps__idea--on", k === i);
+        t.classList.remove("exo-ps__idea--right", "exo-ps__idea--wrong");
+      });
+      pick.textContent = String(i + 1);
+      frame.classList.add("exo-ps__frame--ready");
+      if (!fromSaved) onChange?.(part, String(i + 1));
+      syncLockouts();
+      if (!fromSaved) why.focus();
+    };
+
+    tiles.forEach((t, i) => t.addEventListener("click", () => select(i)));
+    state.select = select;
+
+    // Restore a saved choice (stored 1-based, the way the sheet numbers them).
+    const saved = Number(values[keyFor(part)]);
+    if (saved >= 1 && saved <= ideas.length) select(saved - 1, true);
+
+    rounds[part] = state;
+    return round;
+  }
+
+  /** The idea called "best" must not also be the one called "worse". */
+  function syncLockouts() {
+    if (!rounds.best || !rounds.worse) return;
+    for (const [a, b] of [
+      [rounds.best, rounds.worse],
+      [rounds.worse, rounds.best],
+    ]) {
+      b.tiles.forEach((t, i) => {
+        const blocked = a.chosen === i && b.chosen !== i;
+        t.classList.toggle("exo-ps__idea--out", blocked);
+        t.disabled = blocked;
+      });
+    }
+  }
+
+  wrap.appendChild(buildRound("best"));
+  if (objection) wrap.appendChild(buildRound("worse"));
+  syncLockouts();
+
+  /* ----- Phrase pills ("You can use: … · … · …") ----- */
+  if (bank) {
+    const box = document.createElement("div");
+    box.className = "exo-inline__bank exo-ps__bank";
+    const cap = document.createElement("span");
+    cap.className = "exo-inline__bank-cap";
+    cap.textContent = "You can use";
+    box.appendChild(cap);
+    for (const phrase of bank.split("·").map((s) => s.trim()).filter(Boolean)) {
+      const pill = document.createElement("span");
+      pill.className = "exo-inline__bank-pill";
+      pill.textContent = phrase;
+      box.appendChild(pill);
+    }
+    wrap.appendChild(box);
+  }
+
+  /* ----- The teacher's note, locked until a reason is written ----- */
+  if (note) {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "exo-ps__notebtn";
+    const panelEl = document.createElement("div");
+    panelEl.className = "exo-ps__note";
+    panelEl.hidden = true;
+    panelEl.textContent = note;
+
+    const written = () => (rounds.best?.why.value ?? "").trim().length >= 15;
+    const setLabel = () => {
+      if (!written()) {
+        btn.disabled = true;
+        panelEl.hidden = true;
+        btn.textContent = "🔒 Write your reason first";
+      } else {
+        btn.disabled = false;
+        btn.textContent = panelEl.hidden
+          ? "💬 Compare with the teacher's note"
+          : "🙈 Hide the note";
+      }
+    };
+    btn.addEventListener("click", () => {
+      panelEl.hidden = !panelEl.hidden;
+      setLabel();
+    });
+    refreshNote = setLabel;
+    setLabel();
+    wrap.append(btn, panelEl);
+  }
+
+  /* ----- Check — only where the answer sheet names a right idea ----- */
+  if (selfChecks) {
+    const check = checkButton(wrap, () => {
+      const r = rounds.best;
+      if (r.chosen === null) {
+        check.result("Tap an idea first");
+        return;
+      }
+      const ok = r.chosen === best;
+      r.tiles[r.chosen].classList.toggle("exo-ps__idea--right", ok);
+      r.tiles[r.chosen].classList.toggle("exo-ps__idea--wrong", !ok);
+      if (ok) {
+        r.locked = true;
+        r.tiles.forEach((t) => (t.disabled = true));
+        check.result("Right — now say why.");
+      } else {
+        check.result("Not that one — try again.");
+      }
+    });
+  }
+
+  return wrap;
+}

@@ -198,21 +198,38 @@ const FIRST_WEEK_BANK = [
 
 /* ============ The problems ============ */
 
-const LE_PROBLEM =
-  "THE PROBLEM: Tom wants to go to the prom. A new suit costs a fortune, and he has only ten dollars.";
-const LE_IDEAS = [
-  "1 — He buys a new suit.",
-  "2 — He rents a suit for one evening.",
-  "3 — He stays at home.",
-];
+const LE_PROBLEM = {
+  problem:
+    "Tom wants to go to the prom. A new suit costs a fortune, and he has only ten dollars.",
+  problemDe:
+    "Tom will zum Schulball. Ein neuer Anzug kostet ein Vermögen, und er hat nur zehn Dollar.",
+  ideas: [
+    "He buys a new suit.",
+    "He rents a suit for one evening.",
+    "He stays at home.",
+  ],
+};
 
-const GK_PROBLEM =
-  "THE PROBLEM: Tyler is an exchange student from Boston. He has been in your class for a week, and in every break he stands alone.";
-const GK_IDEAS = [
-  "1 — A poster with five easy phrases for the breaks.",
-  "2 — Two students sit with him at lunch every day.",
-  "3 — We wait until he talks to us first.",
-];
+const LE_BANK =
+  "it is much cheaper · he needs it only once · he has no money · then he misses the party";
+
+const LE_NOTE =
+  "Richtig ist Idee 2. Kaufen kann er nicht bezahlen, und zu Hause bleiben löst nichts. Beispiellösung: Idea 2 is best, because it is much cheaper.";
+
+const GK_PROBLEM = {
+  problem:
+    "Tyler is an exchange student from Boston. He has been in your class for a week, and in every break he stands alone.",
+  problemDe:
+    "Tyler ist Austauschschüler aus Boston. Er ist seit einer Woche in deiner Klasse und steht in jeder Pause allein.",
+  ideas: [
+    "A poster with five easy phrases for the breaks.",
+    "Two students sit with him at lunch every day.",
+    "We wait until he talks to us first.",
+  ],
+};
+
+const GK_NOTE =
+  "Bewertet wird die Begründung, nicht die Wahl. Idee 2 ist am stärksten: Sie wirkt sofort und Tyler muss nichts selbst anfangen. Idee 1 hilft allen, braucht aber Zeit. Idee 3 ist die schwächste — genau das Warten ist ja das Problem. Beispiellösung: Idea 2 is best, because then Tyler does not have to start a conversation alone.";
 
 /* ============ The word game ============ */
 
@@ -300,21 +317,14 @@ export default {
           ],
         },
         {
-          type: "multiple-choice",
+          type: "problem-solve",
           kind: "Problem lösen",
           title: "Which idea is best?",
-          intro: LE_PROBLEM + " Which idea helps most?",
-          help: "Welche Idee ist am besten? Wähle eine aus.",
-          shuffle: false,
-          questions: [{ q: "Which idea is best?", options: LE_IDEAS, correct: 1 }],
-        },
-        {
-          type: "written",
-          kind: "Problem lösen",
-          title: "Say why",
-          intro: "Now finish the sentence. Say why your idea is the best one.",
-          help: "You can use: it is much cheaper · he needs it only once · he has no money · then he misses the party",
-          starters: ["Idea 2 is best, because …"],
+          ...LE_PROBLEM,
+          best: 1,
+          bank: LE_BANK,
+          note: LE_NOTE,
+          help: "Tippe eine Idee an und ergänze dann den Satz.",
         },
         {
           type: "game",
@@ -397,17 +407,12 @@ export default {
           items: FIRST_WEEK,
         },
         {
-          type: "written",
+          type: "problem-solve",
           kind: "Problem lösen",
           title: "Which idea is best?",
-          intro:
-            GK_PROBLEM +
-            " Which idea is best — 1, 2 or 3? " +
-            GK_IDEAS.join("  ") +
-            " Write two sentences. There is no single right answer — what counts is your reason.",
-          help: "Tipp: Genau das Warten ist ja das Problem.",
-          answerLines: 2,
-          questions: [{ q: "Which idea is best, and why?", starter: "Idea ___ is best, because …" }],
+          ...GK_PROBLEM,
+          note: GK_NOTE,
+          help: "Es gibt keine einzig richtige Idee — bewertet wird deine Begründung.",
         },
         {
           type: "game",
@@ -488,20 +493,13 @@ export default {
           items: FIRST_WEEK,
         },
         {
-          type: "written",
+          type: "problem-solve",
           kind: "Problem lösen · Challenge",
           title: "Which idea is best?",
-          intro:
-            GK_PROBLEM +
-            " Which idea is best — 1, 2 or 3? " +
-            GK_IDEAS.join("  ") +
-            " Write two sentences: one for your choice, one against another idea.",
-          help: "Tipp: Idee 1 hilft allen, braucht aber Zeit. Idee 3 ist die schwächste — genau das Warten ist das Problem.",
-          answerLines: 2,
-          questions: [
-            { q: "Which idea is best, and why?", starter: "Idea ___ is best, because …" },
-            { q: "Why is another idea not as good?", starter: "Idea ___ is worse, because …" },
-          ],
+          ...GK_PROBLEM,
+          objection: true,
+          note: GK_NOTE,
+          help: "Zwei Sätze: einer für deine Wahl, einer gegen eine andere Idee.",
         },
         {
           type: "game",

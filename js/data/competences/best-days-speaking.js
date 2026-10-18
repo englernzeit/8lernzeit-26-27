@@ -99,13 +99,26 @@ const SCENE_LIST =
 
 /* ============ The problem — the same at every level ============ */
 
-const PROBLEM =
-  "THE PROBLEM: Your partner says “yes, good idea” to everything and never gives a reason. After two minutes nothing is decided.";
-const IDEAS = [
-  "1 — We take the first scenes on the list.",
-  "2 — Each of us names three scenes and says why.",
-  "3 — We ask the teacher to decide for us.",
-];
+const PROBLEM = {
+  problem:
+    "Your partner says “yes, good idea” to everything and never gives a reason. After two minutes nothing is decided.",
+  problemDe:
+    "Dein·e Partner·in sagt zu allem „ja, gute Idee“ und begründet nie. Nach zwei Minuten ist nichts entschieden.",
+  ideas: [
+    "We take the first scenes on the list.",
+    "Each of us names three scenes and says why.",
+    "We ask the teacher to decide for us.",
+  ],
+};
+
+const LE_BANK =
+  "then both of us talk · everybody must give a reason · the first is not the best · it is our film";
+
+const LE_NOTE =
+  "Richtig ist Idee 2. Die ersten Szenen zu nehmen ist Zufall, und die Lehrkraft entscheidet nicht euren Film. Beispiellösung: Idea 2 is best, because then both of us talk.";
+
+const GK_NOTE =
+  "Bewertet wird die Begründung, nicht die Wahl. Idee 2 ist am stärksten: Sie zwingt beide zu einer Begründung und macht aus dem Ja-Sagen ein Gespräch. Idee 1 entscheidet nach Zufall. Idee 3 gibt die Aufgabe ab — und genau das Aushandeln wird geprüft. Beispiellösung: Idea 2 is best, because then both of us have to give reasons and we can compare them.";
 
 /* ============ The word game ============ */
 
@@ -212,21 +225,14 @@ export default {
           ],
         },
         {
-          type: "multiple-choice",
+          type: "problem-solve",
           kind: "Problem lösen",
           title: "Which idea is best?",
-          intro: PROBLEM + " Which idea helps most?",
-          help: "Welche Idee ist am besten? Wähle eine aus.",
-          shuffle: false,
-          questions: [{ q: "Which idea is best?", options: IDEAS, correct: 1 }],
-        },
-        {
-          type: "written",
-          kind: "Problem lösen",
-          title: "Say why",
-          intro: "Now finish the sentence. Say why your idea is the best one.",
-          help: "You can use: then both of us talk · everybody must give a reason · the first is not the best · it is our film",
-          starters: ["Idea 2 is best, because …"],
+          ...PROBLEM,
+          best: 1,
+          bank: LE_BANK,
+          note: LE_NOTE,
+          help: "Tippe eine Idee an und ergänze dann den Satz.",
         },
         {
           type: "game",
@@ -327,17 +333,12 @@ export default {
           ],
         },
         {
-          type: "written",
+          type: "problem-solve",
           kind: "Problem lösen",
           title: "Which idea is best?",
-          intro:
-            PROBLEM +
-            " Which idea is best — 1, 2 or 3? " +
-            IDEAS.join("  ") +
-            " Write two sentences. There is no single right answer — what counts is your reason.",
-          help: "Tipp: Genau das Aushandeln wird geprüft — abgeben gilt nicht.",
-          answerLines: 2,
-          questions: [{ q: "Which idea is best, and why?", starter: "Idea ___ is best, because …" }],
+          ...PROBLEM,
+          note: GK_NOTE,
+          help: "Es gibt keine einzig richtige Idee — bewertet wird deine Begründung.",
         },
         {
           type: "game",
@@ -437,20 +438,13 @@ export default {
           ],
         },
         {
-          type: "written",
+          type: "problem-solve",
           kind: "Problem lösen · Challenge",
           title: "Which idea is best?",
-          intro:
-            PROBLEM +
-            " Which idea is best — 1, 2 or 3? " +
-            IDEAS.join("  ") +
-            " Write two sentences: one for your choice, one against another idea.",
-          help: "Tipp: Idee 1 entscheidet nach Zufall. Idee 3 gibt die Aufgabe ab — und genau das Aushandeln wird geprüft.",
-          answerLines: 2,
-          questions: [
-            { q: "Which idea is best, and why?", starter: "Idea ___ is best, because …" },
-            { q: "Why is another idea not as good?", starter: "Idea ___ is worse, because …" },
-          ],
+          ...PROBLEM,
+          objection: true,
+          note: GK_NOTE,
+          help: "Zwei Sätze: einer für deine Wahl, einer gegen eine andere Idee.",
         },
         {
           type: "game",

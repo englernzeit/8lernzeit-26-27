@@ -90,14 +90,26 @@ const STRATEGY = [
 ];
 
 /** The recurring problem on this page — the same three ideas at every level. */
-const PROBLEM =
-  "THE PROBLEM: The announcements are read in English now. But the loudspeaker is old and in the morning everybody is still talking.";
+const PROBLEM = {
+  problem:
+    "The announcements are read in English now. But the loudspeaker is old and in the morning everybody is still talking.",
+  problemDe:
+    "Die Durchsagen werden jetzt auf Englisch vorgelesen. Aber der Lautsprecher ist alt, und morgens reden alle noch.",
+  ideas: [
+    "Mr Okonkwo speaks much louder.",
+    "One student writes the three most important points on the board.",
+    "We stop making announcements.",
+  ],
+};
 
-const IDEAS = [
-  "1 — Mr Okonkwo speaks much louder.",
-  "2 — One student writes the three most important points on the board.",
-  "3 — We stop making announcements.",
-];
+const LE_BANK =
+  "everybody can read it · you can read it later · louder is still too noisy · then nobody knows anything";
+
+const LE_NOTE =
+  "Richtig ist Idee 2. Lauter sprechen hilft nicht gegen den Lärm, und ohne Durchsagen weiß niemand mehr etwas. Beispiellösung: Idea 2 is best, because everybody can read it.";
+
+const GK_NOTE =
+  "Bewertet wird die Begründung, nicht die Wahl. Idee 2 ist am stärksten: Geschriebenes kann man auch später noch lesen. Idee 1 hilft kaum — gegen dreißig redende Schüler·innen kommt auch ein lauter Lautsprecher nicht an. Idee 3 löst das Problem, indem sie die Information abschafft. Beispiellösung: Idea 2 is best, because everybody can read the three points later, even if the room was loud.";
 
 /** The hangman words for this page (Unit 1's game, Unit 2's words). */
 const GAME_WORDS = [
@@ -210,21 +222,14 @@ export default {
           ],
         },
         {
-          type: "multiple-choice",
+          type: "problem-solve",
           kind: "Problem lösen",
           title: "Which idea is best?",
-          intro: PROBLEM + " Which idea helps most?",
-          help: "Welche Idee ist am besten? Wähle eine aus.",
-          shuffle: false,
-          questions: [{ q: "Which idea is best?", options: IDEAS, correct: 1 }],
-        },
-        {
-          type: "written",
-          kind: "Problem lösen",
-          title: "Say why",
-          intro: "Now finish the sentence. Say why your idea is the best one.",
-          help: "You can use: everybody can read it · you can read it later · louder is still too noisy · then nobody knows anything",
-          starters: ["Idea 2 is best, because …"],
+          ...PROBLEM,
+          best: 1,
+          bank: LE_BANK,
+          note: LE_NOTE,
+          help: "Tippe eine Idee an und ergänze dann den Satz.",
         },
         {
           type: "game",
@@ -348,17 +353,12 @@ export default {
           ],
         },
         {
-          type: "written",
+          type: "problem-solve",
           kind: "Problem lösen",
           title: "Which idea is best?",
-          intro:
-            PROBLEM +
-            " Which idea is best — 1, 2 or 3? " +
-            IDEAS.join("  ") +
-            " Write two sentences. There is no single right answer here — what counts is your reason.",
-          help: "Beispiel (anderes Problem): „Idea 2 is best, because a pen box helps everybody and costs nothing.“",
-          answerLines: 2,
-          questions: [{ q: "Which idea is best, and why?", starter: "Idea ___ is best, because …" }],
+          ...PROBLEM,
+          note: GK_NOTE,
+          help: "Es gibt keine einzig richtige Idee — bewertet wird deine Begründung.",
         },
         {
           type: "game",
@@ -489,20 +489,13 @@ export default {
           questions: [{ q: "Why does he mention Mrs Delgado?", starter: "He mentions her because …" }],
         },
         {
-          type: "written",
-          kind: "Problem lösen",
+          type: "problem-solve",
+          kind: "Problem lösen · Challenge",
           title: "Which idea is best?",
-          intro:
-            PROBLEM +
-            " Which idea is best — 1, 2 or 3? " +
-            IDEAS.join("  ") +
-            " Write two sentences: one for your choice, one against another idea.",
-          help: "Beispiel (anderes Problem): „Idea 2 is best, because a pen box helps everybody and costs nothing.“",
-          answerLines: 2,
-          questions: [
-            { q: "Which idea is best, and why?", starter: "Idea ___ is best, because …" },
-            { q: "Why is another idea not as good?", starter: "Idea ___ is worse, because …" },
-          ],
+          ...PROBLEM,
+          objection: true,
+          note: GK_NOTE,
+          help: "Zwei Sätze: einer für deine Wahl, einer gegen eine andere Idee.",
         },
         {
           type: "game",
