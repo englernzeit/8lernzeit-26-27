@@ -1,40 +1,125 @@
 /**
  * The best days of your life (Unit 2) — Listening: "Morning announcements"
  *
- * You are an exchange student at Boston West High School. Every morning Mr
- * Okonkwo reads the announcements over the loudspeaker: picture day, bus 14,
- * the science fair and the winter coat collection.
+ * You are an exchange student at an American high school. Every morning Mr
+ * Okonkwo reads the announcements over the loudspeaker.
  *
- *   Step 1 (LE)        — true/false, a part-filled table, two details
- *   Step 2 (G-Kurs)    — six multiple-choice questions, the full table
- *   Step 3 (E-Kurs)    — detail questions, an inference, + an objection
- *   Step 4 (Challenge) — write and record your own announcement
+ *   Step 1 (LE)        — the FOUR SHORT announcements: true/false, a
+ *                        part-filled table, "which place?"
+ *   Step 2 (G-Kurs)    — the four long ones: six multiple-choice, the table,
+ *                        four detail questions
+ *   Step 3 (E-Kurs)    — the same, plus a fifth detail and an inference
+ *   Step 4 (Challenge) — write and read your own morning announcement
  *
- * AUDIO: drop the recordings at the paths in AUDIO below. The comprehension
- * tasks are written-answer for now; once the answer key is in, the first-
- * listening tasks become tap-to-check (multiple-choice / true-false) cards.
+ * G-Kurs and E-Kurs hear the SAME four long recordings and differ only in what
+ * they have to get out of them; LE hears the short version. Every recording
+ * carries its script behind the "Help me" button, so a learner who missed one
+ * detail can check it without replaying the whole thing.
  */
 
 const AUDIO = "assets/audio/unit2";
-/** One recording of Mr Okonkwo's four announcements serves all three levels;
- *  the levels differ in what the learner has to get out of it, not in what
- *  they hear. */
-const ANNOUNCEMENTS = `${AUDIO}/announcements.mp3`;
-const A_LE = ANNOUNCEMENTS;
-const A_GK = ANNOUNCEMENTS;
-const A_EK = ANNOUNCEMENTS;
 
-/** The four announcements, used for the note-taking table at every level. */
-const TABLE_ROWS = [
-  "1 Picture day — the school photos",
-  "2 Bus 14",
-  "3 Science fair",
-  "4 Winter coats",
+/* The four long announcements (G-Kurs · E-Kurs) — one file each, so a learner
+   can replay just the one they missed instead of hunting through a long track. */
+const ANN = [
+  {
+    src: `${AUDIO}/ann1.mp3`,
+    label: "🎧 1 — Picture day",
+    transcript: [
+      "Good morning, everyone. This is Mr Okonkwo in the main office.",
+      "First of all: picture day is this Wednesday. All classes come to the gym during second period — please don't come at any other time. The photographer starts at nine. You can wear what you like, but no hats and no sunglasses, please. The order forms are in the hallway outside the office. One set of photos costs twelve dollars, and you pay when you collect them in January.",
+    ],
+  },
+  {
+    src: `${AUDIO}/ann2.mp3`,
+    label: "🎧 2 — Bus 14",
+    transcript: [
+      "Next, something important for everybody who takes bus number fourteen. From Monday, bus fourteen leaves at two fifty in the afternoon, and not at three o'clock. That is ten minutes earlier. The driver will not wait. If you have a club until three, please speak to Mrs Delgado in Room 108 — she is organising a second bus at half past three.",
+    ],
+  },
+  {
+    src: `${AUDIO}/ann3.mp3`,
+    label: "🎧 3 — The science fair",
+    transcript: [
+      "Now the science fair. It takes place this Friday in the big hall, from four until seven in the evening. Twenty-two projects from the ninth grade are going to be there. Parents, friends and students from other grades are all welcome, and it's free. The winning project gets five hundred dollars for new equipment. Come along — last year people said it was the best evening of the school year.",
+    ],
+  },
+  {
+    src: `${AUDIO}/ann4.mp3`,
+    label: "🎧 4 — Winter coats",
+    transcript: [
+      "And finally: our winter clothing collection. If you have a warm coat, a jacket or boots at home that you don't wear any more, bring them to Room 115. Everything goes to the night shelter on Oak Street. Please bring everything by Friday — on Saturday the van picks it up. Clean clothes only, please. Thank you, and have a good day.",
+    ],
+  },
 ];
 
-/** The recurring problem on this page. */
+/** The short version (LE) — all four announcements in one short recording. */
+const LE_AUDIO = {
+  src: `${AUDIO}/le-announcements.mp3`,
+  label: "🎧 Mr Okonkwo — this morning (four short announcements)",
+  transcript: [
+    "1 — The lift: Good morning, everyone. This is Mr Okonkwo. The lift is broken today. Please use the stairs.",
+    "2 — The bike shed: The bike shed is closed this morning. Please leave your bike in the car park.",
+    "3 — Sports day: Sports day starts in the third period. At eleven o'clock all classes head for the sports field.",
+    "4 — Visitors: And for our visitors: please come to the lobby and get a visitor pass. Thank you, and have a good day.",
+  ],
+};
+
+/** The eight words of this lesson — the same list at every level. */
+const WORDS = [
+  { label: "How to open", accent: "olive", pairs: [
+    ["go off", "klingeln, losgehen — the alarm goes off at six"],
+    ["be in a hurry", "es eilig haben — to have very little time"],
+    ["grab", "schnappen, greifen — to take something quickly"],
+    ["head for", "zusteuern auf — to go straight towards a place"],
+  ] },
+  { label: "Around the school", accent: "slate", pairs: [
+    ["elevator", "der Aufzug — the lift that takes you up a floor (AE)"],
+    ["lobby", "die Eingangshalle — the big hall just inside the entrance"],
+    ["visitor pass", "der Besucherausweis — a badge that visitors wear"],
+    ["period", "die Unterrichtsstunde — one lesson in the timetable (AE)"],
+  ] },
+];
+
+/** What you write down — the listening strategy, the same at every level. */
+const STRATEGY = [
+  "You hear a DAY or a TIME — on Monday · at 2 p.m. · today · by Friday → write down the day and the time.",
+  "You hear a PLACE — in the gym · in Room 115 · in the library → write down the place.",
+  "You hear a PRICE — two dollars · free · nothing is said → write down the price, or a dash (—).",
+  "WATCH OUT: “ten minutes earlier” is not “ten past”. Write the number you really hear, not the number you expect.",
+];
+
+/** The recurring problem on this page — the same three ideas at every level. */
 const PROBLEM =
-  "THE PROBLEM: Your school wants to read the morning announcements in English, because there are exchange students in every class. But the loudspeaker in your room is old and very quiet, and in the morning everybody is still talking. The guests miss almost all the information.";
+  "THE PROBLEM: The announcements are read in English now. But the loudspeaker is old and in the morning everybody is still talking.";
+
+const IDEAS = [
+  "1 — Mr Okonkwo speaks much louder.",
+  "2 — One student writes the three most important points on the board.",
+  "3 — We stop making announcements.",
+];
+
+/** The hangman words for this page (Unit 1's game, Unit 2's words). */
+const GAME_WORDS = [
+  { word: "ELEVATOR", hint: "der Aufzug (AE)" },
+  { word: "LOBBY", hint: "die Eingangshalle" },
+  { word: "PERIOD", hint: "die Unterrichtsstunde (AE)" },
+  { word: "GRAB", hint: "schnappen, greifen" },
+  { word: "HURRY", hint: "be in a … — es eilig haben" },
+  { word: "ANNOUNCEMENT", hint: "die Durchsage" },
+  { word: "GYM", hint: "die Turnhalle" },
+  { word: "HALLWAY", hint: "der Flur" },
+  { word: "SHELTER", hint: "die Notunterkunft" },
+  { word: "SCIENCE", hint: "… fair — die Wissenschaft" },
+  { word: "PHOTOGRAPHER", hint: "der·die Fotograf·in" },
+  { word: "WEDNESDAY", hint: "Tag des Schulfotos" },
+  { word: "FRIDAY", hint: "Abgabetag für die Mäntel" },
+  { word: "DOLLARS", hint: "zwölf … kostet ein Fotosatz" },
+  { word: "STAIRS", hint: "die Treppe" },
+  { word: "VISITOR", hint: "der·die Besucher·in" },
+  { word: "OFFICE", hint: "das Sekretariat" },
+  { word: "LOUDSPEAKER", hint: "der Lautsprecher" },
+];
 
 export default {
   title: "Morning announcements",
@@ -48,86 +133,107 @@ export default {
       layout: "slide",
       cards: [
         {
+          type: "phrase-reference",
+          kind: "Wortschatz",
+          title: "The words of this lesson",
+          intro: "Eight words. Tap a word to see what it means.",
+          sections: WORDS,
+        },
+        {
           type: "written",
           kind: "Aufwärmen",
           title: "Before you listen",
           intro:
-            "You are an exchange student at Boston West High School. Every morning Mr Okonkwo reads the announcements over the loudspeaker. What do schools tell students in a morning announcement? Write down two things.",
-          help: "Was sagen Schulen in einer Morgendurchsage? Schreibe zwei Dinge auf.",
+            "You are an exchange student at an American high school. Every morning Mr Okonkwo reads the announcements. Read the tasks below first: what do you have to listen for — a day, a place or a price? Write down two things.",
+          help: "Lies zuerst die Aufgaben. Worauf musst du hören? Schreibe zwei Dinge auf.",
           starters: ["1 —", "2 —"],
         },
         {
-          type: "written",
+          type: "right-wrong",
           kind: "Hören · 1. Mal",
-          title: "While you listen — the first time",
-          intro: "Listen to the four announcements. Is each sentence true or false? Write true or false.",
-          help: "Höre zu und schreibe true oder false.",
-          audio: { src: A_LE, label: "🎧 Mr Okonkwo — today's announcements (listen 2×)" },
-          answerLines: 1,
-          questions: [
-            { q: "1. Picture day is on Wednesday.", starter: "true / false" },
-            { q: "2. You may wear a hat for the school photo.", starter: "true / false" },
-            { q: "3. Bus 14 leaves ten minutes later from Monday.", starter: "true / false" },
-            { q: "4. The science fair is free for everybody.", starter: "true / false" },
-            { q: "5. The winter coats go to a night shelter.", starter: "true / false" },
-            { q: "6. You can bring the coats until Saturday.", starter: "true / false" },
-          ],
-        },
-        {
-          type: "written",
-          kind: "Hören · 2. Mal",
-          title: "While you listen — the second time",
+          title: "Listen the first time — true or false?",
           intro:
-            "Listen again and make notes for each announcement: when? where? how much? If something is not said, write a dash (—).",
-          help: "Höre noch einmal und mach dir Notizen. Wenn etwas nicht gesagt wird, mach einen Strich (—).",
-          audio: { src: A_LE, label: "🎧 Mr Okonkwo — today's announcements (listen again)" },
-          answerLines: 1,
-          questions: TABLE_ROWS.map((r) => ({ q: r, starter: "when … / where … / how much …" })),
+            "Listen to the four short announcements. Is each sentence true or false? Example: “Sports day is on Monday.” → false, because nobody says a day, only the third period.",
+          help: "Höre zu und entscheide: true oder false?",
+          audio: LE_AUDIO,
+          statements: [
+            { text: "The lift is broken today.", answer: true, ph: "🛗" },
+            { text: "You can use the lift today.", answer: false, ph: "🚫" },
+            { text: "The bike shed is open this morning.", answer: false, ph: "🚲" },
+            { text: "Sports day starts in the third period.", answer: true, ph: "🏃" },
+            { text: "All classes meet at twelve o'clock.", answer: false, ph: "🕐" },
+            { text: "Visitors get a visitor pass in the lobby.", answer: true, ph: "🪪" },
+          ],
         },
         {
-          type: "written",
-          kind: "Details",
-          title: "After listening — details",
-          intro: "Choose the right answer and write it down.",
-          help: "Schreibe die richtige Antwort auf.",
-          answerLines: 1,
+          type: "gap-fill",
+          kind: "Hören · 2. Mal",
+          title: "Listen again and fill in the table",
+          intro:
+            "Listen again and fill in the empty boxes. Some boxes are already done for you. If an announcement does not say it, there is a dash (—).",
+          help: "Höre noch einmal und fülle die leeren Felder aus.",
+          audio: LE_AUDIO,
+          items: [
+            { hint: "The lift", segments: ["1 The lift — When? today · Where? — (no place is given)"] },
+            {
+              hint: "The bikes",
+              segments: ["2 The bikes — When? ", { answer: "this morning", accept: ["today", "morning"], size: 14 }, " · Where? the car park"],
+            },
+            {
+              hint: "Sports day",
+              segments: [
+                "3 Sports day — When? ",
+                { answer: "third period", accept: ["the third period", "11 o'clock", "eleven o'clock", "at 11", "11"], size: 14 },
+                " · Where? ",
+                { answer: "the sports field", accept: ["sports field"], size: 14 },
+              ],
+            },
+            {
+              hint: "The visitors",
+              segments: ["4 The visitors — When? — · Where? ", { answer: "the lobby", accept: ["lobby"], size: 12 }],
+            },
+          ],
+        },
+        {
+          type: "multiple-choice",
+          kind: "Welcher Ort?",
+          title: "Which place is it?",
+          intro:
+            "The places around the school: 1 the bus stop · 2 the bike shed · 3 the main entrance · 4 the sports field · 5 the car park · 6 the schoolyard. Example: “Students stand here in the break.” → 6",
+          help: "Um welchen Ort geht es? Wähle die Nummer.",
+          shuffle: false,
           questions: [
-            { q: "1. Where do the classes go for the school photo?", starter: "to the gym / to the hall" },
-            { q: "2. When does bus 14 leave from Monday?", starter: "at 2.50 p.m. / at 3.00 p.m." },
-            { q: "3. What must you bring to Room 115?", starter: "books / warm clothes" },
+            { q: "Put your bike here today.", options: ["1 the bus stop", "4 the sports field", "5 the car park", "6 the schoolyard"], correct: 2 },
+            { q: "At eleven o'clock all classes go here.", options: ["2 the bike shed", "4 the sports field", "5 the car park", "3 the main entrance"], correct: 1 },
+            { q: "Visitors come in here and get their pass.", options: ["3 the main entrance", "6 the schoolyard", "1 the bus stop", "2 the bike shed"], correct: 0 },
+            { q: "The school bus stops here.", options: ["5 the car park", "4 the sports field", "1 the bus stop", "3 the main entrance"], correct: 2 },
           ],
         },
         {
-          type: "group-sort",
+          type: "multiple-choice",
           kind: "Problem lösen",
-          title: "Which ideas help?",
-          intro: PROBLEM + " Sort the ideas, then press Check.",
-          help: "Die Durchsagen sind kaum zu hören. Die Gastschüler bekommen fast nichts mit.",
-          groups: [
-            {
-              label: "✅ This helps",
-              items: [
-                "We put the announcements on a board next to the classroom door.",
-                "One student writes the three most important points on the whiteboard.",
-              ],
-            },
-            {
-              label: "❌ This doesn't help",
-              items: [
-                "Mr Okonkwo speaks much louder.",
-                "We stop making announcements.",
-                "We make the announcements in German.",
-              ],
-            },
-          ],
+          title: "Which idea is best?",
+          intro: PROBLEM + " Which idea helps most?",
+          help: "Welche Idee ist am besten? Wähle eine aus.",
+          shuffle: false,
+          questions: [{ q: "Which idea is best?", options: IDEAS, correct: 1 }],
         },
         {
           type: "written",
           kind: "Problem lösen",
-          title: "Write your solution",
-          intro: "Write your solution in 3 sentences. Use the sentence frame.",
-          help: "Schreibe deine Lösung in 3 Sätzen.",
-          starters: ["Our idea is …", "This helps because …", "First, we …"],
+          title: "Say why",
+          intro: "Now finish the sentence. Say why your idea is the best one.",
+          help: "You can use: everybody can read it · you can read it later · louder is still too noisy · then nobody knows anything",
+          starters: ["Idea 2 is best, because …"],
+        },
+        {
+          type: "game",
+          game: "monster-hangman",
+          kind: "Spiel",
+          title: "Monster's Lunch",
+          intro:
+            "Guess the school word letter by letter and save the hero from the monster — every wrong letter feeds it!",
+          words: GAME_WORDS,
         },
       ],
     },
@@ -140,48 +246,99 @@ export default {
       layout: "spread",
       cards: [
         {
+          type: "phrase-reference",
+          kind: "Wortschatz",
+          title: "The words of this lesson",
+          intro: "Eight words. Tap a word to see what it means.",
+          sections: WORDS,
+        },
+        {
+          type: "text",
+          kind: "Theorie",
+          title: "What you write down",
+          intro: "Keep this next to you while you listen.",
+          paragraphs: STRATEGY.map((line) => [line]),
+        },
+        {
           type: "written",
           kind: "Aufwärmen",
           title: "Before you listen",
           intro:
-            "You are an exchange student at Boston West High School. Every morning Mr Okonkwo reads the announcements over the loudspeaker. What do schools tell students in a morning announcement? Write down two things.",
-          help: "Was sagen Schulen in einer Morgendurchsage?",
+            "Read the tasks on the next cards before you listen. Then write down two things you will have to listen for — a day, a time, a place or a price.",
+          help: "Lies zuerst die Aufgaben. Schreibe zwei Dinge auf, auf die du achten musst.",
           starters: ["1 —", "2 —"],
         },
         {
-          type: "written",
+          type: "multiple-choice",
           kind: "Hören · 1. Mal",
-          title: "While you listen — the first time",
-          intro: "Listen and write down the right answer (a, b or c).",
-          help: "Höre zu und schreibe die richtige Antwort auf (a, b oder c).",
-          audio: { src: A_GK, label: "🎧 Mr Okonkwo — today's announcements (listen 2×)" },
-          answerLines: 1,
+          title: "Listen the first time",
+          intro:
+            "Listen to the four announcements and choose a), b) or c). Example: “The photographer starts at …” → nine.",
+          help: "Höre die Durchsagen. Wähle bei jedem Satz eine Antwort.",
+          audio: ANN,
+          shuffle: false,
           questions: [
-            { q: "1. The classes come to the gym …", starter: "a) during first period  b) during second period  c) after school" },
-            { q: "2. One set of school photos costs …", starter: "a) nine dollars  b) twelve dollars  c) fifteen dollars" },
-            { q: "3. From Monday, bus 14 leaves at …", starter: "a) 2.50 p.m.  b) 3.00 p.m.  c) 3.30 p.m." },
-            { q: "4. At the science fair you can see projects from …", starter: "a) the eighth grade  b) the ninth grade  c) all grades" },
-            { q: "5. The winning project gets …", starter: "a) a trip to Boston  b) five hundred dollars  c) new computers" },
-            { q: "6. The clothes have to be in Room 115 by …", starter: "a) Wednesday  b) Friday  c) Saturday" },
+            { q: "The classes come to the gym …", options: ["a) during first period", "b) during second period", "c) after school"], correct: 1 },
+            { q: "One set of school photos costs …", options: ["a) nine dollars", "b) twelve dollars", "c) fifteen dollars"], correct: 1 },
+            { q: "From Monday, bus 14 leaves at …", options: ["a) 2.50 p.m.", "b) 3.00 p.m.", "c) 3.30 p.m."], correct: 0 },
+            { q: "At the science fair you can see projects from …", options: ["a) the eighth grade", "b) the ninth grade", "c) all grades"], correct: 1 },
+            { q: "The winning project gets …", options: ["a) a trip to Boston", "b) five hundred dollars", "c) new computers"], correct: 1 },
+            { q: "The clothes have to be in Room 115 by …", options: ["a) Wednesday", "b) Friday", "c) Saturday"], correct: 1 },
+          ],
+        },
+        {
+          type: "gap-fill",
+          kind: "Hören · 2. Mal",
+          title: "Listen again and fill in the table",
+          intro:
+            "Listen a second time and fill in the empty boxes. Picture day is already done for you. If an announcement does not say it, write a dash (—).",
+          help: "Höre ein zweites Mal und fülle die leeren Felder aus. Wenn etwas nicht gesagt wird: —",
+          audio: ANN,
+          items: [
+            {
+              hint: "1 Picture day · the school photos",
+              segments: ["When? Wednesday, 2nd period · Where? the gym · How much? ", { answer: "twelve dollars", accept: ["12 dollars", "$12", "twelve", "12"], size: 14 }],
+            },
+            {
+              hint: "2 Bus 14 · the bus leaves earlier",
+              segments: [
+                "When? from Monday, ",
+                { answer: "2.50", accept: ["2.50 p.m.", "2:50", "2:50 p.m.", "ten to three", "two fifty"], size: 10 },
+                " · Where? — · How much? ",
+                { answer: "—", accept: ["-", "–", "not said", "nothing", "no price"], size: 8 },
+              ],
+            },
+            {
+              hint: "3 Science fair · 22 projects from the ninth grade",
+              segments: [
+                "When? Friday, ",
+                { answer: "4 to 7", accept: ["4-7", "four to seven", "4 until 7", "from 4 to 7", "4 p.m. to 7 p.m."], size: 10 },
+                " · Where? ",
+                { answer: "the big hall", accept: ["big hall", "hall"], size: 12 },
+                " · How much? ",
+                { answer: "free", accept: ["it's free", "nothing"], size: 8 },
+              ],
+            },
+            {
+              hint: "4 Winter coats · a clothing collection for the night shelter",
+              segments: [
+                "When? by ",
+                { answer: "Friday", size: 9 },
+                " · Where? ",
+                { answer: "Room 115", accept: ["room 115", "115"], size: 10 },
+                " · How much? ",
+                { answer: "—", accept: ["-", "–", "not said", "nothing", "no price"], size: 8 },
+              ],
+            },
           ],
         },
         {
           type: "written",
-          kind: "Hören · 2. Mal",
-          title: "While you listen — the second time",
-          intro:
-            "Listen again and make notes for each announcement: what is it? when? where? how much? If something is not said, write a dash (—).",
-          help: "Höre noch einmal und fülle die Tabelle aus.",
-          audio: { src: A_GK, label: "🎧 Mr Okonkwo — today's announcements (listen again)" },
-          answerLines: 2,
-          questions: TABLE_ROWS.map((r) => ({ q: r, starter: "what … / when … / where … / how much …" })),
-        },
-        {
-          type: "written",
           kind: "Details",
-          title: "After listening — details",
-          intro: "Answer the questions in full sentences.",
-          help: "Antworte in ganzen Sätzen.",
+          title: "The details",
+          intro: "Write a full sentence under each question. You may listen a third time.",
+          help: "Schreibe unter jede Frage einen ganzen Satz. Du darfst ein drittes Mal hören.",
+          audio: ANN,
           answerLines: 2,
           questions: [
             { q: "1. What are students not allowed to wear for the school photo?", starter: "Students are not allowed to wear …" },
@@ -193,19 +350,24 @@ export default {
         {
           type: "written",
           kind: "Problem lösen",
-          title: "Collect two ideas",
-          intro: PROBLEM + " Collect two ideas.",
-          help: "Sammle zwei Ideen.",
-          starters: ["Idea 1 —", "Idea 2 —"],
+          title: "Which idea is best?",
+          intro:
+            PROBLEM +
+            " Which idea is best — 1, 2 or 3? " +
+            IDEAS.join("  ") +
+            " Write two sentences. There is no single right answer here — what counts is your reason.",
+          help: "Beispiel (anderes Problem): „Idea 2 is best, because a pen box helps everybody and costs nothing.“",
+          answerLines: 2,
+          questions: [{ q: "Which idea is best, and why?", starter: "Idea ___ is best, because …" }],
         },
         {
-          type: "written",
-          kind: "Problem lösen",
-          title: "Write your solution",
+          type: "game",
+          game: "monster-hangman",
+          kind: "Spiel",
+          title: "Monster's Lunch",
           intro:
-            "Choose your best idea and write your solution in 3 sentences: What do you do? Why does it help? What is the first step?",
-          help: "Useful phrases: Our solution is … · This helps because … · Everybody can … · First, we would … · Then …",
-          starters: ["Our solution is …", "This helps because …", "First, we would …"],
+            "Guess the school word letter by letter and save the hero from the monster — every wrong letter feeds it!",
+          words: GAME_WORDS,
         },
       ],
     },
@@ -218,44 +380,95 @@ export default {
       layout: "spread",
       cards: [
         {
-          type: "written",
-          kind: "Warm-up",
-          title: "Before you listen",
-          intro:
-            "You are an exchange student at Boston West High School. Every morning Mr Okonkwo reads the announcements over the loudspeaker. What do schools tell students in a morning announcement? Write down two things.",
-          starters: ["1 —", "2 —"],
+          type: "phrase-reference",
+          kind: "Wortschatz",
+          title: "The words of this lesson",
+          intro: "Eight words. Tap a word to see what it means.",
+          sections: WORDS,
+        },
+        {
+          type: "text",
+          kind: "Theorie",
+          title: "What you write down",
+          intro: "Keep this next to you while you listen.",
+          paragraphs: STRATEGY.map((line) => [line]),
         },
         {
           type: "written",
+          kind: "Aufwärmen",
+          title: "Before you listen",
+          intro:
+            "Read the tasks on the next cards before you listen. Then write down two things you will have to listen for — a day, a time, a place or a price.",
+          starters: ["1 —", "2 —"],
+        },
+        {
+          type: "multiple-choice",
           kind: "Hören · 1. Mal",
-          title: "While you listen — the first time",
-          intro: "Listen and write down the right answer (a, b or c). Make notes while you listen.",
-          audio: { src: A_EK, label: "🎧 Mr Okonkwo — today's announcements (listen 2×)" },
-          answerLines: 1,
+          title: "Listen the first time",
+          intro:
+            "Listen to the four announcements and choose a), b) or c). Make notes while you listen. Example: “The photographer starts at …” → nine.",
+          audio: ANN,
+          shuffle: false,
           questions: [
-            { q: "1. The classes come to the gym …", starter: "a) during first period  b) during second period  c) after school" },
-            { q: "2. One set of school photos costs …", starter: "a) nine dollars  b) twelve dollars  c) fifteen dollars" },
-            { q: "3. From Monday, bus 14 leaves at …", starter: "a) 2.50 p.m.  b) 3.00 p.m.  c) 3.30 p.m." },
-            { q: "4. At the science fair you can see projects from …", starter: "a) the eighth grade  b) the ninth grade  c) all grades" },
-            { q: "5. The winning project gets …", starter: "a) a trip to Boston  b) five hundred dollars  c) new computers" },
-            { q: "6. The clothes have to be in Room 115 by …", starter: "a) Wednesday  b) Friday  c) Saturday" },
+            { q: "The classes come to the gym …", options: ["a) during first period", "b) during second period", "c) after school"], correct: 1 },
+            { q: "One set of school photos costs …", options: ["a) nine dollars", "b) twelve dollars", "c) fifteen dollars"], correct: 1 },
+            { q: "From Monday, bus 14 leaves at …", options: ["a) 2.50 p.m.", "b) 3.00 p.m.", "c) 3.30 p.m."], correct: 0 },
+            { q: "At the science fair you can see projects from …", options: ["a) the eighth grade", "b) the ninth grade", "c) all grades"], correct: 1 },
+            { q: "The winning project gets …", options: ["a) a trip to Boston", "b) five hundred dollars", "c) new computers"], correct: 1 },
+            { q: "The clothes have to be in Room 115 by …", options: ["a) Wednesday", "b) Friday", "c) Saturday"], correct: 1 },
+          ],
+        },
+        {
+          type: "gap-fill",
+          kind: "Hören · 2. Mal",
+          title: "Listen again and fill in the table",
+          intro:
+            "Listen a second time and fill in the empty boxes. Picture day is already done for you. If an announcement does not say it, write a dash (—).",
+          audio: ANN,
+          items: [
+            {
+              hint: "1 Picture day · the school photos",
+              segments: ["When? Wednesday, 2nd period · Where? the gym · How much? ", { answer: "twelve dollars", accept: ["12 dollars", "$12", "twelve", "12"], size: 14 }],
+            },
+            {
+              hint: "2 Bus 14 · the bus leaves earlier",
+              segments: [
+                "When? from Monday, ",
+                { answer: "2.50", accept: ["2.50 p.m.", "2:50", "2:50 p.m.", "ten to three", "two fifty"], size: 10 },
+                " · Where? — · How much? ",
+                { answer: "—", accept: ["-", "–", "not said", "nothing", "no price"], size: 8 },
+              ],
+            },
+            {
+              hint: "3 Science fair · 22 projects from the ninth grade",
+              segments: [
+                "When? Friday, ",
+                { answer: "4 to 7", accept: ["4-7", "four to seven", "4 until 7", "from 4 to 7", "4 p.m. to 7 p.m."], size: 10 },
+                " · Where? ",
+                { answer: "the big hall", accept: ["big hall", "hall"], size: 12 },
+                " · How much? ",
+                { answer: "free", accept: ["it's free", "nothing"], size: 8 },
+              ],
+            },
+            {
+              hint: "4 Winter coats · a clothing collection for the night shelter",
+              segments: [
+                "When? by ",
+                { answer: "Friday", size: 9 },
+                " · Where? ",
+                { answer: "Room 115", accept: ["room 115", "115"], size: 10 },
+                " · How much? ",
+                { answer: "—", accept: ["-", "–", "not said", "nothing", "no price"], size: 8 },
+              ],
+            },
           ],
         },
         {
           type: "written",
-          kind: "Hören · 2. Mal",
-          title: "While you listen — the second time",
-          intro:
-            "Listen again and complete your notes: what is it? when? where? how much? If something is not said, write a dash (—).",
-          audio: { src: A_EK, label: "🎧 Mr Okonkwo — today's announcements (listen again)" },
-          answerLines: 2,
-          questions: TABLE_ROWS.map((r) => ({ q: r, starter: "what … / when … / where … / how much …" })),
-        },
-        {
-          type: "written",
           kind: "Details",
-          title: "After listening — details",
-          intro: "Answer the questions in full sentences.",
+          title: "The details",
+          intro: "Write a full sentence under each question. You may listen a third time.",
+          audio: ANN,
           answerLines: 2,
           questions: [
             { q: "1. What are students not allowed to wear for the school photo?", starter: "Students are not allowed to wear …" },
@@ -270,29 +483,35 @@ export default {
           kind: "Schlussfolgern",
           title: "Think about it",
           intro:
-            "Mr Okonkwo says that bus 14 leaves ten minutes earlier and that the driver will not wait. Why does he mention Mrs Delgado in the same announcement?",
-          help: "Tipp: Die Antwort steht nicht direkt in der Durchsage — du musst sie erschließen.",
+            "Mr Okonkwo says that bus 14 leaves ten minutes earlier and that the driver will not wait. Why does he mention Mrs Delgado in the same announcement? Answer in one or two sentences.",
+          help: "Tipp: Die Antwort steht nicht wörtlich in der Durchsage — du musst sie erschließen.",
           answerLines: 2,
-          questions: [
-            { q: "Why does he mention Mrs Delgado?", starter: "He mentions her because …" },
-          ],
+          questions: [{ q: "Why does he mention Mrs Delgado?", starter: "He mentions her because …" }],
         },
         {
           type: "written",
           kind: "Problem lösen",
-          title: "Find a solution",
-          intro: PROBLEM + " Write your solution in 3 sentences.",
-          starters: ["What we do: …", "Why it helps: …", "The first step: …"],
+          title: "Which idea is best?",
+          intro:
+            PROBLEM +
+            " Which idea is best — 1, 2 or 3? " +
+            IDEAS.join("  ") +
+            " Write two sentences: one for your choice, one against another idea.",
+          help: "Beispiel (anderes Problem): „Idea 2 is best, because a pen box helps everybody and costs nothing.“",
+          answerLines: 2,
+          questions: [
+            { q: "Which idea is best, and why?", starter: "Idea ___ is best, because …" },
+            { q: "Why is another idea not as good?", starter: "Idea ___ is worse, because …" },
+          ],
         },
         {
-          type: "written",
-          kind: "Problem lösen · Challenge",
-          title: "Answer the objection",
+          type: "game",
+          game: "monster-hangman",
+          kind: "Spiel",
+          title: "Monster's Lunch",
           intro:
-            "A teacher says: “Writing things on the board every morning takes time away from the lesson.” What do you answer?",
-          help: "Useful phrases: That is true, but … · It takes about one minute … · Otherwise half the class … · A student could do it while …",
-          answerLines: 2,
-          questions: [{ q: "Your answer to the objection:", starter: "That is true, but …" }],
+            "Guess the school word letter by letter and save the hero from the monster — every wrong letter feeds it!",
+          words: GAME_WORDS,
         },
       ],
     },

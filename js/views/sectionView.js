@@ -1470,9 +1470,21 @@ function buildCard(step, data, index, taskNo, ctx) {
     }
   }
 
-  // Optional listening track above the task body.
+  // Optional listening track(s) above the task body. A card may carry one
+  // player or several — Unit 2's announcements are four separate recordings,
+  // so the learner can replay just the one they missed.
   if (data.audio) {
-    body.appendChild(createAudioPlayer(data.audio));
+    const tracks = Array.isArray(data.audio) ? data.audio : [data.audio];
+    if (tracks.length > 1) {
+      // Several short recordings tile two-up instead of stacking into a
+      // 400px-tall column above the task.
+      const rack = document.createElement("div");
+      rack.className = "taskcard__tracks";
+      for (const track of tracks) rack.appendChild(createAudioPlayer(track));
+      body.appendChild(rack);
+    } else {
+      body.appendChild(createAudioPlayer(tracks[0]));
+    }
   }
 
   // Optional picture above the task body (e.g. Speaking picture-description).

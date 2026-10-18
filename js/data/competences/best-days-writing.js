@@ -2,12 +2,11 @@
  * The best days of your life (Unit 2) — Writing: "An email to Kwan"
  *
  * Kwan is coming from the partner school in the USA for two weeks. The learner
- * plans, writes and checks a reply email covering four content points plus two
- * real questions.
+ * plans, writes and checks a reply email.
  *
- *   Step 1 (LE)        — 60–80 words, the opening is given
- *   Step 2 (G-Kurs)    — 100 words
- *   Step 3 (E-Kurs)    — 120 words, vary your sentence openings, + an objection
+ *   Step 1 (LE)        — 60–80 words, three content points, the opening given
+ *   Step 2 (G-Kurs)    — 100 words, four content points
+ *   Step 3 (E-Kurs)    — 120 words, four content points without writing a list
  *   Step 4 (Challenge) — rescue the email where every sentence begins with "I"
  */
 
@@ -15,7 +14,14 @@
 const BRIEF =
   "Your school has a partner school in the USA. In three weeks Kwan, a student from there, is going to live with your family for two weeks and go to school with you. He has written to you once. Now write him an email back.";
 
-/** The four content points Kwan's email has to cover. */
+/** The content points — LE has three, G-Kurs and E-Kurs have four. */
+const LE_POINTS = [
+  "tell him about your family",
+  "tell him about your school day",
+  "tell him what he should bring",
+  "and write him two real questions",
+];
+
 const CONTENT_POINTS = [
   "tell him about your family and where you live",
   "tell him what a normal school day at your school looks like",
@@ -24,7 +30,46 @@ const CONTENT_POINTS = [
   "and write him two real questions",
 ];
 
+/** The eight words of this lesson. */
+const WORDS = [
+  {
+    label: "Getting the flat ready",
+    accent: "olive",
+    pairs: [
+      ["excitement", "die Aufregung — the feeling before something big"],
+      ["clean", "sauber machen — what Tom does to the guest room"],
+      ["groceries", "die Lebensmittel — what you buy at the supermarket"],
+      ["plate", "der Teller — you eat from it"],
+    ],
+  },
+  {
+    label: "Getting yourself ready",
+    accent: "coral",
+    pairs: [
+      ["belongings", "die Sachen — the things that belong to you"],
+      ["size", "die Größe — how big something is"],
+      ["smart", "schick — well dressed"],
+      ["dress", "sich anziehen — to put your clothes on"],
+    ],
+  },
+];
+
+/** The plan of an email — the theory box at every level. */
+const EMAIL_PLAN = [
+  "1 · The beginning — you say hello: Hi Kwan, thanks for your email!",
+  "2 · The middle — one paragraph for every content point: I live … / School starts … / Don't forget … One point, then an empty line.",
+  "3 · Before the end — two real questions: Could you tell me … ? A question is what makes an email an email. At the very end: See you! Best wishes, …",
+  "WATCH OUT: “I live … I have … I go … I like …” is a list. Better: “At the weekend we could …” / “On Tuesdays we have …” Not every sentence may begin with “I” — and two real questions belong in it.",
+];
+
 /** The planning grid — single words, not sentences. */
+const LE_PLAN_STARTERS = [
+  "my family —",
+  "my school day —",
+  "what Kwan should bring —",
+  "my two questions —",
+];
+
 const PLAN_STARTERS = [
   "my family and my town —",
   "a normal school day —",
@@ -44,7 +89,7 @@ const PHRASE_SECTIONS = [
     ],
   },
   {
-    label: "The four content points",
+    label: "The content points",
     accent: "slate",
     pairs: [
       ["Family and town", "I live in … with … · We've got … · Our flat is about … minutes from school."],
@@ -63,12 +108,19 @@ const PHRASE_SECTIONS = [
   },
 ];
 
-/** The self-check that goes with every email. */
+/** The self-check that goes with the email. */
+const LE_CHECK = [
+  "I wrote a greeting and a closing.",
+  "All content points are in my email.",
+  "I asked at least two questions.",
+  "I read my text again and checked the spelling.",
+];
+
 const EMAIL_CHECK = [
   "I wrote a greeting and a closing.",
-  "All four content points are in my email.",
+  "All content points are in my email.",
   "I asked at least two questions.",
-  "After look forward to / worry about I used an -ing form.",
+  "After look forward to / good at I used an -ing form.",
   "Not every sentence begins with “I”.",
   "I read my text again and checked the spelling.",
 ];
@@ -84,9 +136,36 @@ const EMAIL_CHIPS = [
   "Best wishes, …",
 ];
 
-/** The recurring problem on this page. */
+/* ============ The problem — the same three ideas at every level ============ */
+
 const PROBLEM =
-  "THE PROBLEM: You have finished your email. Then you read it again: every single sentence begins with “I”. Everything is correct, but it sounds like a list, and you never ask Kwan anything. You have ten minutes left.";
+  "THE PROBLEM: Your email is finished. Then you read it again: every single sentence begins with “I”, and you never ask Kwan anything.";
+const IDEAS = [
+  "1 — We leave the email as it is — it is correct.",
+  "2 — We start some sentences differently and add two questions.",
+  "3 — We make the email much shorter.",
+];
+
+/* ============ The word game ============ */
+
+const GAME_WORDS = [
+  { word: "EXCITEMENT", hint: "die Aufregung" },
+  { word: "GROCERIES", hint: "die Lebensmittel" },
+  { word: "BELONGINGS", hint: "die Sachen" },
+  { word: "PLATE", hint: "der Teller" },
+  { word: "SMART", hint: "schick" },
+  { word: "SIZE", hint: "die Größe" },
+  { word: "SUITCASE", hint: "der Koffer" },
+  { word: "GUEST", hint: "der Gast" },
+  { word: "KITCHEN", hint: "die Küche" },
+  { word: "BALCONY", hint: "der Balkon" },
+  { word: "BATHROOM", hint: "das Badezimmer" },
+  { word: "GREETING", hint: "die Anrede" },
+  { word: "QUESTION", hint: "die Frage" },
+  { word: "WEEKEND", hint: "das Wochenende" },
+  { word: "TIMETABLE", hint: "der Stundenplan" },
+  { word: "WEATHER", hint: "das Wetter" },
+];
 
 export default {
   title: "An email to Kwan",
@@ -100,14 +179,58 @@ export default {
       layout: "slide",
       cards: [
         {
+          type: "phrase-reference",
+          kind: "Wortschatz",
+          title: "The words of this lesson",
+          intro: "Eight words for getting ready. Tap a word to see what it means.",
+          sections: WORDS,
+        },
+        {
+          type: "gap-fill",
+          kind: "Aufwärmen",
+          title: "Write about Tom",
+          intro:
+            "Tom's guest is coming. Finish each sentence with the right word. Example: The letter comes. → Tom is happy. His guest is coming.",
+          help: "Ergänze jeden Satz mit dem passenden Wort.",
+          bank: ["groceries", "belongings", "guest room", "smart"],
+          bankCap: "Word box",
+          items: [
+            { hint: "1 · the guest room", segments: ["Tom cleans the ", { answer: "guest room", size: 12 }, "."] },
+            { hint: "2 · the kitchen", segments: ["They buy ", { answer: "groceries", size: 12 }, " for the week."] },
+            { hint: "3 · the suitcase", segments: ["Kwan packs his ", { answer: "belongings", size: 12 }, "."] },
+            { hint: "4 · one day before", segments: ["Tom is ", { answer: "smart", size: 9 }, " in a clean shirt."] },
+          ],
+        },
+        {
+          type: "multiple-choice",
+          kind: "Welcher Raum?",
+          title: "Which room?",
+          intro:
+            "Six rooms in the flat: 1 the kitchen · 2 the living room · 3 the guest room · 4 the bathroom · 5 the hall · 6 the balcony.",
+          help: "Welcher Raum ist es? Wähle die Nummer.",
+          shuffle: false,
+          questions: [
+            { q: "Here Tom cleans and makes the bed for the guest.", options: ["1 the kitchen", "3 the guest room", "5 the hall", "6 the balcony"], correct: 1 },
+            { q: "Here the groceries come out of the bag.", options: ["1 the kitchen", "2 the living room", "4 the bathroom", "3 the guest room"], correct: 0 },
+            { q: "Here are the coats and the suitcase with his belongings.", options: ["6 the balcony", "2 the living room", "5 the hall", "4 the bathroom"], correct: 2 },
+            { q: "Here you can sit outside between the plants.", options: ["6 the balcony", "1 the kitchen", "3 the guest room", "5 the hall"], correct: 0 },
+          ],
+        },
+        {
+          type: "text",
+          kind: "Theorie",
+          title: "The plan of an email",
+          intro: "Keep this next to you while you write.",
+          paragraphs: [EMAIL_PLAN[0], EMAIL_PLAN[1], EMAIL_PLAN[3]].map((l) => [l]),
+        },
+        {
           type: "written",
           kind: "Planen",
           title: "Step 1 — Make a plan",
-          intro:
-            BRIEF + " First collect your ideas in note form — single words, not sentences.",
-          help: "Sammle deine Ideen in Stichworten — einzelne Wörter, keine Sätze.",
-          lines: CONTENT_POINTS,
-          starters: PLAN_STARTERS,
+          intro: BRIEF + " First collect your ideas in note form — single words, not sentences.",
+          help: "Sammle deine Ideen in Stichworten — einzelne Wörter, keine Sätze. Beispiel: my family → mum, brother Jonas (9), cat",
+          lines: LE_POINTS,
+          starters: LE_PLAN_STARTERS,
         },
         {
           type: "phrase-reference",
@@ -139,39 +262,33 @@ export default {
           max: 90,
           placeholder: "At our school, lessons start at …",
           chips: EMAIL_CHIPS,
-          checklist: EMAIL_CHECK,
+          checklist: LE_CHECK,
         },
         {
-          type: "group-sort",
+          type: "multiple-choice",
           kind: "Problem lösen",
-          title: "Which ideas help?",
-          intro: PROBLEM + " Sort the ideas, then press Check.",
-          help: "Jeder Satz beginnt mit „I“. Es klingt wie eine Liste, und du fragst Kwan nichts.",
-          groups: [
-            {
-              label: "✅ This helps",
-              items: [
-                "We start some sentences with a different word, for example “At the weekend I …”.",
-                "We add two questions to Kwan.",
-              ],
-            },
-            {
-              label: "❌ This doesn't help",
-              items: [
-                "We leave the email as it is — it is correct.",
-                "We make the email much shorter.",
-                "We write the email in German instead.",
-              ],
-            },
-          ],
+          title: "Which idea is best?",
+          intro: PROBLEM + " Which idea helps most?",
+          help: "Welche Idee ist am besten? Wähle eine aus.",
+          shuffle: false,
+          questions: [{ q: "Which idea is best?", options: IDEAS, correct: 1 }],
         },
         {
           type: "written",
           kind: "Problem lösen",
-          title: "Write your solution",
-          intro: "Write your solution in 3 sentences. Use the sentence frame.",
-          help: "Schreibe deine Lösung in 3 Sätzen.",
-          starters: ["My idea is …", "This helps because …", "First, I …"],
+          title: "Say why",
+          intro: "Now finish the sentence. Say why your idea is the best one.",
+          help: "You can use: then Kwan can answer · it is more friendly · a list is boring · shorter does not help",
+          starters: ["Idea 2 is best, because …"],
+        },
+        {
+          type: "game",
+          game: "monster-hangman",
+          kind: "Spiel",
+          title: "Monster's Lunch",
+          intro:
+            "Guess the word letter by letter and save the hero from the monster — every wrong letter feeds it!",
+          words: GAME_WORDS,
         },
       ],
     },
@@ -184,11 +301,25 @@ export default {
       layout: "spread",
       cards: [
         {
+          type: "phrase-reference",
+          kind: "Wortschatz",
+          title: "The words of this lesson",
+          intro: "Eight words for getting ready. Tap a word to see what it means.",
+          sections: WORDS,
+        },
+        {
+          type: "text",
+          kind: "Theorie",
+          title: "The plan of an email",
+          intro: "Keep this next to you while you write.",
+          paragraphs: EMAIL_PLAN.map((l) => [l]),
+        },
+        {
           type: "written",
           kind: "Planen",
           title: "Step 1 — Make a plan",
           intro: BRIEF + " First collect your ideas in note form — single words, not sentences.",
-          help: "Sammle deine Ideen in Stichworten.",
+          help: "Sammle deine Ideen in Stichworten. Drei oder vier Wörter pro Zeile reichen.",
           lines: CONTENT_POINTS,
           starters: PLAN_STARTERS,
         },
@@ -206,7 +337,8 @@ export default {
           img: "assets/images/unit2/email.jpg",
           to: "Kwan",
           subject: "Re: See you in three weeks!",
-          intro: "Write your email (about 100 words). Use your notes from Step 1.",
+          intro:
+            "Write your email (about 100 words). Use your notes from Step 1 and put all four content points into it.",
           help: "Schreibe deine E-Mail (ca. 100 Wörter).",
           min: 80,
           max: 120,
@@ -217,19 +349,24 @@ export default {
         {
           type: "written",
           kind: "Problem lösen",
-          title: "Collect two ideas",
-          intro: PROBLEM + " Collect two ideas.",
-          help: "Sammle zwei Ideen.",
-          starters: ["Idea 1 —", "Idea 2 —"],
+          title: "Which idea is best?",
+          intro:
+            PROBLEM +
+            " Which idea is best — 1, 2 or 3? " +
+            IDEAS.join("  ") +
+            " Write two sentences. There is no single right answer — what counts is your reason.",
+          help: "Tipp: „Richtig“ und „gut“ sind nicht dasselbe.",
+          answerLines: 2,
+          questions: [{ q: "Which idea is best, and why?", starter: "Idea ___ is best, because …" }],
         },
         {
-          type: "written",
-          kind: "Problem lösen",
-          title: "Write your solution",
+          type: "game",
+          game: "monster-hangman",
+          kind: "Spiel",
+          title: "Monster's Lunch",
           intro:
-            "Choose your best idea and write your solution in 3 sentences: What do you change? Why does it help? What is the first step?",
-          help: "Useful phrases: My solution is … · This helps because … · Kwan would … · First, I would … · Then …",
-          starters: ["My solution is …", "This helps because …", "First, I would …"],
+            "Guess the word letter by letter and save the hero from the monster — every wrong letter feeds it!",
+          words: GAME_WORDS,
         },
       ],
     },
@@ -241,6 +378,20 @@ export default {
       accent: "slate",
       layout: "spread",
       cards: [
+        {
+          type: "phrase-reference",
+          kind: "Wortschatz",
+          title: "The words of this lesson",
+          intro: "Eight words for getting ready. Tap a word to see what it means.",
+          sections: WORDS,
+        },
+        {
+          type: "text",
+          kind: "Theorie",
+          title: "The plan of an email",
+          intro: "Keep this next to you while you write.",
+          paragraphs: EMAIL_PLAN.map((l) => [l]),
+        },
         {
           type: "written",
           kind: "Planen",
@@ -273,20 +424,28 @@ export default {
         },
         {
           type: "written",
-          kind: "Problem lösen",
-          title: "Find a solution",
-          intro: PROBLEM + " Write your solution in 3 sentences.",
-          starters: ["What I change: …", "Why it helps: …", "The first step: …"],
+          kind: "Problem lösen · Challenge",
+          title: "Which idea is best?",
+          intro:
+            PROBLEM +
+            " Which idea is best — 1, 2 or 3? " +
+            IDEAS.join("  ") +
+            " Write two sentences: one for your choice, one against another idea.",
+          help: "Tipp: Idee 3 macht den Text kürzer, aber nicht freundlicher.",
+          answerLines: 2,
+          questions: [
+            { q: "Which idea is best, and why?", starter: "Idea ___ is best, because …" },
+            { q: "Why is another idea not as good?", starter: "Idea ___ is worse, because …" },
+          ],
         },
         {
-          type: "written",
-          kind: "Problem lösen · Challenge",
-          title: "Answer the objection",
+          type: "game",
+          game: "monster-hangman",
+          kind: "Spiel",
+          title: "Monster's Lunch",
           intro:
-            "A classmate says: “Kwan wants facts about your school, not questions — questions only make more work for him.” What do you answer?",
-          help: "Useful phrases: That is true, but … · A question shows that … · He can answer in one line … · An email without questions is …",
-          answerLines: 2,
-          questions: [{ q: "Your answer to the objection:", starter: "That is true, but …" }],
+            "Guess the word letter by letter and save the hero from the monster — every wrong letter feeds it!",
+          words: GAME_WORDS,
         },
       ],
     },

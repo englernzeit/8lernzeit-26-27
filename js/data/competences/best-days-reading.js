@@ -1,17 +1,200 @@
 /**
- * The best days of your life (Unit 2) — Reading: "The Lion roars"
- * (a school newspaper changes the school cafeteria).
+ * The best days of your life (Unit 2) — Reading
  *
- * The same story at three levels, from the three worksheets:
- *   Step 1 (LE)        — short simple text, right/wrong, matching, word box
- *   Step 2 (G-Kurs)    — longer text, true/false/not-in-text, order the events
- *   Step 3 (E-Kurs)    — the full article as a real newspaper page, evidence,
- *                        summary, the interests of everybody involved
- *   Step 4 (Challenge) — write the next front page for your own school
+ *   Step 1 (LE)        — "Tom and the library": a short nine-line story,
+ *                        order the events, right/wrong, one-word answers
+ *   Step 2 (G-Kurs)    — "Nobody eats alone": Buddy Week at Riverbend High,
+ *                        true / false / not in the text, the line that proves
+ *                        it, full-sentence answers, order, find the words
+ *   Step 3 (E-Kurs)    — the same, plus reading between the lines
+ *   Step 4 (Challenge) — write the Buddy Week notice for your own school
+ *
+ * The line numbers on the long text follow the worksheet's own numbering, so
+ * "line 7" means the same thing on paper and on screen.
  */
 
+/* ============ Step 1 (LE) — Tom and the library ============ */
+
+const LE_WORDS = [
+  {
+    label: "Tom helps out",
+    accent: "coral",
+    pairs: [
+      ["volunteer", "freiwillig mitmachen — somebody who helps without being paid"],
+      ["trust", "vertrauen — to believe that somebody will do it right"],
+      ["responsible", "verantwortlich — it is your job now"],
+      ["library", "die Bücherei — the room with all the books"],
+    ],
+  },
+  {
+    label: "The reading hour",
+    accent: "olive",
+    pairs: [
+      ["try hard", "sich bemühen — to really make an effort"],
+      ["community", "die Gemeinschaft — a group that belongs together"],
+      ["incredible", "unglaublich — so good you can hardly believe it"],
+      ["image", "das Bild — a picture, for example a photo"],
+    ],
+  },
+];
+
+/* ============ Steps 2 and 3 — Nobody eats alone ============ */
+
+/**
+ * The article, one entry per numbered line. The line breaks are fixed by the
+ * author (not by the screen), so a "line 7" reference is the same for everyone.
+ */
+const ARTICLE = [
+  ["At Riverbend High School in Portland, the first week of the school year is called Buddy Week. Every"],
+  [
+    "freshman gets a ",
+    { w: "buddy", de: "ein·e Partner·in, der·die hilft" },
+    ": an older student who already knows the school.",
+  ],
+  ["Jess Carter is seventeen and a senior. This September she had three buddies. “I still remember my own"],
+  [
+    "first day,” she says. “I stood in the hallway with my ",
+    { w: "timetable", de: "der Stundenplan" },
+    " and I did not ",
+    { w: "dare", de: "sich trauen" },
+    " to ask anybody.",
+  ],
+  ["Everything looked so intimidating.”"],
+  ["Her job is simple. She shows her buddies where the rooms are, she waits with them at the lockers, and"],
+  ["she eats with them in the cafeteria. “Lunch is the hard part,” Jess explains. “In class you have a seat. In"],
+  ["the cafeteria you have nothing, and everybody can see that you are alone.”"],
+  [
+    "Buddy Week started four years ago. A teacher, Mr Alvarez, had ",
+    { w: "counted", de: "gezählt" },
+    " how many students left the",
+  ],
+  ["school again in the first two months. It was eleven. Now it is two."],
+  ["Not everybody liked the idea. Some seniors said that they had enough problems of their own, and a few"],
+  ["parents asked why older students should do a teacher's work. Then the school made Buddy Week part"],
+  [
+    "of the after-class activities: a buddy gets a ",
+    { w: "certificate", de: "eine Urkunde" },
+    " for the ",
+    { w: "yearbook", de: "das Jahrbuch" },
+    ", and the work counts for the",
+  ],
+  [
+    { w: "student council", de: "die Schülervertretung" },
+    ".",
+  ],
+  ["In November the school asked the freshmen one question: Did you talk to anybody new in your first"],
+  ["week? Ninety-one out of a hundred said yes."],
+  ["Jess is leaving school in June. She says she will miss the first week most. “You see somebody walking"],
+  ["down the hallway on their own, you say hello, and three months later they are in your football team. That"],
+  [
+    "is the whole ",
+    { w: "trick", de: "der Trick, das Geheimnis" },
+    ".”",
+  ],
+];
+
+/** Where a new paragraph really starts (the rest are wrapped lines). */
+const ARTICLE_PARAS = [1, 3, 6, 9, 11, 15, 17];
+
+/** Exercise 1 — true, false or not in the text (the same at both levels). */
+const TFN_QUESTIONS = [
+  { q: "Buddy Week is in the first week of the school year.", options: ["True", "False", "Not in the text"], correct: 0 },
+  { q: "Jess had one buddy this September.", options: ["True", "False", "Not in the text"], correct: 1 },
+  { q: "Jess gets money for her work as a buddy.", options: ["True", "False", "Not in the text"], correct: 2 },
+  { q: "Jess thinks that lunch is the easy part of the week.", options: ["True", "False", "Not in the text"], correct: 1 },
+  { q: "Fewer students leave the school now than four years ago.", options: ["True", "False", "Not in the text"], correct: 0 },
+  { q: "All the seniors liked the idea from the start.", options: ["True", "False", "Not in the text"], correct: 1 },
+];
+
+/** The line that proves it — number 3 has no line, because it is not in the text. */
+const LINE_GAPS = [
+  {
+    hint: "1 · Buddy Week is in the first week of the school year.",
+    segments: ["line ", { answer: "1", accept: ["2", "1-2", "1/2"], size: 5 }],
+  },
+  {
+    hint: "2 · Jess had one buddy this September.",
+    segments: ["line ", { answer: "3", size: 5 }],
+  },
+  {
+    hint: "3 · Jess gets money for her work as a buddy.",
+    segments: ["not in the text — no line: ", { answer: "—", accept: ["-", "–", "none", "no line"], size: 6 }],
+  },
+  {
+    hint: "4 · Jess thinks that lunch is the easy part of the week.",
+    segments: ["line ", { answer: "7", size: 5 }],
+  },
+  {
+    hint: "5 · Fewer students leave the school now than four years ago.",
+    segments: ["line ", { answer: "10", accept: ["9", "16", "9-10"], size: 5 }],
+  },
+  {
+    hint: "6 · All the seniors liked the idea from the start.",
+    segments: ["line ", { answer: "11", size: 5 }],
+  },
+];
+
+/** Exercise 3 — the order of the story. */
+const ARTICLE_EVENTS = [
+  { text: "Mr Alvarez counted how many students left the school." },
+  { text: "Buddy Week became part of the after-class activities." },
+  { text: "Jess got three buddies in September." },
+  { text: "The school asked the freshmen a question in November." },
+  { text: "Jess will leave school." },
+];
+
+/** Exercise 4 — find the word in the text. */
+const WORD_HUNT = {
+  options: ["a certificate", "the yearbook", "the student council", "the hallway"],
+  items: [
+    { left: "a paper that says you did something well", answer: "a certificate" },
+    { left: "the book with the photos of all the students", answer: "the yearbook" },
+    { left: "the group of students who speak for all students", answer: "the student council" },
+    { left: "the long way between the classrooms", answer: "the hallway" },
+  ],
+};
+
+/* ============ The problems ============ */
+
+const LE_PROBLEM =
+  "THE PROBLEM: Twenty little children want to come to the reading hour. The library has only ten chairs.";
+const LE_IDEAS = [
+  "1 — Only ten children can come.",
+  "2 — The children sit on the carpet.",
+  "3 — We stop the reading hour.",
+];
+
+const GK_PROBLEM =
+  "THE PROBLEM: Riverbend High wants Buddy Week again. But this year only nine seniors want to be buddies — and there are forty freshmen.";
+const GK_IDEAS = [
+  "1 — Every senior takes four or five freshmen.",
+  "2 — Students from year 10 become buddies too.",
+  "3 — Only freshmen who ask for a buddy get one.",
+];
+
+/* ============ The word game ============ */
+
+const GAME_WORDS = [
+  { word: "VOLUNTEER", hint: "freiwillig mitmachen" },
+  { word: "LIBRARY", hint: "die Bücherei" },
+  { word: "COMMUNITY", hint: "die Gemeinschaft" },
+  { word: "RESPONSIBLE", hint: "verantwortlich" },
+  { word: "INCREDIBLE", hint: "unglaublich" },
+  { word: "TRUST", hint: "vertrauen" },
+  { word: "IMAGE", hint: "das Bild" },
+  { word: "BUDDY", hint: "ein·e Partner·in, der·die hilft" },
+  { word: "TIMETABLE", hint: "der Stundenplan" },
+  { word: "YEARBOOK", hint: "das Jahrbuch" },
+  { word: "CERTIFICATE", hint: "die Urkunde" },
+  { word: "FRESHMAN", hint: "im 1. Schuljahr" },
+  { word: "SENIOR", hint: "im letzten Schuljahr" },
+  { word: "CAFETERIA", hint: "die Mensa" },
+  { word: "SHELF", hint: "das Regal" },
+  { word: "CRATE", hint: "die Kiste" },
+];
+
 export default {
-  title: "The Lion roars",
+  title: "Nobody eats alone",
 
   steps: [
     /* ================= STEP 1 — LE ================= */
@@ -22,155 +205,178 @@ export default {
       layout: "slide",
       cards: [
         {
-          type: "written",
+          type: "phrase-reference",
+          kind: "Wortschatz",
+          title: "The words of this lesson",
+          intro: "Eight words from Tom's story. Tap a word to see what it means.",
+          sections: LE_WORDS,
+        },
+        {
+          type: "multiple-choice",
           kind: "Aufwärmen",
           title: "Before you read",
           intro:
-            "Does your school have a newspaper, a blog or an Instagram page? Write one sentence.",
-          help: "Hat deine Schule eine Zeitung, einen Blog oder eine Instagram-Seite?",
-          starters: ["Yes, we have … / No, we don't, but …"],
+            "The teacher asks who wants to help in the school library. Tom is the only one who puts his hand up. How does Tom feel?",
+          help: "Wie fühlt sich Tom? Kreuze ein Wort an.",
+          shuffle: false,
+          questions: [{ q: "How does Tom feel?", options: ["happy", "afraid", "angry", "tired"], correct: 0 }],
         },
         {
           type: "text",
           kind: "Lesen",
-          title: "Maya makes the news",
+          title: "Tom and the library",
           intro:
-            "Read about Maya and her school newspaper. Tap the underlined words for German help.",
+            "Read Tom's story. The small numbers on the left are line numbers — you need them to prove your answers. Tap the underlined words for German help.",
+          lineNumbers: true,
+          paraStarts: [1, 3, 5, 7],
           paragraphs: [
             [
-              "This is Maya. She is 15 and she goes to Boston West High School.",
+              "Hello, I am Tom. Today my teacher asks: “Who wants to help in the school library?” I put my hand up. I",
             ],
             [
-              "Every Friday morning Maya meets six other students in Room 1201. They make the school ",
-              { w: "newspaper", de: "die Zeitung" },
-              ". Its name is “The Lion”.",
+              "am the only one. Now I am a ",
+              { w: "volunteer", de: "freiwillig mitmachen" },
+              ".",
             ],
             [
-              "Maya writes the ",
-              { w: "articles", de: "die Artikel" },
-              ". Tom takes the photos. Lisa is the ",
-              { w: "editor", de: "die Redakteurin" },
-              " — she says what goes in the newspaper.",
+              "Mrs Blake gives me the key for the library. She says: “I ",
+              { w: "trust", de: "vertrauen" },
+              " you.”",
             ],
             [
-              "In March Maya wrote about the school ",
-              { w: "cafeteria", de: "die Mensa" },
-              ". For three weeks she ",
-              { w: "counted", de: "zählte" },
-              " the food in the ",
-              { w: "bin", de: "der Mülleimer" },
-              ". Her article said: “Our school ",
-              { w: "throws away", de: "wirft weg" },
-              " 200 kilos of food every week!”",
+              "Then she goes home and I am alone. Now I am ",
+              { w: "responsible", de: "verantwortlich" },
+              " for the library.",
+            ],
+            ["I put the books back on the shelves. I like working in the library."],
+            [
+              "The crate with the new books is very heavy. I ",
+              { w: "try hard", de: "sich bemühen" },
+              ".",
             ],
             [
-              "Many students read the article. Some parents wrote emails. The ",
-              { w: "principal", de: "die Schulleiterin" },
-              " was not happy.",
+              "At two o'clock the little children come. I read a book to them. We are one ",
+              { w: "community", de: "die Gemeinschaft" },
+              ".",
             ],
             [
-              "But now the cafeteria has a food-sharing table. Students can leave food there for other students. Today the school throws away much less food.",
+              "After the story we build a tower of books. It is ",
+              { w: "incredible", de: "unglaublich" },
+              "!",
             ],
             [
-              "Maya says: “People think a school newspaper is only a hobby. But we ",
-              { w: "changed", de: "veränderten" },
-              " something!”",
+              "At the end a girl takes a photo of us. Now the ",
+              { w: "image", de: "das Bild" },
+              " is on the wall.",
             ],
           ],
-          help: "Tipp: Lies den Text zweimal. Beim zweiten Mal verstehst du mehr.",
         },
         {
-          type: "multiple-choice",
+          type: "event-order",
+          kind: "Reihenfolge",
+          title: "The order of the story",
+          intro: "Number the events from 1 to 5, then press Check.",
+          help: "Was passiert zuerst? Nummeriere von 1 bis 5.",
+          events: [
+            { text: "Tom puts his hand up in the classroom." },
+            { text: "Mrs Blake gives him the key." },
+            { text: "Tom carries the heavy crate." },
+            { text: "Tom reads a book to the little children." },
+            { text: "A girl takes a photo of the group." },
+          ],
+        },
+        {
+          type: "right-wrong",
           kind: "Quiz",
           title: "Right or wrong?",
-          intro: "Read each sentence. Is it right or wrong? Tap your answer.",
-          help: "Richtig oder falsch? Tippe deine Antwort an.",
-          columns: 2,
-          questions: [
-            { q: "Maya is 15 years old.", options: ["Right", "Wrong"], correct: 0 },
-            { q: "The newspaper is called “The Tiger”.", options: ["Right", "Wrong"], correct: 1 },
-            { q: "Maya writes the articles.", options: ["Right", "Wrong"], correct: 0 },
-            { q: "Maya wrote about the sports hall.", options: ["Right", "Wrong"], correct: 1 },
-            { q: "The school throws away 200 kilos of food every week.", options: ["Right", "Wrong"], correct: 0 },
-            { q: "The principal was happy about the article.", options: ["Right", "Wrong"], correct: 1 },
-          ],
-        },
-        {
-          type: "tap-match",
-          kind: "Verbinden",
-          title: "Who does what?",
-          intro: "Tap a person, then tap what this person does.",
-          help: "Verbinde die Person mit der richtigen Aufgabe.",
-          leftLabel: "Person",
-          rightLabel: "What they do",
-          pairs: [
-            { left: "Maya", right: "writes the articles" },
-            { left: "Tom", right: "takes the photos" },
-            { left: "Lisa", right: "is the editor" },
-            { left: "The principal", right: "was not happy" },
+          intro:
+            "True or false? Take one word from the sentence and look for it in the text — the answer is always in that line.",
+          help: "Richtig oder falsch? Suche ein Wort aus dem Satz im Text.",
+          statements: [
+            { text: "Tom wants to help in the school library.", answer: true, ph: "✋" },
+            { text: "Three students put their hands up.", answer: false, ph: "🙋" },
+            { text: "Mrs Blake gives Tom a book.", answer: false, ph: "🔑" },
+            { text: "The crate with the new books is very heavy.", answer: true, ph: "📦" },
+            { text: "Tom reads a book to the little children.", answer: true, ph: "📖" },
+            { text: "At the end a girl takes a photo.", answer: true, ph: "📷" },
           ],
         },
         {
           type: "gap-fill",
-          kind: "Lücken",
-          title: "Fill in the words",
-          intro: "Write the correct word in each gap. The word box helps you.",
-          help: "Schreibe das richtige Wort in die Lücke.",
-          bank: ["articles", "cafeteria", "Friday", "newspaper", "photos"],
+          kind: "Antworten",
+          title: "Answer the questions",
+          intro:
+            "Answer with one word from the box. Example: What does Tom get from Mrs Blake? → He gets the key.",
+          help: "Antworte mit einem Wort aus dem Kasten.",
+          bank: ["Mrs Blake", "shelves", "children", "tower"],
           bankCap: "Word box",
           items: [
-            { segments: ["The students meet every ", { answer: "Friday", size: 10 }, " morning."] },
-            { segments: ["They make the school ", { answer: "newspaper", size: 12 }, "."] },
-            { segments: ["Maya writes the ", { answer: "articles", size: 11 }, "."] },
-            { segments: ["Tom takes the ", { answer: "photos", size: 10 }, "."] },
-            { segments: ["Maya's article was about the ", { answer: "cafeteria", size: 12 }, "."] },
+            {
+              hint: "1 · Who gives Tom the key?",
+              segments: [{ answer: "Mrs Blake", size: 11 }, " gives him the key."],
+            },
+            {
+              hint: "2 · Where does Tom put the books?",
+              segments: ["He puts them on the ", { answer: "shelves", size: 10 }, "."],
+            },
+            {
+              hint: "3 · Who comes at two o'clock?",
+              segments: ["The little ", { answer: "children", size: 10 }, " come."],
+            },
+            {
+              hint: "4 · What do they build after the story?",
+              segments: ["They build a ", { answer: "tower", size: 8 }, " of books."],
+            },
+          ],
+        },
+        {
+          type: "multiple-choice",
+          kind: "Welcher Ort?",
+          title: "Where is it?",
+          intro:
+            "Six places in the library: 1 the shelves · 2 the reading corner · 3 the lending desk · 4 the carpet · 5 the book swap · 6 the courtyard. Example: “Here the students swap their books.” → 5",
+          help: "Um welchen Ort geht es? Wähle die Nummer.",
+          shuffle: false,
+          questions: [
+            { q: "Tom is responsible for the books here.", options: ["1 the shelves", "3 the lending desk", "4 the carpet", "6 the courtyard"], correct: 1 },
+            { q: "The little children sit here and listen.", options: ["2 the reading corner", "4 the carpet", "5 the book swap", "1 the shelves"], correct: 1 },
+            { q: "Here the students read outside on the grass.", options: ["6 the courtyard", "2 the reading corner", "3 the lending desk", "5 the book swap"], correct: 0 },
+            { q: "Here you find the tall shelves of the library.", options: ["4 the carpet", "6 the courtyard", "1 the shelves", "2 the reading corner"], correct: 2 },
           ],
         },
         {
           type: "written",
           kind: "Schreiben",
-          title: "Short answers",
-          intro: "Answer with one to three words.",
-          help: "Antworte mit einem bis drei Wörtern.",
-          answerLines: 1,
-          questions: [
-            { q: "Where do the students meet?", starter: "In …" },
-            { q: "How long did Maya count the food?", starter: "For …" },
-            { q: "What is new in the cafeteria now?", starter: "A …" },
-            { q: "Who wrote emails?", starter: "Some …" },
-          ],
+          title: "Your favourite place",
+          intro: "Which place do you like best? Write one sentence.",
+          help: "Welcher Ort gefällt dir am besten? Schreibe einen Satz mit because.",
+          starters: ["I like place ___, because …"],
         },
         {
-          type: "group-sort",
+          type: "multiple-choice",
           kind: "Problem lösen",
-          title: "Good idea or bad idea?",
-          intro:
-            "THE PROBLEM: The food-sharing table works. But at 3 p.m. the school closes, and all the food still on the table goes in the bin. Sort the ideas, then press Check.",
-          help: "Um 15 Uhr schließt die Schule — und das Essen, das noch auf dem Tisch liegt, kommt in den Müll.",
-          groups: [
-            {
-              label: "👍 Good idea",
-              items: [
-                "Students can take the food home at 2:45 p.m.",
-                "A teacher brings the food to an animal shelter.",
-              ],
-            },
-            {
-              label: "👎 Bad idea",
-              items: [
-                "The cafeteria cooks more food.",
-                "Nobody uses the table any more.",
-              ],
-            },
-          ],
+          title: "Which idea is best?",
+          intro: LE_PROBLEM + " Which idea helps most?",
+          help: "Welche Idee ist am besten? Wähle eine aus.",
+          shuffle: false,
+          questions: [{ q: "Which idea is best?", options: LE_IDEAS, correct: 1 }],
         },
         {
           type: "written",
           kind: "Problem lösen",
-          title: "Write your solution",
-          intro: "Now write YOUR solution in 3 sentences. Use the frame.",
-          help: "Hilfe: to take home = mitnehmen · to give away = verschenken · a box = eine Box · an animal shelter = ein Tierheim · to ask the principal = die Schulleiterin fragen",
-          starters: ["My idea is …", "This is good because …", "First, we …"],
+          title: "Say why",
+          intro: "Now finish the sentence. Say why your idea is the best one.",
+          help: "You can use: there is room for everybody · the carpet is big · ten is not enough · then nobody can listen",
+          starters: ["Idea 2 is best, because …"],
+        },
+        {
+          type: "game",
+          game: "monster-hangman",
+          kind: "Spiel",
+          title: "Monster's Lunch",
+          intro:
+            "Guess the word from the text letter by letter and save the hero from the monster — every wrong letter feeds it!",
+          words: GAME_WORDS,
         },
       ],
     },
@@ -186,130 +392,94 @@ export default {
           type: "written",
           kind: "Aufwärmen",
           title: "Before you read",
-          intro: "What could students write about in a school newspaper? Write down two ideas.",
-          help: "Worüber könnten Schüler*innen in einer Schülerzeitung schreiben?",
-          starters: ["Idea 1 —", "Idea 2 —"],
+          intro:
+            "Next week ten new students come to your school. Write one sentence: what would you show them first?",
+          help: "Was würdest du neuen Schüler·innen zuerst zeigen?",
+          starters: ["First I would show them …"],
         },
         {
           type: "text",
           kind: "Lesen",
-          title: "How a school newspaper changed the cafeteria",
+          title: "Nobody eats alone",
           intro:
-            "Read the article from “The Lion”. Tap the underlined words for German help.",
-          paragraphs: [
-            [
-              "Every Friday morning, seven students meet in Room 1201 before the first lesson. They are the team of The Lion, the school newspaper of Boston West High School. Their motto is: “By students, for students.”",
-            ],
-            [
-              "Maya Reyes, 15, joined the paper last September because she wanted to write about music. Six months later she is the ",
-              { w: "news editor", de: "die Nachrichtenredakteurin" },
-              ". “I thought it would be interviews with cool bands,” she laughs. “Now I spend my Fridays ",
-              { w: "checking facts", de: "Fakten überprüfen" },
-              " and arguing about ",
-              { w: "headlines", de: "Überschriften" },
-              ".”",
-            ],
-            [
-              "In March, The Lion ",
-              { w: "published", de: "veröffentlichte" },
-              " Maya's biggest story. For three weeks she had collected information about the school cafeteria: how much food was thrown away, how many students ",
-              { w: "skipped lunch", de: "das Mittagessen ausfallen ließen" },
-              ", and what the meals really cost. Her article showed that the school threw away almost 200 kilos of food every week.",
-            ],
-            [
-              "Before the article went to print, however, there was a problem. Principal Snow asked the team to remove one sentence — a ",
-              { w: "quote", de: "ein Zitat" },
-              " from a kitchen worker who said that the school had known about the problem for years.",
-            ],
-            [
-              "“We understood her,” says Mr Delgado, the teacher who helps the team. “The quote could have ",
-              { w: "got that woman into trouble", de: "der Frau Ärger gebracht" },
-              ". But the students had to decide themselves.” After a long discussion, they printed the article without the quote.",
-            ],
-            [
-              "The reaction was immediate. Students ",
-              { w: "shared", de: "teilten" },
-              " the article online, parents wrote emails, and even the local newspaper called. Today the cafeteria has a food-sharing table, and ",
-              { w: "food waste", de: "der Lebensmittelabfall" },
-              " has fallen by a third. Maya keeps the article in her locker. “People think a school newspaper is just a hobby,” she says. “But we changed something. That's not a hobby.”",
-            ],
-          ],
+            "Read about Buddy Week at Riverbend High School. The small numbers on the left are line numbers — you need them to prove your answers. Tap the underlined words for German help.",
+          lineNumbers: true,
+          paraStarts: ARTICLE_PARAS,
+          paragraphs: ARTICLE,
         },
         {
           type: "multiple-choice",
           kind: "Quiz",
           title: "True, false or not in the text?",
           intro:
-            "Careful: some sentences are not wrong — the text simply does not say anything about them.",
-          help: "Achtung: Manche Sätze sind nicht falsch — sie stehen einfach nicht im Text.",
-          questions: [
-            { q: "The team meets before lessons start.", options: ["True", "False", "Not in the text"], correct: 0 },
-            { q: "Maya joined the newspaper to write about music.", options: ["True", "False", "Not in the text"], correct: 0 },
-            { q: "Maya is paid for her work.", options: ["True", "False", "Not in the text"], correct: 2 },
-            { q: "She collected information for three weeks.", options: ["True", "False", "Not in the text"], correct: 0 },
-            { q: "The principal wanted the whole article removed.", options: ["True", "False", "Not in the text"], correct: 1 },
-            { q: "Food waste has fallen since the article.", options: ["True", "False", "Not in the text"], correct: 0 },
-          ],
+            "Careful: “not in the text” is not the same as “false”. Some sentences are not wrong — the text simply says nothing about them.",
+          help: "„Nicht im Text“ ist nicht dasselbe wie „falsch“.",
+          shuffle: false,
+          questions: TFN_QUESTIONS,
+        },
+        {
+          type: "gap-fill",
+          kind: "Belege",
+          title: "Which line proves it?",
+          intro:
+            "Now write the line number that proves each answer. Where the text says nothing, there is no line — write a dash (—).",
+          help: "Bei true und false gehört eine Zeilenangabe dazu; bei „not in the text“ bleibt sie leer.",
+          items: LINE_GAPS,
         },
         {
           type: "written",
-          kind: "Schreiben",
+          kind: "Antworten",
           title: "Answer in full sentences",
-          intro: "Answer in full sentences. The sentence starters help you.",
-          help: "Antworte in ganzen Sätzen. Nutze die Satzanfänge.",
-          answerLines: 1,
+          intro:
+            "Write a full sentence under each question. Begin with the words after the arrow. Example: How old is Jess? → Jess is seventeen years old. (not just “seventeen”)",
+          help: "Antworte in ganzen Sätzen. Einzelne Wörter zählen nicht.",
+          answerLines: 2,
           questions: [
-            { q: "What did Maya expect when she joined the paper?", starter: "She expected …" },
-            { q: "What did her article show?", starter: "Her article showed that …" },
-            { q: "Why did Principal Snow want the quote removed?", starter: "She wanted it removed because …" },
-            { q: "What has changed in the cafeteria?", starter: "Today …" },
-          ],
-        },
-        {
-          type: "match-up",
-          kind: "Wörter finden",
-          title: "Find the words",
-          intro: "Which word from the text means this? Choose it from the list.",
-          help: "Welches Wort aus dem Text bedeutet das?",
-          options: ["to publish", "a quote", "to skip lunch", "immediate"],
-          items: [
-            { left: "to print something for everybody to read", answer: "to publish" },
-            { left: "the exact words somebody said", answer: "a quote" },
-            { left: "not to eat lunch", answer: "to skip lunch" },
-            { left: "straight away, very fast", answer: "immediate" },
+            { q: "1. What does a buddy do in the cafeteria?", starter: "A buddy …" },
+            { q: "2. Why did Mr Alvarez start Buddy Week?", starter: "He started it because …" },
+            { q: "3. What does a buddy get for the work?", starter: "A buddy gets …" },
+            { q: "4. What will Jess miss most when she leaves school?", starter: "She will miss …" },
           ],
         },
         {
           type: "event-order",
           kind: "Reihenfolge",
-          title: "The steps of the story",
-          intro: "Put the events in the right order, then press Check.",
-          help: "Bringe die Ereignisse in die richtige Reihenfolge.",
-          events: [
-            { text: "Maya collected information about the cafeteria." },
-            { text: "Principal Snow asked the team to remove a sentence." },
-            { text: "The team printed the article without the quote." },
-            { text: "Parents wrote emails and the local newspaper called." },
-            { text: "The cafeteria got a food-sharing table." },
-          ],
+          title: "The order of the story",
+          intro: "Put the five events into the order of the text, then press Check.",
+          help: "Bringe die fünf Ereignisse in die Reihenfolge des Textes.",
+          events: ARTICLE_EVENTS,
+        },
+        {
+          type: "match-up",
+          kind: "Wörter finden",
+          title: "Find the words",
+          intro:
+            "Which word or phrase from the text means this? Example: somebody in the last year at school → a senior.",
+          help: "Suche im Text den Ausdruck mit dieser Bedeutung.",
+          options: WORD_HUNT.options,
+          items: WORD_HUNT.items,
         },
         {
           type: "written",
           kind: "Problem lösen",
-          title: "Collect two ideas",
+          title: "Which idea is best?",
           intro:
-            "THE PROBLEM: Maya's article changed the cafeteria — but now nobody wants to talk to The Lion any more. Students are afraid of getting into trouble, just like the kitchen worker. Without information there are no articles. How can the team get information without putting people in danger?",
-          help: "Wie kann das Team an Informationen kommen, ohne jemanden in Gefahr zu bringen?",
-          starters: ["Idea 1 —", "Idea 2 —"],
+            GK_PROBLEM +
+            " Which idea is best — 1, 2 or 3? " +
+            GK_IDEAS.join("  ") +
+            " Write two sentences. There is no single right answer — what counts is your reason.",
+          help: "Tipp: Der Text sagt in Zeile 4, dass die Neuen sich nicht trauen zu fragen.",
+          answerLines: 2,
+          questions: [{ q: "Which idea is best, and why?", starter: "Idea ___ is best, because …" }],
         },
         {
-          type: "written",
-          kind: "Problem lösen",
-          title: "Write your solution",
+          type: "game",
+          game: "monster-hangman",
+          kind: "Spiel",
+          title: "Monster's Lunch",
           intro:
-            "Choose your best idea and write your solution in 3 sentences: What do you do? Why does it help? What is the first step?",
-          help: "Useful phrases: Our solution is … · This helps because … · Nobody has to … · First, we would … · Then …",
-          starters: ["Our solution is …", "This helps because …", "First, we would …"],
+            "Guess the word from the text letter by letter and save the hero from the monster — every wrong letter feeds it!",
+          words: GAME_WORDS,
         },
       ],
     },
@@ -323,166 +493,106 @@ export default {
       cards: [
         {
           type: "written",
-          kind: "Warm-up",
+          kind: "Aufwärmen",
           title: "Before you read",
           intro:
-            "A school newspaper is written by students, but printed at school. Who should decide what goes in it? Write down your first idea in one sentence.",
-          starters: ["I think …"],
+            "Next week ten new students come to your school. Write one sentence: what would you show them first?",
+          starters: ["First I would show them …"],
         },
         {
           type: "text",
           kind: "Lesen",
-          title: "How a school newspaper changed the cafeteria",
-          intro: "Read the article. Tap the underlined words for German help.",
-          blog: {
-            author: "Maya Reyes · News editor",
-            date: "March issue · Boston West High School",
-            hero: {
-              src: "assets/images/unit2/lion-hero.jpg",
-              alt: "The new food-sharing table in the school cafeteria",
-              caption: "The food-sharing table that Maya's article started.",
-            },
-            about: {
-              title: "About The Lion",
-              bio: "Seven students, one room, one motto: “By students, for students.” The Lion has been the voice of Boston West High School since 1998.",
-            },
-            categories: [
-              { name: "School life", active: true },
-              "Cafeteria",
-              "Clubs",
-              "Sports",
-            ],
-            popular: [
-              { icon: "🍽️", title: "200 kilos a week: the cafeteria story", date: "March" },
-              { icon: "🎸", title: "The band that played on the roof", date: "February" },
-              { icon: "🏃", title: "Why first period should start later", date: "January" },
-            ],
-          },
-          paragraphs: [
-            [
-              "Every Friday morning, long before the first lesson, seven students meet in Room 1201. They are the ",
-              { w: "editorial team", de: "die Redaktion" },
-              " of The Lion, the newspaper of Boston West High School. The motto on their door reads: “By students, for students.”",
-            ],
-            [
-              "Maya Reyes, 15, joined last September because she wanted to interview bands. Six months later she is the news editor. “I thought this would be about music,” she laughs. “Now I spend my Fridays checking facts and arguing about headlines.”",
-            ],
-            [
-              "In March, The Lion published Maya's biggest story so far. For three weeks she had ",
-              { w: "gathered data", de: "Daten gesammelt" },
-              " on the school cafeteria: how much food ended up in the bin, how many students skipped lunch altogether, what the meals actually cost. Her article showed that the school was throwing away almost 200 kilos of food every single week.",
-            ],
-            [
-              "Before the article went to print, however, there was a problem. Principal Snow asked the team to ",
-              { w: "delete", de: "streichen" },
-              " one sentence: a quote from a kitchen worker claiming that the school had been ",
-              { w: "aware of", de: "sich bewusst über" },
-              " the problem for years.",
-            ],
-            [
-              "“We understood the principal's point,” says Mr Delgado, the teacher who ",
-              { w: "supervises", de: "betreut" },
-              " the paper. “That quote could have cost the woman her job. But it wasn't my decision — the students had to make it themselves.” After a long discussion the team printed the article without the quote, but added a line explaining that a ",
-              { w: "source", de: "die Quelle" },
-              " had asked to remain ",
-              { w: "anonymous", de: "anonym" },
-              ".",
-            ],
-            [
-              "The reaction was ",
-              { w: "immediate", de: "sofort" },
-              ". Students shared the article online, parents sent emails, and the local newspaper rang the school. Today the cafeteria has a food-sharing table and waste has dropped by a third. Maya keeps a printed copy in her locker. “People think a school paper is just a hobby,” she says. “But we actually changed something. That's not a hobby.”",
-            ],
-          ],
+          title: "Nobody eats alone",
+          intro:
+            "Read about Buddy Week at Riverbend High School. The small numbers on the left are line numbers — you need them to prove your answers. Tap the underlined words for German help.",
+          lineNumbers: true,
+          paraStarts: ARTICLE_PARAS,
+          paragraphs: ARTICLE,
+        },
+        {
+          type: "multiple-choice",
+          kind: "Quiz",
+          title: "True, false or not in the text?",
+          intro:
+            "Careful: “not in the text” is not the same as “false”. Some sentences are not wrong — the text simply says nothing about them.",
+          shuffle: false,
+          questions: TFN_QUESTIONS,
+        },
+        {
+          type: "gap-fill",
+          kind: "Belege",
+          title: "Which line proves it?",
+          intro:
+            "Now write the line number that proves each answer. Where the text says nothing, there is no line — write a dash (—).",
+          items: LINE_GAPS,
         },
         {
           type: "written",
-          kind: "Verstehen",
-          title: "Understanding the text",
-          intro: "Answer in your own words, in full sentences.",
+          kind: "Antworten",
+          title: "Answer in full sentences",
+          intro:
+            "Write a full sentence under each question. Begin with the words after the arrow.",
           answerLines: 2,
           questions: [
-            { q: "What did Maya expect from the newspaper — and what does she really do?", starter: "She expected … but now …" },
-            { q: "How did Maya get the information for her article?", starter: "She …" },
-            { q: "Why did Principal Snow want one sentence deleted?", starter: "Because …" },
-            { q: "Explain the compromise the team found.", starter: "They …" },
+            { q: "1. What does a buddy do in the cafeteria?", starter: "A buddy …" },
+            { q: "2. Why did Mr Alvarez start Buddy Week?", starter: "He started it because …" },
+            { q: "3. What does a buddy get for the work?", starter: "A buddy gets …" },
+            { q: "4. What will Jess miss most when she leaves school?", starter: "She will miss …" },
           ],
         },
         {
-          type: "written",
-          kind: "Belege finden",
-          title: "Find the evidence",
+          type: "event-order",
+          kind: "Reihenfolge",
+          title: "The order of the story",
+          intro: "Put the five events into the order of the text, then press Check.",
+          events: ARTICLE_EVENTS,
+        },
+        {
+          type: "match-up",
+          kind: "Wörter finden",
+          title: "Find the words",
           intro:
-            "Prove each statement with the text. Quote the words from the article that show it.",
-          help: "Tipp: Zitiere genau — nimm die Wörter so, wie sie im Text stehen.",
-          answerLines: 1,
+            "Which word or phrase from the text means this? Example: somebody in the last year at school → a senior.",
+          options: WORD_HUNT.options,
+          items: WORD_HUNT.items,
+        },
+        {
+          type: "written",
+          kind: "Schlussfolgern",
+          title: "Read between the lines",
+          intro:
+            "Answer both questions in full sentences — two to three sentences each. The answer is not written in the text; you have to work it out.",
+          help: "Die Antwort steht nicht wörtlich im Text.",
+          answerLines: 3,
           questions: [
-            { q: "The newspaper is made by students for students.", starter: "“…”" },
-            { q: "The article had effects outside the school.", starter: "“…”" },
-            { q: "The teacher did not make the decision for the team.", starter: "“…”" },
-            { q: "The article had real results.", starter: "“…”" },
-          ],
-        },
-        {
-          type: "written",
-          kind: "Analysieren",
-          title: "Whose interests?",
-          intro:
-            "Four people are involved in the conflict. What does each of them want — and why?",
-          answerLines: 2,
-          questions: [
-            { q: "Maya (news editor)", starter: "She wants … because …" },
-            { q: "Principal Snow", starter: "She wants … because …" },
-            { q: "the kitchen worker", starter: "She wants … because …" },
-            { q: "Mr Delgado (teacher)", starter: "He wants … because …" },
-          ],
-        },
-        {
-          type: "essay-editor",
-          kind: "Zusammenfassen",
-          title: "Summary",
-          intro:
-            "Summarise the text in 50–60 words: (a) what happened, (b) what the conflict was, (c) what the result was. Do not copy sentences from the text.",
-          min: 45,
-          max: 70,
-          placeholder: "The Lion is the school newspaper of …",
-          chips: [
-            "The article showed that …",
-            "The conflict was …",
-            "In the end …",
-            "As a result …",
-          ],
-          checklist: [
-            "I wrote what happened.",
-            "I wrote what the conflict was.",
-            "I wrote what the result was.",
-            "I used my own words.",
-          ],
-        },
-        {
-          type: "written",
-          kind: "Problem lösen",
-          title: "Develop a solution",
-          intro:
-            "THE PROBLEM: Maya's article worked — but it created a new one. Since the kitchen worker almost lost her job, nobody at school wants to give The Lion information any more. Teachers, cleaners and students are all afraid of trouble. The team still wants to report on real problems, but they cannot promise anyone that nothing will happen to them.",
-          starters: [
-            "What the team should do: …",
-            "Why this solves the problem: …",
-            "The first concrete step: …",
+            { q: "1. What does Jess mean when she says: “That is the whole trick”?", starter: "She means that …" },
+            { q: "2. Which sentence in the text shows best that the programme works? Give the line and say why you chose it.", starter: "Line ___ shows it best, because …" },
           ],
         },
         {
           type: "written",
           kind: "Problem lösen · Challenge",
-          title: "What could go wrong?",
+          title: "Which idea is best?",
           intro:
-            "Every solution has a weak point. Name one thing that could go wrong with your idea — and what you would do about it.",
-          help: "Think about: Would people really trust an anonymous letterbox? · What if somebody uses it to spread lies? · Who checks whether the information is true? · Does the school have to agree?",
+            GK_PROBLEM +
+            " Which idea is best — 1, 2 or 3? " +
+            GK_IDEAS.join("  ") +
+            " Write two sentences: one for your choice, one against another idea.",
+          help: "Tipp: Der Text sagt in Zeile 4, dass die Neuen sich nicht trauen zu fragen — das spricht gegen Idee 3.",
           answerLines: 2,
           questions: [
-            { q: "One thing that could go wrong:", starter: "If …" },
-            { q: "What I would do about it:", starter: "To stop that, we would …" },
+            { q: "Which idea is best, and why?", starter: "Idea ___ is best, because …" },
+            { q: "Why is another idea not as good?", starter: "Idea ___ is worse, because …" },
           ],
+        },
+        {
+          type: "game",
+          game: "monster-hangman",
+          kind: "Spiel",
+          title: "Monster's Lunch",
+          intro:
+            "Guess the word from the text letter by letter and save the hero from the monster — every wrong letter feeds it!",
+          words: GAME_WORDS,
         },
       ],
     },
@@ -498,27 +608,28 @@ export default {
         {
           type: "essay-editor",
           kind: "Kreativ · Challenge",
-          title: "The front page of YOUR school paper",
+          title: "Buddy Week at your school",
           intro:
-            "You are the news editor of your school's newspaper. Choose one real thing at your school that should change — and write the opening of the article: a headline and the first paragraph.",
-          min: 50,
-          max: 90,
-          placeholder: "HEADLINE: …\n\nEvery morning at our school …",
+            "Your school wants a Buddy Week too. Write the notice for the school board: what it is, who can take part, what a buddy has to do — and one sentence that makes somebody want to sign up.",
+          min: 55,
+          max: 110,
+          placeholder: "BUDDY WEEK — nobody eats alone. In the first week of the school year …",
           chips: [
-            "Our school throws away …",
-            "Students say that …",
-            "For three weeks we counted …",
-            "Nobody has ever asked …",
-            "That has to change.",
+            "Every new student gets …",
+            "A buddy shows …",
+            "It only takes …",
+            "You get a certificate for …",
+            "Sign up with …",
+            "Remember your own first day?",
           ],
           checklist: [
-            "My article has a headline.",
-            "I wrote what the problem is.",
-            "I gave one number or one example.",
-            "I quoted somebody (“…”).",
-            "A reader knows what should change.",
+            "My notice says what Buddy Week is.",
+            "It says who can be a buddy.",
+            "It names two things a buddy does.",
+            "It says what a buddy gets for it.",
+            "One sentence makes somebody want to join.",
           ],
-          help: "★ Bonus: a good headline is short and makes you want to read on. Try writing three and choose the best.",
+          help: "★ Bonus: Jess says the trick is to say hello. Can you get that idea into one short sentence?",
         },
       ],
     },

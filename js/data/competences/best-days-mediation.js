@@ -1,149 +1,140 @@
 /**
- * The best days of your life (Unit 2) — Mediation: "The notice board"
+ * The best days of your life (Unit 2) — Mediation: the club notice board
  *
- * Six students from Boston West High School are at your school for two weeks.
- * The after-class club notices on the board are all in German. The learner
- * mediates: picks the right club for each guest, answers their questions, and
- * finally writes an English version of a notice.
+ * Six students from an American high school are at your school for two weeks.
+ * On the notice board they find the German notices for the after-class clubs.
+ * They do not understand them — so you tell them what matters.
  *
- *   Step 1 (LE)        — 3 guests, 2 questions, sentence starters everywhere
- *   Step 2 (G-Kurs)    — 4 guests, 4 questions, a recommendation
- *   Step 3 (E-Kurs)    — + which club fits nobody, and an objection to answer
- *   Step 4 (Challenge) — write the English notice for the board
+ *   Step 1 (LE)        — three short notices: the club in English, the day
+ *                        and the time, and three answers to the guests
+ *   Step 2 (G-Kurs)    — five real notices: which club fits which guest,
+ *                        four answers that really answer the question
+ *   Step 3 (E-Kurs)    — the same, plus the club that fits nobody
+ *   Step 4 (Challenge) — write the English card for the whole board
+ *
+ * Mediation means passing on what matters — never translating word by word.
  */
 
-/** The five clubs, as the guests may choose them. */
-const CLUBS = [
-  "Climbing club",
-  "School garden",
-  "Peer mediator training",
-  "School band",
-  "Technical club",
+/* ============ The four points — the strategy at every level ============ */
+
+const FOUR_POINTS = [
+  "1 · Was ist das? → This club is … (Kletter-AG → This is a climbing club.)",
+  "2 · Für wen? Wann? Wo? → It is for … It meets … in … (montags um 14.00 Uhr in der Turnhalle → They meet on Mondays at 2 p.m. in the gym.)",
+  "3 · Der Gast braucht es nicht — Jahrgänge, Anmeldung, Namen → leave it out. Your guest is here for two weeks; he does not need the name of the teacher.",
+  "WATCH OUT: word by word (“The climbing-AG has still four free places …”) is NOT mediation. Four points are: “This is a climbing club. It meets on Mondays at 2 p.m. in the gym.”",
 ];
 
-/** Who fits where (club 3 — peer mediator training — fits nobody). */
-const GUESTS = [
+const WORDS = [
   {
-    name: "Maya",
-    quote: "I'd like to do something sporty, but I'm really not good at team sports.",
-    club: "Climbing club",
+    label: "What a notice says",
+    accent: "olive",
+    pairs: [
+      ["available", "frei, verfügbar — there is still a place"],
+      ["position", "der freie Platz — a place in a group"],
+      ["organize", "organisieren — to put something together"],
+      ["flute", "die Querflöte — the instrument the band is looking for"],
+    ],
   },
   {
-    name: "Alisha",
-    quote: "I sing in a choir at home. Is there anything with music here?",
-    club: "School band",
-  },
-  {
-    name: "Diego",
-    quote: "I don't want to stand on a stage, but I'm good with technology.",
-    club: "Technical club",
-  },
-  {
-    name: "Josh",
-    quote: "I like being outside and working with my hands.",
-    club: "School garden",
-  },
-];
-
-/** Build the match-up items for the first `n` guests. */
-const guestItems = (n) =>
-  GUESTS.slice(0, n).map((g) => ({ left: g.name + ": “" + g.quote + "”", answer: g.club }));
-
-/** "Why does it fit?" write-lines for the first `n` guests. */
-const whyQuestions = (n) =>
-  GUESTS.slice(0, n).map((g) => ({
-    q: g.name + " — why does this club fit?",
-    starter: "This club is for … It fits you because …",
-  }));
-
-/** The guests' follow-up questions (LE uses the first two). */
-const GUEST_QUESTIONS = [
-  {
-    q: "Maya: “Great, climbing! Do I have to bring my own shoes and a rope — and does it matter that I have never climbed?”",
-    starter: "No, you don't need … because the school …",
-  },
-  {
-    q: "Alisha: “I'd love to sing with the band. When could I actually perform with them?”",
-    starter: "The band rehearses … and the next concert is …",
-  },
-  {
-    q: "Diego: “When and where does the technical club meet — and do I need to know anything before I come?”",
-    starter: "It meets every … in the … You don't need …",
-  },
-  {
-    q: "Josh: “What should I wear for the garden club, and when exactly is it?”",
-    starter: "Wear … It takes place every … at …",
+    label: "Helping somebody decide",
+    accent: "coral",
+    pairs: [
+      ["artistic", "künstlerisch begabt — good at drawing and painting"],
+      ["risk", "das Risiko — something that could go wrong"],
+      ["a piece of advice", "ein Rat — what you say when somebody asks you what to do"],
+      ["fund-raising", "die Spendenaktion — collecting money for something"],
+    ],
   },
 ];
 
-/** The recurring problem on this page. */
-const PROBLEM =
-  "THE PROBLEM: Every year your school puts the German notices on the board and the guests from Boston only understand the headlines. By the time somebody has translated everything, the clubs have already started. Your teacher asks your class for a better idea.";
+/* ============ Step 1 (LE) — three notices ============ */
+
+const LE_NOTICES = [
+  ["1 Kletter-AG — Montags, 14.00 Uhr, in der Turnhalle. Vier Plätze sind frei. Anfänger sind willkommen."],
+  ["2 Schulband — Freitags, 13.30 Uhr, im Musikraum. Wir suchen eine Querflöte."],
+  ["3 Kunst-AG — Mittwochs, 15.00 Uhr, im Kunstraum. Wir malen ein großes Wandbild."],
+];
+
+/* ============ Steps 2 and 3 — five real notices ============ */
+
+const NOTICES = [
+  ["1 Hoch hinaus — Kletter-AG"],
+  [
+    "Die Kletter-AG hat noch vier freie Plätze für die Jahrgänge 7 und 8. Wir treffen uns montags um 14.00 Uhr an der Kletterwand in der Turnhalle. Anfänger sind willkommen — die Ausrüstung stellt die Schule.",
+  ],
+  ["2 Grüne Finger gesucht — Schulgarten"],
+  [
+    "Im Schulgarten pflanzen wir Kräuter und Gemüse. Jeden Dienstag in der Mittagspause (13.15 Uhr) hinter dem Hauptgebäude. Für alle Klassen. Bitte alte Kleidung anziehen.",
+  ],
+  ["3 Streitschlichter-Ausbildung"],
+  [
+    "Du möchtest anderen bei Streit helfen? Frau Özdemir bildet Schüler·innen ab Klasse 8 aus. Start: Mittwoch, 14.30 Uhr, Raum 204. Die Ausbildung dauert zehn Wochen.",
+  ],
+  ["4 Die Schulband sucht eine Stimme"],
+  [
+    "Wir suchen eine Sängerin oder einen Sänger. Probe ist freitags um 13.30 Uhr im Musikraum. Du musst keine Noten lesen können. Unser nächster Auftritt ist das Sommerfest im Juli.",
+  ],
+  ["5 Lieber hinter der Bühne? — Technik-AG"],
+  [
+    "Die Technik-AG kümmert sich um Licht und Ton bei allen Schulveranstaltungen. Treffen: donnerstags, 15.00 Uhr, in der Aula. Ab Klasse 7, keine Vorkenntnisse nötig.",
+  ],
+];
+
+const USEFUL_WORDS =
+  "club / activity — die AG · it is for — es ist für · it meets / takes place — es findet statt · equipment — die Ausrüstung · beginner — Anfänger·in · rehearsal — die Probe · stage — die Bühne · to look after — sich kümmern um · herbs — Kräuter · peer mediator — Streitschlichter·in";
+
+/** Exercise 1 (G-Kurs · E-Kurs) — which club fits which guest? */
+const GUEST_MATCH = {
+  options: ["climbing club", "school garden", "school band", "technical club", "peer mediator training"],
+  items: [
+    { left: "Maya: “I'd like to do something sporty, but I'm really not good at team sports.”", answer: "climbing club" },
+    { left: "Alisha: “I sing in a choir at home. Is there anything with music here?”", answer: "school band" },
+    { left: "Diego: “I don't want to stand on a stage, but I'm good with technology.”", answer: "technical club" },
+    { left: "Josh: “I like being outside and working with my hands.”", answer: "school garden" },
+  ],
+};
+
+/* ============ The problems ============ */
+
+const LE_PROBLEM =
+  "THE PROBLEM: Your guest wants to join a club. He is here for two weeks and he does not speak German.";
+const LE_IDEAS = [
+  "1 — We translate every notice word by word.",
+  "2 — We tell him the three points of one club that fits him.",
+  "3 — He waits until he can read German.",
+];
+
+const GK_PROBLEM =
+  "THE PROBLEM: The notices on your school board are only in German. The guests understand the headlines and nothing else.";
+const GK_IDEAS = [
+  "1 — We translate every notice word by word.",
+  "2 — A short English card with what, who for, when, where.",
+  "3 — We tell the guests to use a translation app.",
+];
+
+/* ============ The word game ============ */
+
+const GAME_WORDS = [
+  { word: "AVAILABLE", hint: "frei, verfügbar" },
+  { word: "POSITION", hint: "der freie Platz" },
+  { word: "ORGANIZE", hint: "organisieren" },
+  { word: "FLUTE", hint: "die Querflöte" },
+  { word: "ARTISTIC", hint: "künstlerisch begabt" },
+  { word: "RISK", hint: "das Risiko" },
+  { word: "ADVICE", hint: "ein Rat" },
+  { word: "EQUIPMENT", hint: "die Ausrüstung" },
+  { word: "BEGINNER", hint: "der·die Anfänger·in" },
+  { word: "REHEARSAL", hint: "die Probe" },
+  { word: "STAGE", hint: "die Bühne" },
+  { word: "HERBS", hint: "die Kräuter" },
+  { word: "GARDEN", hint: "der Garten" },
+  { word: "CLIMBING", hint: "das Klettern" },
+  { word: "NOTICE", hint: "der Aushang" },
+  { word: "SINGER", hint: "der·die Sänger·in" },
+];
 
 export default {
-  title: "The notice board",
-
-  /* ============ The realia: the German notice board ============ */
-  guide: {
-    label: "Das Schwarze Brett",
-    subtitle:
-      "Six guests from Boston are at your school for two weeks. These are the club notices on the board — all in German. Help them.",
-    numbered: false,
-    types: [
-      {
-        name: "1 · Hoch hinaus — Kletter-AG",
-        tag: "montags 14.00",
-        accent: "coral",
-        formula:
-          "Die Kletter-AG hat noch vier freie Plätze für die Jahrgänge 7 und 8. Wir treffen uns montags um 14.00 Uhr an der Kletterwand in der Turnhalle. Anfänger sind willkommen — die Ausrüstung stellt die Schule.",
-        example: "Turnhalle · Kletterwand",
-      },
-      {
-        name: "2 · Grüne Finger gesucht — Schulgarten",
-        tag: "dienstags 13.15",
-        accent: "olive",
-        formula:
-          "Im Schulgarten pflanzen wir Kräuter und Gemüse. Jeden Dienstag in der Mittagspause (13.15 Uhr) hinter dem Hauptgebäude. Für alle Klassen. Bitte alte Kleidung anziehen.",
-        example: "hinter dem Hauptgebäude",
-      },
-      {
-        name: "3 · Streitschlichter-Ausbildung",
-        tag: "mittwochs 14.30",
-        accent: "slate",
-        formula:
-          "Du möchtest anderen bei Streit helfen? Frau Özdemir bildet Schüler*innen ab Klasse 8 aus. Start: Mittwoch, 14.30 Uhr, Raum 204. Die Ausbildung dauert zehn Wochen.",
-        example: "Raum 204 · zehn Wochen",
-      },
-      {
-        name: "4 · Die Schulband sucht eine Stimme",
-        tag: "freitags 13.30",
-        accent: "teal",
-        formula:
-          "Wir suchen eine Sängerin oder einen Sänger. Probe ist freitags um 13.30 Uhr im Musikraum. Du musst keine Noten lesen können. Unser nächster Auftritt ist das Sommerfest im Juli.",
-        example: "Musikraum · Auftritt im Juli",
-      },
-      {
-        name: "5 · Lieber hinter der Bühne? — Technik-AG",
-        tag: "donnerstags 15.00",
-        accent: "ochre",
-        formula:
-          "Die Technik-AG kümmert sich um Licht und Ton bei allen Schulveranstaltungen. Treffen: donnerstags, 15.00 Uhr, in der Aula. Ab Klasse 7, keine Vorkenntnisse nötig.",
-        example: "Aula · Licht und Ton",
-      },
-    ],
-    tensesLabel: "Useful words for your English version",
-    tenses: [
-      { tense: "club / activity", use: "die AG", accent: "olive", signals: "It is a club for …" },
-      { tense: "it meets / takes place", use: "es findet statt", accent: "slate", signals: "It meets every Monday at 2 p.m." },
-      { tense: "equipment", use: "die Ausrüstung", accent: "coral", signals: "The school gives you the equipment." },
-      { tense: "beginner", use: "Anfänger*in", accent: "teal", signals: "Beginners are welcome." },
-      { tense: "rehearsal", use: "die Probe", accent: "ochre", signals: "The rehearsal is on Friday." },
-      { tense: "stage", use: "die Bühne", accent: "olive", signals: "You don't have to be on stage." },
-      { tense: "to look after", use: "sich kümmern um", accent: "slate", signals: "They look after light and sound." },
-      { tense: "herbs", use: "Kräuter", accent: "coral", signals: "We plant herbs and vegetables." },
-      { tense: "peer mediator", use: "Streitschlichter*in", accent: "teal", signals: "Peer mediators help in arguments." },
-    ],
-  },
+  title: "The club notice board",
 
   steps: [
     /* ================= STEP 1 — LE ================= */
@@ -154,66 +145,118 @@ export default {
       layout: "slide",
       cards: [
         {
-          type: "match-up",
+          type: "phrase-reference",
+          kind: "Wortschatz",
+          title: "The words of this lesson",
+          intro: "Eight words. Tap a word to see what it means.",
+          sections: WORDS,
+        },
+        {
+          type: "text",
+          kind: "Theorie",
+          title: "The four points",
+          intro:
+            "Mediation means passing on what matters — not translating word by word. Keep this next to you.",
+          paragraphs: FOUR_POINTS.slice(0, 2).concat([FOUR_POINTS[3]]).map((l) => [l]),
+        },
+        {
+          type: "text",
+          kind: "Das Schwarze Brett",
+          title: "The notice board",
+          intro:
+            "Six students from an American high school are at your school for two weeks. These are the German notices they found. They do not understand them — help them.",
+          paragraphs: LE_NOTICES,
+        },
+        {
+          type: "gap-fill",
           kind: "Zuordnen",
-          title: "Which club fits which guest?",
+          title: "What is the club in English?",
           intro:
-            "Before they came, the guests wrote what they are looking for. Choose the right club for each guest.",
-          help: "Finde für jede*n Gast die passende AG.",
-          options: CLUBS,
-          items: guestItems(3),
+            "Write the English name of the club. Example: Technik-AG → technical club. Word box: art club · climbing club · school band",
+          help: "Schreibe den englischen Namen der AG.",
+          bank: ["art club", "climbing club", "school band"],
+          bankCap: "Word box",
+          items: [
+            { hint: "1 · Kletter-AG", segments: [{ answer: "climbing club", size: 15 }] },
+            { hint: "2 · Schulband", segments: [{ answer: "school band", size: 14 }] },
+            { hint: "3 · Kunst-AG", segments: [{ answer: "art club", size: 12 }] },
+          ],
         },
         {
-          type: "written",
-          kind: "Begründen",
-          title: "Why does it fit?",
+          type: "gap-fill",
+          kind: "Tabelle",
+          title: "When and where?",
           intro:
-            "Now say in English why the club fits. Example for Maya: “You climb on your own, not in a team. Beginners are welcome and the school gives you the equipment.”",
-          help: "Sentence starters: This club is for … | It fits you because … | You don't need … | They meet every … at … in …",
-          answerLines: 2,
-          questions: whyQuestions(3).slice(1),
-        },
-        {
-          type: "written",
-          kind: "Antworten",
-          title: "Answer the guests",
-          intro:
-            "Answer in English. Name the club and say when and where it meets.",
-          help: "Antworte auf Englisch. Nenne die AG und sage, wann und wo sie stattfindet.",
-          answerLines: 2,
-          questions: GUEST_QUESTIONS.slice(0, 2),
-        },
-        {
-          type: "group-sort",
-          kind: "Problem lösen",
-          title: "Which ideas help?",
-          intro: PROBLEM + " Sort the ideas, then press Check.",
-          help: "Die Aushänge hängen nur auf Deutsch. Bis jemand alles übersetzt hat, haben die AGs schon begonnen.",
-          groups: [
+            "Fill in the table in English. The notices help you. Example: Technik-AG, donnerstags 15.00 Uhr → day: Thursday · time: 3 p.m.",
+          help: "Fülle die Tabelle auf Englisch aus.",
+          items: [
             {
-              label: "✅ This helps",
-              items: [
-                "We write a short English version with four points: what, who for, when, where.",
-                "Two students answer questions about the clubs in every break.",
+              hint: "1 · Kletter-AG",
+              segments: [
+                "day: ",
+                { answer: "Monday", size: 10 },
+                " · time: ",
+                { answer: "2 p.m.", accept: ["2pm", "2 pm", "14.00", "2 o'clock", "2"], size: 9 },
               ],
             },
             {
-              label: "❌ This doesn't help",
-              items: [
-                "We translate every notice word by word.",
-                "We tell the guests to use a translation app.",
-                "We only tell them about the clubs we like ourselves.",
+              hint: "2 · Schulband",
+              segments: [
+                "day: ",
+                { answer: "Friday", size: 10 },
+                " · time: ",
+                { answer: "1.30 p.m.", accept: ["1.30", "1:30", "1:30 p.m.", "13.30", "half past one"], size: 11 },
+              ],
+            },
+            {
+              hint: "3 · Kunst-AG",
+              segments: [
+                "day: ",
+                { answer: "Wednesday", size: 12 },
+                " · time: ",
+                { answer: "3 p.m.", accept: ["3pm", "3 pm", "15.00", "3 o'clock", "3"], size: 9 },
               ],
             },
           ],
         },
         {
           type: "written",
+          kind: "Antworten",
+          title: "Answer the guests",
+          intro: "Answer in English. Use the sentence starters.",
+          help: "Sentence starters: The … club is on … at … | Yes, the … meets on … at … | You can … and there is a …",
+          answerLines: 2,
+          questions: [
+            { q: "1. Maya: “I like climbing. When is the club — and is there a free place for me?”", starter: "The climbing club is on …" },
+            { q: "2. Alisha: “I play the flute. Is there a club for me?”", starter: "Yes, the school band meets on …" },
+            { q: "3. Diego: “What else can I do at this school?” Name two more clubs.", starter: "You can … and there is a …" },
+          ],
+        },
+        {
+          type: "multiple-choice",
           kind: "Problem lösen",
-          title: "Write your solution",
-          intro: "Write your solution in 3 sentences. Use the sentence frame.",
-          help: "Schreibe deine Lösung in 3 Sätzen. Nutze das Satzgerüst.",
-          starters: ["Our idea is …", "This helps because …", "First, we …"],
+          title: "Which idea is best?",
+          intro: LE_PROBLEM + " Which idea helps most?",
+          help: "Welche Idee ist am besten? Wähle eine aus.",
+          shuffle: false,
+          questions: [{ q: "Which idea is best?", options: LE_IDEAS, correct: 1 }],
+        },
+        {
+          type: "written",
+          kind: "Problem lösen",
+          title: "Say why",
+          intro: "Now finish the sentence. Say why your idea is the best one.",
+          help: "You can use: two weeks is short · he can start at once · word by word takes too long · German takes a long time",
+          starters: ["Idea 2 is best, because …"],
+        },
+        {
+          type: "game",
+          game: "monster-hangman",
+          kind: "Spiel",
+          title: "Monster's Lunch",
+          intro:
+            "Guess the club word letter by letter and save the hero from the monster — every wrong letter feeds it!",
+          words: GAME_WORDS,
         },
       ],
     },
@@ -226,58 +269,103 @@ export default {
       layout: "spread",
       cards: [
         {
+          type: "phrase-reference",
+          kind: "Wortschatz",
+          title: "The words of this lesson",
+          intro: "Eight words. Tap a word to see what it means.",
+          sections: WORDS,
+        },
+        {
+          type: "text",
+          kind: "Theorie",
+          title: "The four points",
+          intro:
+            "Mediation means passing on what matters — not translating word by word. Keep this next to you.",
+          paragraphs: FOUR_POINTS.map((l) => [l]),
+        },
+        {
+          type: "text",
+          kind: "Das Schwarze Brett",
+          title: "The notice board",
+          intro:
+            "Six students from an American high school are at your school for two weeks. These are the five German notices they found. Useful words: " +
+            USEFUL_WORDS,
+          paragraphs: NOTICES,
+        },
+        {
           type: "match-up",
           kind: "Zuordnen",
           title: "Which club fits which guest?",
           intro:
-            "Before they came, the guests wrote what they are looking for. Choose the right club for each guest.",
-          help: "Finde für jede*n Gast die passende AG.",
-          options: CLUBS,
-          items: guestItems(4),
+            "Each guest wrote what he or she is looking for. Which club fits? Example: Sam: “I like reading.” → Reading club.",
+          help: "Welche AG passt zu welchem Gast?",
+          options: GUEST_MATCH.options,
+          items: GUEST_MATCH.items,
         },
         {
           type: "written",
           kind: "Begründen",
           title: "Why does it fit?",
-          intro: "Now say in English why each club fits.",
+          intro:
+            "Now write one sentence in English for each guest that says WHY this club fits them.",
           help: "Sentence starters: This club is for … | It fits you because … | You don't need … | They meet every … at … in …",
           answerLines: 2,
-          questions: whyQuestions(4),
+          questions: [
+            { q: "Maya — not good at team sports", starter: "It fits you because …" },
+            { q: "Alisha — sings in a choir at home", starter: "It fits you because …" },
+            { q: "Diego — good with technology, not on a stage", starter: "It fits you because …" },
+            { q: "Josh — likes being outside", starter: "It fits you because …" },
+          ],
         },
         {
           type: "written",
           kind: "Antworten",
           title: "Answer the guests",
-          intro: "Answer in English. Name the club and say when and where it meets.",
-          help: "Nenne die AG und sage, wann und wo sie stattfindet.",
-          answerLines: 2,
-          questions: GUEST_QUESTIONS,
+          intro:
+            "Answer each guest in English. Every answer must name the club, the day, the time and the place — and it must answer the question the guest really asked.",
+          help: "Lies den Aushang zu Ende! Bei Alisha gehört dazu, dass der nächste Auftritt erst im Juli ist.",
+          answerLines: 3,
+          questions: [
+            { q: "1. Maya: “Great, climbing! Do I have to bring my own shoes and a rope — and does it matter that I have never climbed?”", starter: "No, you don't have to …" },
+            { q: "2. Alisha: “I'd love to sing with the band. When could I actually perform with them?”", starter: "Not while you are here, I'm afraid: …" },
+            { q: "3. Diego: “When and where does the technical club meet — and do I need to know anything before I come?”", starter: "They meet on …" },
+            { q: "4. Josh: “What should I wear for the garden club, and when exactly is it?”", starter: "Wear …" },
+          ],
         },
         {
           type: "written",
           kind: "Empfehlen",
           title: "Your recommendation",
           intro:
-            "Which club would you recommend to the guests? Write two sentences: which one and why.",
-          help: "Welche AG würdest du empfehlen? Schreibe zwei Sätze.",
-          starters: ["I would recommend …", "I recommend it because …"],
+            "Which club would you recommend to all the guests? Write two sentences: the first says which club, the second says why it is good for guests who are only here for two weeks.",
+          help: "Beispiel: I would recommend the school garden, because it is in the lunch break. The guests don't have to stay longer at school.",
+          answerLines: 2,
+          questions: [
+            { q: "Which club do you recommend?", starter: "I would recommend …" },
+            { q: "Why is it good for a two-week guest?", starter: "It is good for them, because …" },
+          ],
         },
         {
           type: "written",
           kind: "Problem lösen",
-          title: "Collect two ideas",
-          intro: PROBLEM + " Collect two ideas.",
-          help: "Sammle zwei Ideen.",
-          starters: ["Idea 1 —", "Idea 2 —"],
-        },
-        {
-          type: "written",
-          kind: "Problem lösen",
-          title: "Write your solution",
+          title: "Which idea is best?",
           intro:
-            "Choose your best idea and write your solution in 3 sentences: What do you do? Why does it help? What is the first step?",
-          help: "Useful phrases: Our solution is … · This helps because … · The guests only need … · First, we would … · Then …",
-          starters: ["Our solution is …", "This helps because …", "First, we would …"],
+            GK_PROBLEM +
+            " Which idea is best — 1, 2 or 3? " +
+            GK_IDEAS.join("  ") +
+            " Write two sentences. There is no single right answer — what counts is your reason.",
+          help: "Tipp: Eine Übersetzungs-App übersetzt Schulwörter oft falsch.",
+          answerLines: 2,
+          questions: [{ q: "Which idea is best, and why?", starter: "Idea ___ is best, because …" }],
+        },
+        {
+          type: "game",
+          game: "monster-hangman",
+          kind: "Spiel",
+          title: "Monster's Lunch",
+          intro:
+            "Guess the club word letter by letter and save the hero from the monster — every wrong letter feeds it!",
+          words: GAME_WORDS,
         },
       ],
     },
@@ -290,66 +378,112 @@ export default {
       layout: "spread",
       cards: [
         {
+          type: "phrase-reference",
+          kind: "Wortschatz",
+          title: "The words of this lesson",
+          intro: "Eight words. Tap a word to see what it means.",
+          sections: WORDS,
+        },
+        {
+          type: "text",
+          kind: "Theorie",
+          title: "The four points",
+          intro:
+            "Mediation means passing on what matters — not translating word by word. Keep this next to you.",
+          paragraphs: FOUR_POINTS.map((l) => [l]),
+        },
+        {
+          type: "text",
+          kind: "Das Schwarze Brett",
+          title: "The notice board",
+          intro:
+            "Six students from an American high school are at your school for two weeks. These are the five German notices they found. Useful words: " +
+            USEFUL_WORDS,
+          paragraphs: NOTICES,
+        },
+        {
           type: "match-up",
           kind: "Zuordnen",
           title: "Which club fits which guest?",
           intro:
-            "Before they came, the guests wrote what they are looking for. Choose the right club for each guest.",
-          options: CLUBS,
-          items: guestItems(4),
+            "Each guest wrote what he or she is looking for. Which club fits? One of the five clubs will be left over — you need it in the next task.",
+          options: GUEST_MATCH.options,
+          items: GUEST_MATCH.items,
         },
         {
           type: "written",
           kind: "Begründen",
           title: "Why does it fit?",
-          intro:
-            "Say in English why each club fits. Select only the information the guest really needs.",
-          answerLines: 2,
-          questions: whyQuestions(4),
-        },
-        {
-          type: "written",
-          kind: "Analysieren",
-          title: "And one more",
-          intro:
-            "One of the five clubs does not fit any of the guests. Which one is it — and why not?",
+          intro: "Write one sentence in English for each guest that says WHY this club fits them.",
+          help: "Die Zuordnung zählt nur mit einer Begründung, die sich wirklich auf den Wunsch bezieht.",
           answerLines: 2,
           questions: [
-            { q: "Which club fits nobody, and why not?", starter: "The … does not fit anybody because …" },
+            { q: "Maya — not good at team sports", starter: "It fits you because …" },
+            { q: "Alisha — sings in a choir at home", starter: "It fits you because …" },
+            { q: "Diego — good with technology, not on a stage", starter: "It fits you because …" },
+            { q: "Josh — likes being outside", starter: "It fits you because …" },
           ],
         },
         {
           type: "written",
           kind: "Antworten",
           title: "Answer the guests",
-          intro: "Answer in English. Name the club and say when and where it meets.",
-          answerLines: 2,
-          questions: GUEST_QUESTIONS,
+          intro:
+            "Answer each guest in English. Every answer must name the club, the day, the time and the place — and it must answer the question the guest really asked.",
+          answerLines: 3,
+          questions: [
+            { q: "1. Maya: “Great, climbing! Do I have to bring my own shoes and a rope — and does it matter that I have never climbed?”", starter: "No, you don't have to …" },
+            { q: "2. Alisha: “I'd love to sing with the band. When could I actually perform with them?”", starter: "Not while you are here, I'm afraid: …" },
+            { q: "3. Diego: “When and where does the technical club meet — and do I need to know anything before I come?”", starter: "They meet on …" },
+            { q: "4. Josh: “What should I wear for the garden club, and when exactly is it?”", starter: "Wear …" },
+          ],
         },
         {
           type: "written",
           kind: "Empfehlen",
           title: "Your recommendation",
           intro:
-            "Which club would you recommend to the guests? Write two sentences: which one and why.",
-          starters: ["I would recommend …", "I recommend it because …"],
+            "Which club would you recommend to all the guests? Write two sentences: which club, and why it is good for guests who are only here for two weeks.",
+          answerLines: 2,
+          questions: [
+            { q: "Which club do you recommend?", starter: "I would recommend …" },
+            { q: "Why is it good for a two-week guest?", starter: "It is good for them, because …" },
+          ],
         },
         {
           type: "written",
-          kind: "Problem lösen",
-          title: "Find a solution",
-          intro: PROBLEM + " Write your solution in 3 sentences.",
-          starters: ["What we do: …", "Why it helps: …", "The first step: …"],
+          kind: "Schlussfolgern · Challenge",
+          title: "Which club fits nobody?",
+          intro:
+            "One of the five clubs does not fit any of the guests. Which one is it — and why not? Answer in one or two sentences. Name the real reason, not just “it doesn't fit”.",
+          help: "Tipp: Lies noch einmal, wie lange die Ausbildung dauert und ab welcher Klasse sie ist.",
+          answerLines: 2,
+          questions: [{ q: "Which club fits nobody, and why not?", starter: "The … does not fit anybody, because …" }],
         },
         {
           type: "written",
           kind: "Problem lösen · Challenge",
-          title: "Answer the objection",
+          title: "Which idea is best?",
           intro:
-            "Somebody says: “A short version leaves out important information — that is unfair to the guests.” What do you answer?",
-          help: "Useful phrases: That is true, but … · The guests only need … · They can still ask … · A notice nobody understands helps nobody.",
+            GK_PROBLEM +
+            " Which idea is best — 1, 2 or 3? " +
+            GK_IDEAS.join("  ") +
+            " Write two sentences: one for your choice, one against another idea.",
+          help: "Tipp: Wort für Wort dauert zu lange und hilft beim Auswählen nicht.",
           answerLines: 2,
-          questions: [{ q: "Your answer to the objection:", starter: "That is true, but …" }],
+          questions: [
+            { q: "Which idea is best, and why?", starter: "Idea ___ is best, because …" },
+            { q: "Why is another idea not as good?", starter: "Idea ___ is worse, because …" },
+          ],
+        },
+        {
+          type: "game",
+          game: "monster-hangman",
+          kind: "Spiel",
+          title: "Monster's Lunch",
+          intro:
+            "Guess the club word letter by letter and save the hero from the monster — every wrong letter feeds it!",
+          words: GAME_WORDS,
         },
       ],
     },
@@ -365,27 +499,28 @@ export default {
         {
           type: "essay-editor",
           kind: "Kreativ · Challenge",
-          title: "Write the English notice",
+          title: "The English card for the board",
           intro:
-            "Choose ONE club from the board and write the English version for the guests — short enough to read while standing in the hallway. Four points are enough: what it is, who it is for, when, where.",
-          min: 35,
-          max: 80,
-          placeholder: "CLIMBING CLUB\nWhat: …\nWho for: …\nWhen: …\nWhere: …",
+            "Make the card that solves the problem: ONE English card for the whole notice board. Four points for each club — what it is, who it is for, when and where it meets. Short enough to read in a minute.",
+          min: 60,
+          max: 130,
+          placeholder: "AFTER-CLASS CLUBS — in English\n\nClimbing club · for beginners too · Mondays, 2 p.m., in the gym …",
           chips: [
-            "It is a club for …",
-            "It meets every … at …",
-            "You don't need …",
-            "Beginners are welcome.",
-            "The school gives you …",
+            "… club · for … · … at … · in …",
+            "Beginners welcome.",
+            "The school gives you the equipment.",
+            "You don't need any experience.",
+            "Open to all classes.",
+            "Wear old clothes.",
           ],
           checklist: [
-            "A guest knows WHAT the club does.",
-            "A guest knows WHO it is for.",
-            "A guest knows WHEN it meets.",
-            "A guest knows WHERE it meets.",
-            "I left out everything they don't need.",
+            "Every club has what · who for · when · where.",
+            "I left out what a two-week guest does not need.",
+            "I did not translate word by word.",
+            "A guest could read it in about a minute.",
+            "The club that fits nobody is not on my card — or I said why.",
           ],
-          help: "★ Bonus: give your notice to a partner. Can they find all four points in ten seconds?",
+          help: "★ Bonus: give your card to a partner. Can they pick a club for Maya in ten seconds?",
         },
       ],
     },

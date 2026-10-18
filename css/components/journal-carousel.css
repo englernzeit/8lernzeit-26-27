@@ -887,6 +887,21 @@
 .taskcard--slate .taskcard__help { color: var(--j-slate); }
 .taskcard--ochre .taskcard__help { color: var(--j-ochre); }
 
+/* --- Several recordings on one card -------------------------------
+   Unit 2's announcements are four separate files; stacked they would
+   push the task itself off the screen, so they tile two-up. */
+.taskcard__tracks {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.55rem 0.9rem;
+  margin-bottom: 0.5rem;
+}
+.taskcard__tracks .exo-audio-wrap { margin: 0; }
+
+@media (orientation: portrait) {
+  .taskcard__tracks { grid-template-columns: 1fr; }
+}
+
 /* --- Slide-deck cards --------------------------------------------
    A presentation cut into swipeable cards. The card is almost all
    picture: a thin head row, the slide, and one line of plain-words

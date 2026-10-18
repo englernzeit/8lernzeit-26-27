@@ -2,32 +2,78 @@
  * The best days of your life (Unit 2) — Grammar: "The -ing form"
  * (after verbs · after prepositions · as the subject).
  *
- * Built from the three differentiated worksheets (LE · G-Kurs · E-Kurs)
- * for this unit, rebuilt as one interactive page and mapped onto Steps:
+ * Built from the three differentiated worksheets (LE · G-Kurs · E-Kurs):
  *
- *   Step 1 (LE)        — word boxes, German instructions, sentence frames
- *   Step 2 (G-Kurs)    — the same exercises without the word boxes
- *   Step 3 (E-Kurs)    — English only, plus "find the mistake" and an objection
+ *   Step 1 (LE)        — Tom's first day: the -ing form after a feeling word
+ *                        and after a small word, plus the school picture
+ *   Step 2 (G-Kurs)    — the three rules on real sentences
+ *   Step 3 (E-Kurs)    — the same, plus "find the mistake" and an objection
  *   Step 4 (Challenge) — invent your own after-school club
  *
- * Every level ends with the unit's recurring PROBLEM SOLVING task: find a
- * solution, give reasons, and (E-Kurs) answer an objection.
+ * Every level ends with the unit's recurring PROBLEM SOLVING task: three ideas
+ * are given, you pick one and say why — E-Kurs also argues against another.
  */
 
-/** The eight -ing forms the LE word box offers. */
-const LE_ING_BANK = [
-  "doing", "getting", "playing", "running",
-  "singing", "talking", "watching", "writing",
+/* ============ Step 1 (LE) — Tom's first day ============ */
+
+/** The eight comic words Tom's story is built on. */
+const LE_WORDS = [
+  {
+    label: "Tom's first day",
+    accent: "coral",
+    pairs: [
+      ["freshman", "im 1. Schuljahr — a student in the first year"],
+      ["intimidating", "einschüchternd — it makes you feel small"],
+      ["hallway", "der Flur — the long room with the lockers"],
+      ["locker", "das Schließfach — your own small cupboard"],
+    ],
+  },
+  {
+    label: "Around the school",
+    accent: "olive",
+    pairs: [
+      ["senior", "im letzten Schuljahr — a student in the last year"],
+      ["cafeteria", "die Mensa — where you have lunch"],
+      ["announcement", "die Durchsage — what you hear over the loudspeaker"],
+      ["homecoming", "das Schulfest — a big game and a dance on one day"],
+    ],
+  },
 ];
 
-/** The prepositions the LE word box offers (two of them are needed twice). */
-const LE_PREP_BANK = ["about", "about", "at", "for", "in", "of", "to", "to"];
+/** Exercise 1 (LE) — after a feeling word. The comic panel is the context. */
+const LE_FEELING_GAPS = [
+  { hint: "Panel 2 · hate", segments: ["Tom hates ", { answer: "standing", size: 11 }, " in the crowd. (stand)"] },
+  { hint: "Panel 3 · don't like", segments: ["He doesn't like ", { answer: "walking", size: 10 }, " down the long hallway alone. (walk)"] },
+  { hint: "Panel 4 · hate", segments: ["He hates ", { answer: "opening", size: 10 }, " his locker. (open)"] },
+  { hint: "Panel 5 · don't mind", segments: ["He doesn't mind ", { answer: "asking", size: 9 }, " a senior for help. (ask)"] },
+  { hint: "Panel 7 · stop", segments: ["Everybody stops ", { answer: "talking", size: 10 }, " and listens to the announcement. (talk)"] },
+  { hint: "Panel 8 · love", segments: ["He loves ", { answer: "dancing", size: 10 }, " at the homecoming party. (dance)"] },
+];
 
-/** Ideas for the "write your own sentences" task (shared by all three levels). */
-const OWN_IDEAS =
+/** Exercise 2 (LE) — after a small word. The small word is already there. */
+const LE_PREP_GAPS = [
+  { hint: "Panel 1 · afraid of", segments: ["Tom is afraid of ", { answer: "starting", size: 11 }, " at a new school. (start)"] },
+  { hint: "Panel 4 · good at", segments: ["He is not good at ", { answer: "opening", size: 10 }, " his locker. (open)"] },
+  { hint: "Panel 5 · good at", segments: ["The senior is good at ", { answer: "helping", size: 10 }, " other students. (help)"] },
+  { hint: "Panel 8 · looking forward to", segments: ["Tom is looking forward to ", { answer: "going", size: 9 }, " to the next party. (go)"] },
+];
+
+/** Exercise 3 (LE) — both rules, this time in the six rooms of the school. */
+const LE_ROOM_GAPS = [
+  { hint: "Room 2 · the library", segments: ["The girls like ", { answer: "reading", size: 10 }, " books in the library. (read)"] },
+  { hint: "Room 5 · the music room", segments: ["The students enjoy ", { answer: "making", size: 9 }, " music. (make)"] },
+  { hint: "Room 1 · the hallway", segments: ["The boy is good at ", { answer: "opening", size: 10 }, " lockers. (open)"] },
+  { hint: "Room 4 · the cafeteria", segments: ["Tom doesn't mind ", { answer: "eating", size: 9 }, " with his friends. (eat)"] },
+];
+
+/* ============ Steps 2 and 3 (G-Kurs · E-Kurs) ============ */
+
+/** Ideas for the "write your own sentences" task (both boxes of the sheet). */
+const OWN_LEFT = "good at · interested in · afraid of · enjoy · hate · don't mind · keep";
+const OWN_RIGHT =
   "get up early · speak in front of the class · help in the school garden · take photos for the paper · work with people I don't know · write emails in English · climb";
 
-/** Exercise 1 — the same eight verb gaps at every level (LE adds a word box). */
+/** Exercise 1 — the same eight verb gaps at G-Kurs and E-Kurs. */
 const ING_GAPS = [
   { hint: "enjoy + -ing", segments: ["I enjoy ", { answer: "playing", size: 10 }, " basketball after school. (play)"] },
   { hint: "hate + -ing", segments: ["My sister hates ", { answer: "getting", size: 10 }, " up early on Mondays. (get)"] },
@@ -39,7 +85,7 @@ const ING_GAPS = [
   { hint: "stop + -ing", segments: ["Please stop ", { answer: "running", size: 10 }, " in the hallway! (run)"] },
 ];
 
-/** Exercise 2 — the same eight preposition gaps at every level. */
+/** Exercise 2 — the same eight preposition gaps at G-Kurs and E-Kurs. */
 const PREP_GAPS = [
   { hint: "interested …", segments: ["I'm interested ", { answer: "in", size: 5 }, " joining the drama club."] },
   { hint: "good …", segments: ["Beth is really good ", { answer: "at", size: 5 }, " playing the flute."] },
@@ -59,9 +105,46 @@ const REWRITE_QUESTIONS = [
   { q: "It is important to join an after-class activity.", starter: "Joining …" },
 ];
 
-/** The problem all three levels solve, in one sentence per level of detail. */
-const PROBLEM_SHORT =
-  "THE PROBLEM: Half of your class wants to play football every afternoon with the six American guests. The others think that is boring. The guests arrive on Monday and nobody can agree.";
+/* ============ The problems ============ */
+
+const LE_PROBLEM =
+  "THE PROBLEM: Tom's locker is in the hallway, but his next lesson is in the gym — and he has only four minutes.";
+const LE_IDEAS = [
+  "1 — He runs through the crowd.",
+  "2 — He takes his sports bag with him in the morning.",
+  "3 — He always comes late.",
+];
+
+const GK_PROBLEM =
+  "THE PROBLEM: Six guests from Boston are at your school for one week. Half of your class wants to play football every afternoon. The others say that is boring.";
+const GK_IDEAS = [
+  "1 — Ask the guests what they like doing.",
+  "2 — Play football every afternoon.",
+  "3 — Plan something different for every afternoon.",
+];
+
+/* ============ The word game (Unit 1's Monster's Lunch) ============ */
+
+const GAME_WORDS = [
+  { word: "FRESHMAN", hint: "im 1. Schuljahr" },
+  { word: "SENIOR", hint: "im letzten Schuljahr" },
+  { word: "HALLWAY", hint: "der Flur" },
+  { word: "LOCKER", hint: "das Schließfach" },
+  { word: "CAFETERIA", hint: "die Mensa" },
+  { word: "HOMECOMING", hint: "das Schulfest" },
+  { word: "ANNOUNCEMENT", hint: "die Durchsage" },
+  { word: "INTIMIDATING", hint: "einschüchternd" },
+  { word: "LIBRARY", hint: "die Bücherei" },
+  { word: "CHOIR", hint: "der Chor" },
+  { word: "PROM", hint: "der Schulball" },
+  { word: "FLUTE", hint: "die Querflöte" },
+  { word: "CROWD", hint: "die Menschenmenge" },
+  { word: "DANCING", hint: "-ing-Form von dance" },
+  { word: "SINGING", hint: "-ing-Form von sing" },
+  { word: "RUNNING", hint: "-ing-Form von run" },
+  { word: "GETTING", hint: "-ing-Form von get" },
+  { word: "SWIMMING", hint: "-ing-Form von swim" },
+];
 
 /**
  * The opening comic — "Gerunds in Action", the 15-slide presentation cut into
@@ -213,82 +296,73 @@ export default {
       layout: "slide",
       cards: [
         {
-          type: "written",
-          kind: "Aufwärmen",
-          title: "Before you start",
-          intro: "Which activity do you like doing after school? Write one sentence.",
-          help: "Welche Tätigkeit machst du nach der Schule gern? Schreibe einen Satz.",
-          starters: ["I like …"],
+          type: "phrase-reference",
+          kind: "Wortschatz",
+          title: "Tom's first day — the words",
+          intro: "These eight words tell Tom's story. Tap a word to see what it means.",
+          sections: LE_WORDS,
         },
         {
           type: "gap-fill",
           kind: "Lücken",
-          title: "After these verbs",
-          intro: "Put the verb in brackets into the -ing form. The word box helps you.",
-          help: "Setze das Verb in Klammern in die -ing-Form. Der Kasten hilft dir.",
-          bank: LE_ING_BANK,
-          bankCap: "Word box",
-          items: ING_GAPS,
-        },
-        {
-          type: "gap-fill",
-          kind: "Lücken",
-          title: "Words that go together",
-          intro: "Fill in the missing small word. Two of them are needed twice.",
-          help: "Setze das fehlende kleine Wort aus dem Kasten ein. Zwei Wörter brauchst du zweimal.",
-          bank: LE_PREP_BANK,
-          bankCap: "Word box",
-          items: PREP_GAPS,
-        },
-        {
-          type: "written",
-          kind: "Umformen",
-          title: "Start the sentence with -ing",
+          title: "Rule 1 — after a feeling word",
           intro:
-            "Write each sentence again, but start with the -ing form. Example: It is fun to play in the school band. → Playing in the school band is fun.",
-          help: "Schreibe den Satz neu. Beginne mit der -ing-Form.",
-          answerLines: 1,
-          questions: REWRITE_QUESTIONS,
+            "How does Tom feel? Write the -ing form of the verb in brackets. Example: He doesn't like eating (eat) alone in the cafeteria.",
+          help: "Nach hate, like, love, enjoy, don't mind und stop steht die -ing-Form.",
+          items: LE_FEELING_GAPS,
+        },
+        {
+          type: "gap-fill",
+          kind: "Lücken",
+          title: "Rule 2 — after a small word",
+          intro:
+            "The small word is already there. Write only the -ing form. Example: He is afraid of meeting (meet) the big students.",
+          help: "Nach of, at und to steht die -ing-Form — auch nach to in looking forward to.",
+          items: LE_PREP_GAPS,
+        },
+        {
+          type: "gap-fill",
+          kind: "Lücken",
+          title: "What do they like doing?",
+          intro:
+            "Six rooms in the school: 1 hallway · 2 library · 3 principal's office · 4 cafeteria · 5 music room · 6 gym. Write the -ing form. Example: Room 6 — The boys like playing (play) basketball.",
+          help: "Hier brauchst du beide Regeln. Nr. 3 ist Regel 2 (good at), die anderen sind Regel 1.",
+          items: LE_ROOM_GAPS,
         },
         {
           type: "written",
           kind: "Schreiben",
           title: "Your own sentences",
           intro:
-            "Write 4 sentences about yourself. Finish each sentence with one of the ideas below — use each idea only once.",
-          help: "Ideas: " + OWN_IDEAS,
-          starters: ["I enjoy …", "I'm good at …", "I don't mind …", "I'm afraid of …"],
+            "Write 3 sentences about yourself. Use the words from Tom's comic. Example: I hate walking down the hallway alone.",
+          help: "Schreibe 3 Sätze über dich. Nach dem Signalwort steht immer die -ing-Form.",
+          starters: ["I like …", "I hate …", "I am good at …"],
         },
         {
-          type: "group-sort",
+          type: "multiple-choice",
           kind: "Problem lösen",
-          title: "Which ideas help?",
-          intro: PROBLEM_SHORT + " Sort the ideas, then press Check.",
-          help: "Das Problem: Die Hälfte der Klasse will jeden Nachmittag Fußball spielen, die andere Hälfte findet das langweilig.",
-          groups: [
-            {
-              label: "✅ This helps",
-              items: [
-                "We ask the guests what they like doing.",
-                "We make a plan: one sport day, one city day, one cooking day.",
-              ],
-            },
-            {
-              label: "❌ This doesn't help",
-              items: [
-                "We play football every afternoon.",
-                "We do nothing and wait until Monday.",
-              ],
-            },
-          ],
+          title: "Which idea is best?",
+          intro: LE_PROBLEM + " Which idea helps most?",
+          help: "Welche Idee ist am besten? Wähle eine aus.",
+          shuffle: false,
+          questions: [{ q: "Which idea is best?", options: LE_IDEAS, correct: 1 }],
         },
         {
           type: "written",
           kind: "Problem lösen",
-          title: "Write your solution",
-          intro: "Now write your solution in 3 sentences. The sentence frame helps you.",
-          help: "Schreibe deine Lösung in 3 Sätzen. Nutze das Satzgerüst.",
-          starters: ["Our idea is …", "This helps because …", "First, we …"],
+          title: "Say why",
+          intro: "Now finish the sentence. Say why your idea is the best one.",
+          help: "You can use: he doesn't need his locker · he is never late · it is easy · nobody has to run",
+          starters: ["Idea 2 is best, because …"],
+        },
+        {
+          type: "game",
+          game: "monster-hangman",
+          kind: "Spiel",
+          title: "Monster's Lunch",
+          intro:
+            "Guess the high school word letter by letter and save the hero from the monster — every wrong letter feeds it!",
+          words: GAME_WORDS,
         },
       ],
     },
@@ -304,24 +378,29 @@ export default {
           type: "written",
           kind: "Aufwärmen",
           title: "Before you start",
-          intro: "Which activity do you like doing after school? Write one sentence.",
-          help: "Welche Tätigkeit machst du nach der Schule gern?",
+          intro:
+            "Write one sentence about an activity you like doing after school. Begin with I like and put the next verb into the -ing form.",
+          help: "Beginne mit I like und setze das nächste Verb in die -ing-Form.",
           starters: ["I like …"],
         },
         {
           type: "gap-fill",
           kind: "Lücken",
           title: "After these verbs",
-          intro: "Put the verb in brackets into the -ing form.",
-          help: "Setze das Verb in Klammern in die -ing-Form.",
+          intro:
+            "Write the verb from the brackets into the gap, in the -ing form. One word in each gap. Example: I like swimming (swim) in the sea.",
+          help: "Setze das Verb aus der Klammer in der -ing-Form ein.",
           items: ING_GAPS,
         },
         {
           type: "gap-fill",
           kind: "Lücken",
           title: "Words that go together",
-          intro: "Fill in the missing preposition: at, in, of, to, about or for.",
-          help: "Setze die fehlende Präposition ein.",
+          intro:
+            "Write the missing small word into the gap — one of these: at, in, of, to, about, for. Example: She is afraid of flying.",
+          help: "Setze die fehlende Präposition ein. Zwei Wörter brauchst du zweimal.",
+          bank: ["at", "in", "of", "to", "about", "for"],
+          bankCap: "Word box",
           items: PREP_GAPS,
         },
         {
@@ -329,8 +408,8 @@ export default {
           kind: "Umformen",
           title: "Start the sentence with -ing",
           intro:
-            "Write each sentence again, but start with the -ing form. Example: It is fun to play in the school band. → Playing in the school band is fun.",
-          help: "Schreibe den Satz neu. Beginne mit der -ing-Form.",
+            "Write the whole sentence again, but start it with the -ing form. The meaning stays the same. Example: It is fun to play in the school band. → Playing in the school band is fun.",
+          help: "Nimm das Verb nach to, stelle es an den Anfang und hänge -ing an. Danach folgt is.",
           answerLines: 1,
           questions: REWRITE_QUESTIONS,
         },
@@ -339,32 +418,37 @@ export default {
           kind: "Schreiben",
           title: "Your own sentences",
           intro:
-            "Write 5 sentences about yourself. Finish each sentence with one of the ideas below — use each idea only once.",
-          help: "Ideas: " + OWN_IDEAS,
+            "Write 5 sentences about yourself. Take one expression from the left box and one from the right box for each sentence. Use every expression only once, and put the verb from the right box into the -ing form.",
+          help: "LEFT: " + OWN_LEFT + "  ·  RIGHT: " + OWN_RIGHT,
           starters: [
-            "I enjoy …",
-            "I'm good at …",
             "I don't mind …",
+            "I'm not very good at …",
             "I'm interested in …",
-            "I hate …",
+            "I'm afraid of …",
+            "I enjoy …",
           ],
         },
         {
           type: "written",
           kind: "Problem lösen",
-          title: "Collect two ideas",
-          intro: PROBLEM_SHORT + " Collect two ideas that could solve it.",
-          help: "Das Problem: Die Hälfte der Klasse will jeden Nachmittag Fußball spielen, die andere findet das langweilig. Sammle zwei Ideen.",
-          starters: ["Idea 1 —", "Idea 2 —"],
+          title: "Which idea is best?",
+          intro:
+            GK_PROBLEM +
+            " Which idea is best — 1, 2 or 3? " +
+            GK_IDEAS.join("  ") +
+            " Write two sentences. There is no single right answer — what counts is your reason.",
+          help: "Beispiel (anderes Problem): „Idea 2 is best, because a pen box helps everybody and costs nothing.“",
+          answerLines: 2,
+          questions: [{ q: "Which idea is best, and why?", starter: "Idea ___ is best, because …" }],
         },
         {
-          type: "written",
-          kind: "Problem lösen",
-          title: "Write your solution",
+          type: "game",
+          game: "monster-hangman",
+          kind: "Spiel",
+          title: "Monster's Lunch",
           intro:
-            "Choose your best idea and write your solution in 3 sentences. Use at least two -ing forms.",
-          help: "Useful phrases: Our solution is … · This helps because … · Everybody could … · First, we would … · Then …",
-          starters: ["Our solution is …", "This helps because …", "First, we would …"],
+            "Guess the high school word letter by letter and save the hero from the monster — every wrong letter feeds it!",
+          words: GAME_WORDS,
         },
       ],
     },
@@ -378,23 +462,26 @@ export default {
       cards: [
         {
           type: "written",
-          kind: "Warm-up",
+          kind: "Aufwärmen",
           title: "Before you start",
-          intro: "Which activity do you like doing after school? Write one sentence.",
+          intro:
+            "Write one sentence about an activity you like doing after school. Begin with I like and put the next verb into the -ing form.",
           starters: ["I like …"],
         },
         {
           type: "gap-fill",
           kind: "Lücken",
           title: "After these verbs",
-          intro: "Put the verb in brackets into the -ing form.",
+          intro:
+            "Write the verb from the brackets into the gap, in the -ing form. One word in each gap.",
           items: ING_GAPS,
         },
         {
           type: "gap-fill",
           kind: "Lücken",
           title: "Words that go together",
-          intro: "Fill in the missing preposition: at, in, of, to, about or for.",
+          intro:
+            "Write the missing small word into the gap — one of these: at, in, of, to, about, for.",
           items: PREP_GAPS,
         },
         {
@@ -402,7 +489,7 @@ export default {
           kind: "Umformen",
           title: "Start the sentence with -ing",
           intro:
-            "Write each sentence again, but start with the -ing form. Example: It is fun to play in the school band. → Playing in the school band is fun.",
+            "Write the whole sentence again, but start it with the -ing form. The meaning stays the same. Example: It is fun to play in the school band. → Playing in the school band is fun.",
           answerLines: 1,
           questions: REWRITE_QUESTIONS,
         },
@@ -411,8 +498,8 @@ export default {
           kind: "Fehlersuche",
           title: "Find the mistake",
           intro:
-            "Each sentence has one mistake with the -ing form. Write the whole sentence correctly.",
-          help: "Remember: after a preposition (to, at, in, of) and at the start of a sentence, English uses the -ing form — never the infinitive with to.",
+            "In every sentence one -ing form is wrong. Write the whole sentence correctly.",
+          help: "Nach einer Präposition und am Satzanfang steht die -ing-Form — nie der Infinitiv mit to.",
           answerLines: 1,
           questions: [
             { q: "I look forward to see you in September.", starter: "I look forward to …" },
@@ -427,37 +514,41 @@ export default {
           kind: "Schreiben",
           title: "Your own sentences",
           intro:
-            "Write 6 sentences about yourself. Finish each sentence with one of the ideas below — use each idea only once.",
-          help: "Ideas: " + OWN_IDEAS,
+            "Write 6 sentences about yourself. Take one expression from the left box and one from the right box for each sentence. Use every expression only once, and put the verb from the right box into the -ing form.",
+          help: "LEFT: " + OWN_LEFT + "  ·  RIGHT: " + OWN_RIGHT,
           starters: [
-            "I enjoy …",
             "I'm good at …",
-            "I don't mind …",
             "I'm interested in …",
             "I'm afraid of …",
+            "I enjoy …",
+            "I hate …",
             "I keep …",
           ],
         },
         {
           type: "written",
-          kind: "Problem lösen",
-          title: "Collect two ideas",
+          kind: "Problem lösen · Challenge",
+          title: "Which idea is best?",
           intro:
-            "THE PROBLEM: Your class is planning the afternoon programme for six American exchange students. Half of the class wants to play football every day. The others say that playing football every afternoon is boring. The guests arrive on Monday and nobody can agree. Collect two ideas.",
-          starters: ["Idea 1 —", "Idea 2 —"],
+            GK_PROBLEM +
+            " Which idea is best — 1, 2 or 3? " +
+            GK_IDEAS.join("  ") +
+            " Write two sentences: one for your choice, one against another idea.",
+          help: "Idee 2 ist die schwächste — sie übergeht genau die Hälfte der Klasse. Wer sie wählt, braucht ein starkes Argument.",
+          answerLines: 2,
+          questions: [
+            { q: "Which idea is best, and why?", starter: "Idea ___ is best, because …" },
+            { q: "Why is another idea not as good?", starter: "Idea ___ is worse, because …" },
+          ],
         },
         {
-          type: "written",
-          kind: "Problem lösen · Challenge",
-          title: "Answer the objection",
+          type: "game",
+          game: "monster-hangman",
+          kind: "Spiel",
+          title: "Monster's Lunch",
           intro:
-            "A classmate says: “Asking everybody takes far too long — we only have the weekend!” Write your solution first, then your answer to the objection.",
-          help: "Useful phrases: That is true, but … · It only takes … · We could simply … · Otherwise we risk …",
-          starters: [
-            "My solution is …",
-            "This helps because …",
-            "My answer to the objection: …",
-          ],
+            "Guess the high school word letter by letter and save the hero from the monster — every wrong letter feeds it!",
+          words: GAME_WORDS,
         },
       ],
     },
