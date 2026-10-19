@@ -1368,6 +1368,12 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
 .exo-words__sec--ochre .exo-words__label { color: var(--j-ochre); }
 .exo-words__sec--teal .exo-words__label { color: var(--j-teal); }
 
+.exo-words__sec--coral .exo-words__card { border-color: rgba(164, 108, 245, 0.3); }
+.exo-words__sec--olive .exo-words__card { border-color: rgba(90, 217, 143, 0.3); }
+.exo-words__sec--slate .exo-words__card { border-color: rgba(95, 180, 245, 0.32); }
+.exo-words__sec--ochre .exo-words__card { border-color: rgba(245, 185, 74, 0.32); }
+.exo-words__sec--teal .exo-words__card { border-color: rgba(95, 180, 245, 0.32); }
+
 .exo-words__grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -1385,12 +1391,15 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
   justify-content: center;
   gap: 0.4rem;
   text-align: center;
-  min-height: 3.4rem;
-  padding: 0.6rem 0.7rem 0.65rem;
-  background: var(--j-paper-2);
-  border: 1.5px solid rgba(126, 150, 176, 0.22);
+  min-height: 3.6rem;
+  padding: 0.65rem 0.7rem 0.7rem;
+  /* A lighter navy than the task sheet, so the eight cards read as objects
+     lying ON the card rather than panels cut out of it. The section accent
+     colours the rim, which is what tells the two groups apart. */
+  background: var(--j-sticky);
+  border: 1.5px solid rgba(126, 150, 176, 0.3);
   border-radius: 13px 17px 13px 19px / 17px 13px 19px 13px;
-  box-shadow: 0 6px 14px -10px rgba(7, 14, 26, 0.8);
+  box-shadow: 0 7px 16px -11px rgba(7, 14, 26, 0.85);
   cursor: pointer;
   transition: transform 0.18s, border-color 0.18s, background 0.18s, box-shadow 0.18s;
 }
@@ -1403,9 +1412,11 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
 }
 
 .exo-words__en {
-  font-family: var(--j-font-display);
-  font-size: 1.32rem;
-  line-height: 1.15;
+  font-family: var(--j-font-body);
+  font-weight: 600;
+  font-size: 1.5rem;
+  letter-spacing: 0.2px;
+  line-height: 1.2;
   color: var(--j-ink);
 }
 
