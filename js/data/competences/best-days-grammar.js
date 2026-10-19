@@ -313,12 +313,11 @@ export default {
       layout: "slide",
       cards: [
         {
-          type: "phrase-reference",
+          type: "word-cards",
           kind: "Wortschatz",
           title: "Tom's first day — the words",
           intro:
             "These eight words tell Tom's story. Say what each one means before you look.",
-          reveal: true,
           sections: LE_WORDS,
         },
         {

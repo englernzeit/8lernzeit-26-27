@@ -34,6 +34,7 @@ import {
   createInlineChoice,
   createCaptionBuilder,
   createPhraseReference,
+  createWordCards,
   createMatchUp,
   createTapMatch,
   createArgumentPick,
@@ -1257,6 +1258,7 @@ function buildStepSection(step, ctx) {
       data.type !== "text" &&
       data.type !== "game" &&
       data.type !== "phrase-reference" &&
+      data.type !== "word-cards" &&
       data.type !== "video" &&
       data.type !== "image" &&
       data.type !== "comment-view"
@@ -1455,7 +1457,7 @@ function buildCard(step, data, index, taskNo, ctx) {
           ? "Video"
           : data.type === "image" || data.type === "comment-view"
             ? "Model"
-            : data.type === "phrase-reference"
+            : data.type === "phrase-reference" || data.type === "word-cards"
               ? "Words"
               : `Task ${taskNo}`;
     const kind = document.createElement("span");
@@ -1639,7 +1641,10 @@ function buildCard(step, data, index, taskNo, ctx) {
       break;
     }
     case "phrase-reference":
-      body.appendChild(createPhraseReference({ sections: data.sections, reveal: data.reveal }));
+      body.appendChild(createPhraseReference({ sections: data.sections }));
+      break;
+    case "word-cards":
+      body.appendChild(createWordCards({ sections: data.sections }));
       break;
     case "match-up":
       body.appendChild(createMatchUp({ options: data.options, items: data.items }));

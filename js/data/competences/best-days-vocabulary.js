@@ -264,12 +264,11 @@ export default {
       layout: "slide",
       cards: [
         {
-          type: "phrase-reference",
+          type: "word-cards",
           kind: "Wortschatz",
           title: "Tom goes to the prom — the words",
           intro:
             "Eight words. Say the meaning out loud first, then check — and later do it the other way round.",
-          reveal: true,
           sections: LE_WORDS,
         },
         {

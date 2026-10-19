@@ -1308,26 +1308,34 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
 .exo-phrases__sec--ochre { border-left-color: var(--j-ochre); }
 .exo-phrases__sec--teal { border-left-color: var(--j-teal); }
 
-/* --- Tap-to-reveal ------------------------------------------------
-   The meaning is covered by a grey bar that sits exactly where the
-   text is, so revealing it never moves the rest of the card. */
+/* ============================================================
+   Word cards — the eight words of a lesson, one small card each.
+   The word is always there; its meaning is hidden until you tap.
+   Every card in a row is the same height (the grid stretches them
+   to the longest meaning), so opening one never moves the others.
+   ============================================================ */
 
-.exo-phrases__bar {
+.exo-words {
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.exo-words__bar {
+  display: flex;
+  align-items: baseline;
   justify-content: space-between;
   gap: 0.8rem;
   flex-wrap: wrap;
-  margin-bottom: 0.2rem;
 }
 
-.exo-phrases__hint {
+.exo-words__hint {
   font-family: var(--j-font-display);
   font-size: 1.1rem;
   color: var(--j-khaki);
 }
 
-.exo-phrases__all {
+.exo-words__all {
   font-family: var(--j-font-body);
   font-weight: 600;
   font-size: 0.9rem;
@@ -1339,63 +1347,104 @@ textarea.exo-caption__input { resize: vertical; line-height: 1.5; }
   cursor: pointer;
   transition: color 0.16s, border-color 0.16s;
 }
-.exo-phrases__all:hover,
-.exo-phrases__all:focus-visible {
+.exo-words__all:hover,
+.exo-words__all:focus-visible {
   color: var(--j-ink);
   border-color: rgba(95, 180, 245, 0.55);
 }
 
-.exo-phrases--reveal .exo-phrases__de {
-  display: block;
-  /* The rule is only as long as the words it hides, so a two-word meaning
-     gets a short blank instead of a slab across the whole column. */
-  width: fit-content;
-  max-width: 100%;
-  text-align: left;
-  font: inherit;
-  font-size: 1rem;
-  font-weight: 600;
-  line-height: 1.55;
-  color: var(--j-olive);
-  background: none;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-  transition: color 0.25s ease, background-color 0.25s ease;
+.exo-words__sec { display: flex; flex-direction: column; gap: 0.45rem; }
+
+.exo-words__label {
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: var(--j-khaki);
+}
+.exo-words__sec--coral .exo-words__label { color: var(--j-coral); }
+.exo-words__sec--olive .exo-words__label { color: var(--j-olive); }
+.exo-words__sec--slate .exo-words__label { color: var(--j-slate); }
+.exo-words__sec--ochre .exo-words__label { color: var(--j-ochre); }
+.exo-words__sec--teal .exo-words__label { color: var(--j-teal); }
+
+.exo-words__grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.7rem;
+  align-items: stretch;
 }
 
-/* Covered: the text stays in place (so revealing it never moves the card)
-   but is unreadable — all that shows is a ruled line under each line of it,
-   like the blank you would fill in on paper. No block, no fill. */
-.exo-phrases--reveal .exo-phrases__de--cover {
-  color: transparent;
-  /* One blank of one length for every word: tidier than a ragged edge, and
-     it gives nothing away about how long the answer is. The text is still
-     in the element (clipped), so nothing has to be re-measured. */
-  width: min(9.5rem, 100%);
-  height: 1.55em;
-  overflow: hidden;
-  background-image: repeating-linear-gradient(
-    to bottom,
-    transparent 0,
-    transparent calc(1.55em - 1.5px),
-    rgba(126, 150, 176, 0.34) calc(1.55em - 1.5px),
-    rgba(126, 150, 176, 0.34) 1.55em
-  );
+/* One word card, with the hand-cut corners the task sheets use. */
+.exo-words__card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* Centred, so a covered card shows its word in the middle of the card
+     rather than sitting on top of an empty space. */
+  justify-content: center;
+  gap: 0.4rem;
+  text-align: center;
+  min-height: 3.4rem;
+  padding: 0.6rem 0.7rem 0.65rem;
+  background: var(--j-paper-2);
+  border: 1.5px solid rgba(126, 150, 176, 0.22);
+  border-radius: 13px 17px 13px 19px / 17px 13px 19px 13px;
+  box-shadow: 0 6px 14px -10px rgba(7, 14, 26, 0.8);
+  cursor: pointer;
+  transition: transform 0.18s, border-color 0.18s, background 0.18s, box-shadow 0.18s;
 }
-.exo-phrases--reveal .exo-phrases__de--cover:hover,
-.exo-phrases--reveal .exo-phrases__de--cover:focus-visible {
-  background-image: repeating-linear-gradient(
-    to bottom,
-    transparent 0,
-    transparent calc(1.55em - 1.5px),
-    var(--j-teal) calc(1.55em - 1.5px),
-    var(--j-teal) 1.55em
-  );
+.exo-words__card:hover,
+.exo-words__card:focus-visible {
+  transform: translateY(-3px);
+  border-color: rgba(95, 180, 245, 0.55);
+  background: var(--j-sticky);
+  box-shadow: 0 12px 22px -12px rgba(7, 14, 26, 0.9);
+}
+
+.exo-words__en {
+  font-family: var(--j-font-display);
+  font-size: 1.32rem;
+  line-height: 1.15;
+  color: var(--j-ink);
+}
+
+.exo-words__de {
+  font-size: 0.92rem;
+  line-height: 1.35;
+  font-weight: 600;
+  color: var(--j-olive);
+  transition: opacity 0.25s ease;
+}
+
+/* Covered: the meaning is taken out of the card altogether, so a word you
+   have not opened yet is a small neat chip rather than a word sitting on
+   top of an empty space. Opening one grows its row — which is the whole
+   point of the gesture. */
+.exo-words__card--covered .exo-words__de {
+  display: none;
+}
+
+/* A quiet dot in the corner is the only mark a covered card carries. */
+.exo-words__card--covered::after {
+  content: "";
+  position: absolute;
+  top: 0.55rem;
+  right: 0.6rem;
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 50%;
+  background: rgba(126, 150, 176, 0.45);
+}
+.exo-words__card { position: relative; }
+
+@media (orientation: portrait) {
+  .exo-words__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .exo-phrases--reveal .exo-phrases__de { transition: none; }
+  .exo-words__card,
+  .exo-words__de { transition: none; }
 }
 
 /* --- Match up (dropdown matching) ------------------------------- */

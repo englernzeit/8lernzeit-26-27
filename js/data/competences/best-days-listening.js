@@ -145,12 +145,11 @@ export default {
       layout: "slide",
       cards: [
         {
-          type: "phrase-reference",
+          type: "word-cards",
           kind: "Wortschatz",
           title: "The words of this lesson",
           intro:
             "Eight words. Say what each one means before you look.",
-          reveal: true,
           sections: WORDS,
         },
         {
@@ -253,12 +252,11 @@ export default {
       layout: "spread",
       cards: [
         {
-          type: "phrase-reference",
+          type: "word-cards",
           kind: "Wortschatz",
           title: "The words of this lesson",
           intro:
             "Eight words. Say what each one means before you look.",
-          reveal: true,
           sections: WORDS,
         },
         {
@@ -384,12 +382,11 @@ export default {
       layout: "spread",
       cards: [
         {
-          type: "phrase-reference",
+          type: "word-cards",
           kind: "Wortschatz",
           title: "The words of this lesson",
           intro:
             "Eight words. Say what each one means before you look.",
-          reveal: true,
           sections: WORDS,
         },
         {

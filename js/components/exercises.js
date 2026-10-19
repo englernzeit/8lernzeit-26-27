@@ -1371,27 +1371,15 @@ export function createCaptionBuilder({ values, keyFor, onChange }) {
 
 /**
  * A colour-coded reference panel of English ↔ German phrase pairs,
- * grouped into sections (Introduction, Arguments For, …).
+ * grouped into sections (Introduction, Arguments For, …). Always open —
+ * it is reference you keep in front of you while you write. The eight-words
+ * cards use createWordCards instead.
  *
- * With `reveal`, the right-hand side starts covered and each row is a
- * tap target: the word stays readable, its meaning is hidden until you
- * ask for it. That is the "cover it up and test yourself" routine the
- * worksheets describe, so it is used on the eight-words cards — never on
- * the Useful-phrases cards, which have to stay open while you write.
- * A Show-all / Hide-all button drives the whole card at once.
- *
- * @param {{
- *   sections: Array<{ label: string, accent: string, pairs: Array<[string,string]> }>,
- *   reveal?: boolean,
- * }} data
+ * @param {{ sections: Array<{ label: string, accent: string, pairs: Array<[string,string]> }> }} data
  */
-export function createPhraseReference({ sections, reveal = false }) {
+export function createPhraseReference({ sections }) {
   const wrap = document.createElement("div");
-  wrap.className = "exo exo-phrases" + (reveal ? " exo-phrases--reveal" : "");
-
-  /** @type {HTMLButtonElement[]} */
-  const covers = [];
-
+  wrap.className = "exo exo-phrases";
   for (const sec of sections) {
     const block = document.createElement("div");
     block.className = `exo-phrases__sec exo-phrases__sec--${sec.accent}`;
@@ -1405,63 +1393,104 @@ export function createPhraseReference({ sections, reveal = false }) {
       const enEl = document.createElement("span");
       enEl.className = "exo-phrases__en";
       enEl.textContent = en;
-
-      if (!reveal) {
-        const deEl = document.createElement("span");
-        deEl.className = "exo-phrases__de";
-        deEl.textContent = de;
-        grid.append(enEl, deEl);
-        continue;
-      }
-
-      const deEl = document.createElement("button");
-      deEl.type = "button";
-      deEl.className = "exo-phrases__de exo-phrases__de--cover";
+      const deEl = document.createElement("span");
+      deEl.className = "exo-phrases__de";
       deEl.textContent = de;
-      deEl.setAttribute("aria-expanded", "false");
-      deEl.setAttribute("aria-label", `Show what “${en}” means`);
-      deEl.addEventListener("click", () => toggle(deEl));
-      covers.push(deEl);
       grid.append(enEl, deEl);
+    }
+    block.appendChild(grid);
+    wrap.appendChild(block);
+  }
+  return wrap;
+}
+
+/* ---------- Word cards (the eight words of a lesson) ------------
+ * One small card per word instead of one long two-column list. The word
+ * is always visible; its meaning is hidden until you tap the card, which
+ * is the routine the worksheets describe — cover it, say it out loud,
+ * then check. Every card is the same size (they are all as tall as the
+ * longest meaning), so revealing one never moves the others.
+ * ============================================================ */
+
+/**
+ * @param {{
+ *   sections: Array<{ label: string, accent: string, pairs: Array<[string,string]> }>,
+ * }} data
+ */
+export function createWordCards({ sections }) {
+  const wrap = document.createElement("div");
+  wrap.className = "exo exo-words";
+
+  /** @type {HTMLButtonElement[]} */
+  const cards = [];
+  let allBtn = null;
+
+  const bar = document.createElement("div");
+  bar.className = "exo-words__bar";
+  const hint = document.createElement("span");
+  hint.className = "exo-words__hint";
+  hint.textContent = "Tap a card to see what the word means";
+  allBtn = document.createElement("button");
+  allBtn.type = "button";
+  allBtn.className = "exo-words__all";
+  bar.append(hint, allBtn);
+  wrap.appendChild(bar);
+
+  for (const sec of sections) {
+    const block = document.createElement("div");
+    block.className = `exo-words__sec exo-words__sec--${sec.accent}`;
+
+    const label = document.createElement("div");
+    label.className = "exo-words__label";
+    label.textContent = sec.label;
+    block.appendChild(label);
+
+    const grid = document.createElement("div");
+    grid.className = "exo-words__grid";
+    for (const [en, de] of sec.pairs) {
+      const card = document.createElement("button");
+      card.type = "button";
+      card.className = "exo-words__card exo-words__card--covered";
+      card.setAttribute("aria-expanded", "false");
+      card.setAttribute("aria-label", `Show what “${en}” means`);
+
+      const enEl = document.createElement("span");
+      enEl.className = "exo-words__en";
+      enEl.textContent = en;
+
+      const deEl = document.createElement("span");
+      deEl.className = "exo-words__de";
+      deEl.textContent = de;
+
+      card.append(enEl, deEl);
+      card.addEventListener("click", () => toggle(card));
+      grid.appendChild(card);
+      cards.push(card);
     }
     block.appendChild(grid);
     wrap.appendChild(block);
   }
 
   /** @param {boolean} [wantOpen] omit to flip, pass true/false to set it. */
-  function toggle(el, wantOpen) {
+  function toggle(card, wantOpen) {
     const open =
-      wantOpen === undefined ? el.classList.contains("exo-phrases__de--cover") : wantOpen;
-    el.classList.toggle("exo-phrases__de--cover", !open);
-    el.setAttribute("aria-expanded", open ? "true" : "false");
+      wantOpen === undefined ? card.classList.contains("exo-words__card--covered") : wantOpen;
+    card.classList.toggle("exo-words__card--covered", !open);
+    card.setAttribute("aria-expanded", open ? "true" : "false");
     syncAll();
   }
 
-  let allBtn = null;
   function syncAll() {
-    if (!allBtn) return;
-    const hidden = covers.filter((c) => c.classList.contains("exo-phrases__de--cover")).length;
-    allBtn.textContent = hidden ? `Show all ${covers.length}` : "Hide all";
+    const hidden = cards.filter((c) => c.classList.contains("exo-words__card--covered")).length;
+    allBtn.textContent = hidden ? `Show all ${cards.length}` : "Hide all";
     allBtn.dataset.mode = hidden ? "show" : "hide";
   }
 
-  if (reveal && covers.length) {
-    const bar = document.createElement("div");
-    bar.className = "exo-phrases__bar";
-    const hint = document.createElement("span");
-    hint.className = "exo-phrases__hint";
-    hint.textContent = "Tap a line to see what the word means";
-    allBtn = document.createElement("button");
-    allBtn.type = "button";
-    allBtn.className = "exo-phrases__all";
-    allBtn.addEventListener("click", () => {
-      const show = allBtn.dataset.mode === "show";
-      covers.forEach((c) => toggle(c, show));
-    });
-    bar.append(hint, allBtn);
-    wrap.insertBefore(bar, wrap.firstChild);
-    syncAll();
-  }
+  allBtn.addEventListener("click", () => {
+    const show = allBtn.dataset.mode === "show";
+    cards.forEach((c) => toggle(c, show));
+  });
+  syncAll();
 
   return wrap;
 }

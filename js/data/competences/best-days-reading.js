@@ -222,12 +222,11 @@ export default {
       layout: "slide",
       cards: [
         {
-          type: "phrase-reference",
+          type: "word-cards",
           kind: "Wortschatz",
           title: "The words of this lesson",
           intro:
             "Eight words from Tom's story. Say what each one means before you look.",
-          reveal: true,
           sections: LE_WORDS,
         },
         {
