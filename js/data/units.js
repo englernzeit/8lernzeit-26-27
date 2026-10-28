@@ -48,8 +48,19 @@ const competenceSections = (...first) => [
   ...COMPETENCES.filter((c) => !first.includes(c.id)),
 ];
 
-/** `competenceSections`, with extra unit-specific competences appended. */
-const competenceSectionsPlus = (extras, ...first) => [...competenceSections(...first), ...extras];
+/**
+ * The sections of a unit in exactly the order given — for a unit that
+ * follows a Lernzeitplan, where the order of the competences *is* the
+ * teaching order: one competence per week, week 1 first. An id that is
+ * not a competence throws while the module loads, so a typo here shows
+ * up as a blank page rather than a silently missing card.
+ */
+const plannedSections = (...ids) =>
+  ids.map((id) => {
+    const found = [...COMPETENCES, MEDIATION].find((c) => c.id === id);
+    if (!found) throw new Error(`units.js: unknown competence id "${id}"`);
+    return found;
+  });
 
 export const UNITS = [
   {
@@ -75,9 +86,20 @@ export const UNITS = [
     pin: "assets/svg/pin-02.svg",
     pinPos: { x: 70, y: 23 },
     cardPos: { x: 73.5, y: 19.0 },
-    // Grammar (the -ing form) is the unit's focus, so it leads. Mediation is an
-    // extra competence in this unit — it has its own worksheet per level.
-    sections: competenceSectionsPlus([MEDIATION], "grammar"),
+    // The order of the Lernzeitplan (Klasse 8, Unit 2 — one competence per
+    // week, 02.11. to 25.12.): Vocabulary opens the unit, Revision closes it
+    // before the class test. Mediation is an extra competence in this unit —
+    // it has its own worksheet per level.
+    sections: plannedSections(
+      "vocabulary",
+      "reading",
+      "grammar",
+      "mediation",
+      "listening",
+      "writing",
+      "speaking",
+      "revision",
+    ),
   },
   {
     id: "california",
